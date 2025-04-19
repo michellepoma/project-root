@@ -1,20 +1,11 @@
-# backend/courses/views.py
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
 from .models import Course, CourseParticipant
 from .serializers import CourseSerializer, CourseParticipantSerializer
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-
-
-class IsTeacherOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return request.user.role == 'teacher'
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -24,14 +15,16 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        # Si el usuario crea un curso, se convierte en profesor
+
+        # CAMBIO DE ROL si aún no es teacher
         if user.role != 'teacher':
             user.role = 'teacher'
-            user.save()
+            user.save()  # ← ¡Este .save() es necesario para guardar el cambio!
 
+        # Guardar el curso
         course = serializer.save(teacher=user)
 
-        # Añadimos al creador como participante con rol de profesor
+        # Añadir al creador como participante con rol de teacher
         CourseParticipant.objects.create(
             user=user,
             course=course,
@@ -40,25 +33,20 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == 'teacher':
-            # Los profesores ven los cursos que crearon
-            return Course.objects.filter(teacher=user)
-        else:
-            # Los estudiantes ven los cursos en los que están matriculados
-            enrolled_courses = CourseParticipant.objects.filter(user=user).values_list('course_id', flat=True)
-            return Course.objects.filter(id__in=enrolled_courses)
+
+        # Ver cursos según participación
+        enrolled_courses = CourseParticipant.objects.filter(user=user).values_list('course_id', flat=True)
+        return Course.objects.filter(id__in=enrolled_courses)
 
     @action(detail=True, methods=['post'])
     def join(self, request, pk=None):
         course = self.get_object()
         user = request.user
 
-        # Verificar si el usuario ya es participante
         if CourseParticipant.objects.filter(user=user, course=course).exists():
             return Response({"detail": "Ya estás inscrito en este curso."},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Crear participante con rol de estudiante y actualizar el rol del usuario si es necesario
         if user.role != 'student' and user != course.teacher:
             user.role = 'student'
             user.save()
@@ -96,7 +84,6 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Ya estás inscrito en este curso."},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Si un usuario se une a un curso por código, se convierte en estudiante
         if user.role != 'student' and user != course.teacher:
             user.role = 'student'
             user.save()
@@ -118,9 +105,4 @@ class CourseParticipantViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == 'teacher':
-            # Profesores pueden ver todos los participantes de sus cursos
-            return CourseParticipant.objects.filter(course__teacher=user)
-        else:
-            # Estudiantes solo pueden verse a sí mismos
-            return CourseParticipant.objects.filter(user=user)
+        return CourseParticipant.objects.filter(user=user)
