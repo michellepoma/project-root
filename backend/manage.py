@@ -1,6 +1,7 @@
 # /projects/backend/manage.py
 """Django's command-line utility for administrative tasks."""
 import os
+os.environ["PYTHONUTF8"] = "1"
 import sys
 
 
