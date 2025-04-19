@@ -1,22 +1,83 @@
+/* ========== BASE ========== */
 body {
   background-color: #f8f9fa;
 }
 
-/* Sidebar general */
-.sidebar {
-  width: 85px;
-  top: 56px; /* Justo debajo del navbar */
-  height: calc(100vh - 56px);
-  transition: all 0.3s ease;
-  overflow-x: hidden;
-  right: 0; /* Está al lado derecho */
+/* ========== NAVBAR ========== */
+.navbar {
   position: fixed;
-  padding-right: 0.5rem !important; 
-  z-index: 1031;
-  
+  top: 0;
+  width: 100%;
+  height: 56px;
+  z-index: 1051;
 }
 
-/* Expansión al hacer hover en desktop */
+
+/* Custom styles */
+.custom-navbar {
+  padding-left: 4rem !important;
+  padding-right: 0.5rem !important;
+  height: 56px; /* debe coincidir con top del sidebar */
+  font-size: 1.1rem;
+}
+
+.navbar .bi {
+  font-size: 1.5rem;
+}
+
+.navbar span,
+.navbar a {
+  font-size: 1.1rem;
+}
+
+/* Ajuste de menu desplegable del navbar */
+.navbar .dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0;
+  left: auto;
+  z-index: 1051;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  position: fixed;
+  top: 56px;
+  right: 0;
+  width: 85px;
+  height: calc(100vh - 56px);
+  padding-top: 0;
+  padding-right: 0.5rem !important;
+  background-color: #fff;
+  border-left: 1px solid #dee2e6;
+  overflow-x: hidden;
+  z-index: 1031;
+  transition: width 0.3s ease;
+  margin-top: 0 !important;
+}
+
+/* Sidebar icons and spacing */
+.sidebar .bi {
+  font-size: 1.5rem;
+}
+
+.sidebar .nav-link span {
+  font-size: 1.1rem;
+  display: inline-block;
+  white-space: nowrap;
+  transition: opacity 0.3s ease, width 0.3s ease;
+}
+
+.sidebar .nav-link {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* Oculta texto si no esta en hover */
 @media (min-width: 769px) {
   .sidebar:hover {
     width: 250px;
@@ -31,40 +92,25 @@ body {
   }
 }
 
-/* Transiciones de elementos dentro del sidebar */
-.sidebar .nav-link span,
-.sidebar h5 span {
-  transition: opacity 0.3s ease, width 0.3s ease;
-  white-space: nowrap;
-}
-
-.sidebar:not(:hover) .nav-link span,
-.sidebar:not(:hover) h5 span {
-  opacity: 0;
-  width: 0;
-  overflow: hidden;
-  display: inline-block;
-}
-
-/* Ajuste del contenido principal cuando sidebar está visible */
+/* ========== CONTENIDO PRINCIPAL ========== */
 #main-content {
-  transition: margin-right 0.3s ease;
   margin-right: 70px;
+  transition: margin-right 0.3s ease;
 }
 
 .sidebar:hover ~ #main-content {
   margin-right: 250px;
 }
 
-/* Estilos para dispositivos móviles */
+/* ========== RESPONSIVE MOVIL ========== */
 @media (max-width: 768px) {
   .sidebar {
-    right: -250px; /* oculto por defecto en móviles */
-    left: auto !important;
+    right: -250px;
     width: 250px !important;
     height: calc(100vh - 56px);
     background-color: #fff;
     border-left: 1px solid #dee2e6;
+    transition: right 0.3s ease;
   }
 
   .sidebar.active {
@@ -73,17 +119,6 @@ body {
 
   #main-content {
     margin-right: 0 !important;
-  }
-
-  #overlay {
-    display: none;
-    position: fixed;
-    top: 56px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1030;
   }
 
   .sidebar .nav-link span,
@@ -102,59 +137,15 @@ body {
     top: 120% !important;
     z-index: 9999 !important;
   }
+
+  #overlay {
+    display: none;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1030;
+  }
 }
-
-.navbar {
-  position: relative;
-  z-index: 1051;
-}
-
-
-/* Ajuste de menú desplegable del navbar */
-.navbar .dropdown {
-  position: relative;
-}
-
-.dropdown-menu {
-  position: absolute !important;
-  top: 100% !important;
-  right: 0;
-  left: auto;
-  z-index: 1051;
-}
-
-/*Navbar custom*/
-.custom-navbar {
-  padding-left: 4rem !important;  /* Aumenta espacio a la izquierda */
-  padding-right: 0.5rem !important; /* Aumenta espacio a la derecha */
-  height: 80px; /* También puedes aumentar la altura si deseas */
-  font-size: 1.1rem; /* Escala texto e íconos */
-}
-
-.navbar .bi {
-  font-size: 1.5rem;
-}
-
-.navbar span, .navbar a {
-  font-size: 1.1rem;
-}
-
-/* Aumenta el tamaño de íconos del sidebar*/
-.sidebar .bi {
-  font-size: 1.5rem; /* Puedes ajustar a 1.6rem o más si lo deseas */
-}
-
-/* Aumenta el tamaño del texto */
-.sidebar .nav-link span {
-  font-size: 1.1rem;
-}
-
-/* Aumenta el espaciado vertical entre elementos */
-.sidebar .nav-link {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
-
-
-
-
