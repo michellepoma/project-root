@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',  # For token authentication
     'rest_framework_simplejwt',  # Agregamos esta app para asegurar que simplejwt funcione correctamente
+    'frontend', #Agregamos esta app para poder trabajar con vistas HTML
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -113,9 +114,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'proyect_root',
         'USER': 'postgres',
-        'PASSWORD': 'harold234fortnite',
+        'PASSWORD': '123456',
         'HOST': 'localhost',
-        'PORT':'5433',
+        'PORT':'5432',
     }
 }
 
