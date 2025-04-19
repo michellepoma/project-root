@@ -1,0 +1,88 @@
+-- ==========================
+-- Tabla de usuarios
+-- ==========================
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,        -- Correo único para login
+    password_hash TEXT NOT NULL,               -- Contraseña en hash
+    role VARCHAR(20) NOT NULL CHECK (role IN ('student', 'teacher')), -- Rol del usuario
+    profile_picture TEXT,                      -- URL de imagen de perfil
+    ci VARCHAR(20) UNIQUE,                     -- Cédula de identidad única
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ==========================
+-- Cursos
+-- ==========================
+CREATE TABLE courses (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,                -- Nombre del curso
+    code VARCHAR(10) UNIQUE NOT NULL,          -- Código para unirse al curso
+    description TEXT,                          -- Descripción opcional
+    teacher_id INTEGER REFERENCES users(id),   -- Profesor creador del curso
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ==========================
+-- Participantes en cursos
+-- ==========================
+CREATE TABLE course_participants (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),      -- Usuario que participa
+    course_id INTEGER REFERENCES courses(id),  -- Curso al que se une
+    role VARCHAR(20) NOT NULL CHECK (role IN ('student', 'assistant', 'teacher')), -- Rol en el curso
+    joined_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(user_id, course_id)                 -- Evita duplicados
+);
+
+-- ==========================
+-- Tareas
+-- ==========================
+CREATE TABLE assignments (
+    id SERIAL PRIMARY KEY,
+    course_id INTEGER REFERENCES courses(id),  -- Curso al que pertenece la tarea
+    title VARCHAR(150) NOT NULL,               -- Título de la tarea
+    description TEXT,                          -- Descripción de la tarea
+    due_date TIMESTAMP,                        -- Fecha de entrega
+    attachment_url TEXT,                       -- URL del archivo adjunto (opcional)
+    created_by INTEGER REFERENCES users(id),   -- Creador (profesor)
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ==========================
+-- Entregas de tareas
+-- ==========================
+CREATE TABLE submissions (
+    id SERIAL PRIMARY KEY,
+    assignment_id INTEGER REFERENCES assignments(id), -- A qué tarea pertenece
+    student_id INTEGER REFERENCES users(id),          -- Estudiante que entrega
+    file_url TEXT,                                    -- URL del archivo subido
+    text_response TEXT,                               -- Opción para respuestas escritas
+    submitted_at TIMESTAMP DEFAULT NOW(),
+    grade VARCHAR(10),                                -- Nota (opcional)
+    feedback TEXT                                      -- Retroalimentación del profesor
+);
+
+-- ==========================
+-- Comentarios (en curso o tarea)
+-- ==========================
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),             -- Autor del comentario
+    course_id INTEGER REFERENCES courses(id),         -- Comentario general al curso
+    assignment_id INTEGER REFERENCES assignments(id), -- Comentario sobre tarea
+    text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ==========================
+-- Notificaciones
+-- ==========================
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    text TEXT NOT NULL,                               -- Mensaje de notificación
+    read BOOLEAN DEFAULT FALSE,                       -- Estado de lectura
+    created_at TIMESTAMP DEFAULT NOW()
+);
