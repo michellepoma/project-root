@@ -1,22 +1,83 @@
 {% extends 'frontend/base.html' %}
 {% block content %}
+{% if messages %}
+  <div id="message-container" class="mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
 <div class="container col-md-8">
     <div class="p-4 mb-4 rounded text-body-emphasis bg-body-secondary">
-      <div class="w-100">
-        <!-- Imagen que ocupa todo el espacio -->
-        <img
-          src="../static/images/imagen.jpg"
-          class="img-fluid w-100 rounded"
-          alt="Imagen"
-        />
-      </div>
+        <div class="w-100">
+            <!-- Imagen que ocupa todo el espacio -->
+            <img src="../static/images/imagen.jpg" class="img-fluid w-100 rounded" alt="Imagen" />
+        </div>
     </div>
 
-    <!-- Botón centrado -->
     <div class="text-center my-4">
-      <button class="btn btn-primary btn-md" type="button">
-        Crear Clase
-      </button>
+        <button class="btn btn-primary btn-md" type="button" data-bs-toggle="modal" data-bs-target="#crearClaseModal">
+            Crear Clase
+        </button>
     </div>
-  </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="crearClaseModal" tabindex="-1" aria-labelledby="crearClaseModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crearClaseModalLabel">Crear Nueva Clase</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'create_course' %}">
+                        {% csrf_token %}
+                      
+                        <!-- Nombre de la clase -->
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" name="name" id="nombreClase" placeholder="Nombre de la clase" required>
+                          <label for="nombreClase"><i class="bi bi-book me-2"></i>Nombre de la clase *</label>
+                        </div>
+                      
+                        <!-- Sigla del curso (code) -->
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" name="code" id="siglaCurso" placeholder="Sigla del curso">
+                          <label for="siglaCurso"><i class="bi bi-hash me-2"></i>Sigla del curso</label>
+                        </div>
+                      
+                        <!-- Nombre del docente (teacher_name) -->
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" name="teacher_name" id="nombreDocente" placeholder="Nombre del Docente" >
+                          <label for="nombreDocente"><i class="bi bi-person-badge me-2"></i>Nombre del Docente</label>
+                        </div>
+                      
+                        <!-- Descripción -->
+                        <div class="form-floating mb-3">
+                          <textarea class="form-control" name="description" id="descripcionCurso" placeholder="Descripción" style="height: 100px;" required></textarea>
+                          <label for="descripcionCurso"><i class="bi bi-file-text me-2"></i>Descripción</label>
+                        </div>
+                      
+                        <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                      </form>
+                      
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 {% endblock %}
+<script>
+    setTimeout(function () {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        alert.classList.remove('show');
+        alert.classList.add('hide');
+      });
+    }, 3000); // 3 segundos
+  </script>
+  

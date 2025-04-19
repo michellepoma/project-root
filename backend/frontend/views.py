@@ -2,6 +2,8 @@
 
 import requests
 from django.shortcuts import render, redirect
+from django.contrib import messages
+
 
 # LOGIN
 def login_view(request):
@@ -86,20 +88,61 @@ def main_view(request):
     if 'access' not in request.session:
         return redirect('login')
 
-    # Recuperar el nombre desde el backend (si lo tienes)
     import requests
     headers = {
         'Authorization': f'Bearer {request.session["access"]}'
     }
+
     try:
         response = requests.get('http://localhost:8000/api/users/profile/', headers=headers)
         if response.status_code == 200:
             user_data = response.json()
         else:
-            user_data = {'name': 'Invitado'}
+            return redirect('login')
     except:
-        user_data = {'name': 'Invitado'}
+        return redirect('login')
 
     return render(request, 'frontend/main.html', {'user': user_data})
+
+#CREATE_COURSE
+def create_course_view(request):
+    if 'access' not in request.session:
+        return redirect('login')
+
+    if request.method == 'POST':
+        payload = {
+            'name': request.POST.get('name'),
+            'code': request.POST.get('code'),
+            'teacher_name': request.POST.get('teacher_name'),
+            'description': request.POST.get('description'),
+            # Si decides volver a usar created_at, se puede agregar aquí.
+        }
+
+        headers = {
+            'Authorization': f'Bearer {request.session["access"]}',
+            'Content-Type': 'application/json'
+        }
+
+        try:
+            response = requests.post('http://localhost:8000/api/courses/', json=payload, headers=headers)
+
+            if response.status_code == 201:
+                messages.success(request, "✅ La clase se creó correctamente.")
+                return redirect('main')
+
+            elif response.status_code == 401:
+                request.session.flush()
+                return redirect('login')
+
+            else:
+                error_detail = response.json().get('detail', '❌ Ocurrió un error al crear la clase.')
+                messages.error(request, error_detail)
+                return redirect('main')
+
+        except Exception as e:
+            messages.error(request, f'⚠️ Error de conexión con el servidor: {str(e)}')
+            return redirect('main')
+
+    return redirect('main')
 
 
