@@ -100,10 +100,10 @@ body {
     align-items: center;
     justify-content: center;
   
-    background-image: url("../images/fondologin.png");
+    background-image: url("../images/fondo.png");
     background-repeat: no-repeat;
     background-size: 120%;         /* ✅ ocupa toda la pantalla sin deformarse */
-    background-position: 25%;    /* ✅ centro exacto */
+    background-position: 40%;    /* ✅ centro exacto */
     background-attachment: fixed;   /* opcional: fija el fondo al hacer scroll */
   
     font-family: 'Segoe UI', sans-serif;
@@ -112,6 +112,5 @@ body {
   .text-muted-custom {
     color: #ffffff; /* o el color que tú quieras */
   }
-  
   
   
