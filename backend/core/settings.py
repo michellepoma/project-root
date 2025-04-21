@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',  # For token authentication
     'rest_framework_simplejwt',  # Agregamos esta app para asegurar que simplejwt funcione correctamente
-    'frontend', #Agregamos esta app para poder trabajar con vistas HTML
+    'corsheaders', #Permite peticiones desde React
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -78,6 +78,7 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -157,12 +158,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'frontend' / 'static',
-]
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CORS: Allow requests from frontend (React, etc.)
+# https://pypi.org/project/django-cors-headers/
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite
+    "http://localhost:3000",  # Create React App
+]

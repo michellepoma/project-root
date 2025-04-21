@@ -3,6 +3,13 @@ body {
   background-color: #f8f9fa;
 }
 
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
 /* ========== NAVBAR ========== */
 .navbar {
   position: fixed;
@@ -19,6 +26,7 @@ body {
   padding-right: 0.5rem !important;
   height: 56px; /* debe coincidir con top del sidebar */
   font-size: 1.1rem;
+  overflow: visible !important;
 }
 
 .navbar .bi {
@@ -41,6 +49,10 @@ body {
   right: 0;
   left: auto;
   z-index: 1051;
+  transition: all 0.2s ease;
+}
+.dropdown-menu .btn {
+  text-align: left;
 }
 
 /* ========== SIDEBAR ========== */
@@ -55,7 +67,6 @@ body {
   background-color: #fff;
   border-left: 1px solid #dee2e6;
   overflow-x: hidden;
-  z-index: 1031;
   transition: width 0.3s ease;
   margin-top: 0 !important;
 }

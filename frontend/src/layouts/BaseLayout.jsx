@@ -1,0 +1,131 @@
+//frontend/src/layouts/BaseLayout.jsx
+import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import useProfile from "../hooks/useProfile";
+
+function BaseLayout() {
+  const sidebarRef = useRef();
+  const overlayRef = useRef();
+  const navigate = useNavigate();
+  const user = useProfile();
+
+  // Lógica de toggle sidebar
+  useEffect(() => {
+    const toggleBtn = document.getElementById("sidebarToggle");
+
+    const toggleSidebar = () => {
+      if (window.innerWidth <= 768) {
+        sidebarRef.current.classList.toggle("active");
+        overlayRef.current.classList.toggle("active");
+      }
+    };
+
+    const closeSidebar = () => {
+      sidebarRef.current.classList.remove("active");
+      overlayRef.current.classList.remove("active");
+    };
+
+    toggleBtn?.addEventListener("click", toggleSidebar);
+    overlayRef.current?.addEventListener("click", closeSidebar);
+
+    return () => {
+      toggleBtn?.removeEventListener("click", toggleSidebar);
+      overlayRef.current?.removeEventListener("click", closeSidebar);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    navigate("/login");
+  };
+
+  return (
+    <>
+      {/* NAVBAR */}
+      <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top custom-navbar">
+        <div className="container-fluid justify-content-between align-items-center px-3">
+          <div className="text-primary fw-bold d-flex align-items-center gap-2 mx-auto">
+            <i>LOGO</i>
+            <span className="d-none d-md-inline">NOMBRE DE LA PAGINA WEB</span>
+          </div>
+
+          <ul className="navbar-nav d-flex flex-row align-items-center gap-2 ms-auto">
+            <li className="nav-item dropdown position-relative">
+              <a
+                className="nav-link dropdown-toggle d-flex align-items-center"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="bi bi-person-circle me-2"></i>
+              </a>
+              <div className="dropdown-menu dropdown-menu-end p-3 position-absolute shadow border-0" style={{ width: 260, zIndex: 1055 }}>
+                <div className="text-center mb-3">
+                    <h6 className="mb-0 text-capitalize">{user?.name || "Usuario"}</h6>
+                    <small className="text-muted">{user?.email}</small>
+                </div>
+
+                <div className="d-grid gap-2">
+                    <button className="btn btn-outline-danger" onClick={handleLogout}>
+                    <i className="bi bi-box-arrow-right me-1"></i> Cerrar sesión
+                    </button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <button className="btn btn-outline-primary d-md-none pb-1" id="sidebarToggle">
+                <i className="bi bi-list fs-6"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      {/* SIDEBAR */}
+      <div ref={sidebarRef} className="sidebar bg-white border-start position-fixed pt-0 px-2" id="sidebar">
+        <ul className="nav flex-column">
+          <li className="nav-item">
+            <a href="/main" className="nav-link d-flex align-items-center">
+              <i className="bi bi-house me-2"></i> <span>Página Principal</span>
+            </a>
+          </li>
+          <li className="nav-item">
+            <a href="/join_class" className="nav-link d-flex align-items-center">
+              <i className="bi bi-plus-square-fill me-2"></i> <span>Unirse a Clases</span>
+            </a>
+          </li>
+          <li className="nav-item">
+            <a href="/my_classes" className="nav-link d-flex align-items-center">
+              <i className="bi bi-pc-display-horizontal me-2"></i> <span>Mis Clases</span>
+            </a>
+          </li>
+          <li className="nav-item mb-5">
+            <a href="/" className="nav-link d-flex align-items-center">
+              <i className="bi bi-calendar3 me-2"></i> <span>Programar Clases</span>
+            </a>
+          </li>
+          <li className="nav-item mt-5">
+            <hr />
+            <a href="/configuracion" className="nav-link d-flex align-items-center">
+              <i className="bi bi-gear me-2"></i> <span>Configuración</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* OVERLAY */}
+      <div ref={overlayRef} id="overlay" className="overlay"></div>
+
+      {/* CONTENIDO PRINCIPAL */}
+      <div className="pt-5 mt-5" id="main-content">
+        <div className="container pt-4">
+          <Outlet />
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default BaseLayout;
