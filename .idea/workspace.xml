@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="08974740-ee5f-48d2-ac99-a7dc84c094f6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/project-root/backend/assignments/serializers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project-root/backend/assignments/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/assignments/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/assignments/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/assignments/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/assignments/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/assignments/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/assignments/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/assignments/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/comments/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/comments/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/comments/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/comments/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/comments/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/comments/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/comments/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/core/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/core/asgi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/core/settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/core/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/core/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/core/wsgi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/serializers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/courses/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/manage.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notifications/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notifications/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notifications/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notifications/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notifications/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notifications/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notifications/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/submissions/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/submissions/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/submissions/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/submissions/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/submissions/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/submissions/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/submissions/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/migrations/0002_user_ci.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/serializers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/users/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contenido_directorio.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/directorio.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/eslint.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/fondo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/imagen.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/vite.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/axiosConfig.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/react.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/PasswordInput.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/PrivateRoute.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SidebarToggle.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/hooks/useProfile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/layouts/BaseLayout.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/login.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/LoginPage.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/MainPage.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/RegisterPage.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/postgreSQL" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2w48Jk0QC54yCM9zm1jiBO6G1XG" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.python.django.customization.DjangoModulesConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="django-test" type="Python.DjangoServer" factoryName="Django server">
+      <module name="django-test" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-PY-251.23774.444" />
+        <option value="bundled-python-sdk-890ed5b35930-d9c5bdb153f4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.23774.444" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="08974740-ee5f-48d2-ac99-a7dc84c094f6" name="Changes" comment="" />
+      <created>1745289416319</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1745289416319</updated>
+      <workItem from="1745289417187" duration="550000" />
+      <workItem from="1745289983262" duration="3106000" />
+      <workItem from="1745376703663" duration="5307000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
