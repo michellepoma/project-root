@@ -1,17 +1,19 @@
+# backend/courses/urls.py
+
 from rest_framework.routers import DefaultRouter
 from .views import (
     CourseViewSet,
     CourseParticipantViewSet,
     CourseMaterialViewSet,
     AttendanceSessionViewSet,
-    AttendanceRecordViewSet
+    AttendanceRecordViewSet,
 )
 
 router = DefaultRouter()
 router.register(r'courses', CourseViewSet, basename='course')
-router.register(r'participants', CourseParticipantViewSet, basename='courseparticipant')
-router.register(r'materials', CourseMaterialViewSet, basename='coursematerial')
-router.register(r'attendance-sessions', AttendanceSessionViewSet, basename='attendance-session')
-router.register(r'attendance-records', AttendanceRecordViewSet, basename='attendance-record')
+router.register(r'participants', CourseParticipantViewSet, basename='participant')
+router.register(r'materials', CourseMaterialViewSet, basename='material')
+router.register(r'sessions', AttendanceSessionViewSet, basename='session')
+router.register(r'records', AttendanceRecordViewSet, basename='record')
 
-urlpatterns = router.urls
+urlpatterns = router.urls  # ✅ ESTA LÍNEA DEBE SER UNA LISTA, NO un include()

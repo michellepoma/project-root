@@ -1,7 +1,8 @@
-//frontend/src/pages/LoginPage.jsx
+// frontend/src/pages/LoginPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../styles/login.css";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -36,63 +37,53 @@ function LoginPage() {
   };
 
   return (
-    <div className="bg-light d-flex align-items-center justify-content-center vh-100">
-      <div className="card shadow p-4" style={{ width: "100%", maxWidth: "400px" }}>
-        <div className="text-center mb-4">
-          <h3 className="text-primary fw-bold">Iniciar Sesión</h3>
-        </div>
+    <div className="login-page-container">
+      <img src="/fondo1.png" alt="Fondo" className="background-img" />
 
-        {error && <div className="alert alert-danger mt-3">{error}</div>}
+      <div className="login-card">
+        <h3 className="login-title">Iniciar Sesión</h3>
+
+        {error && <div className="login-error">{error}</div>}
 
         <form onSubmit={handleLogin}>
-          {/* Correo */}
-          <div className="form-floating mb-3">
+          <div className="login-group">
+            <label htmlFor="email">Correo Electrónico</label>
             <input
               type="email"
-              name="email"
               id="email"
-              className="form-control"
-              placeholder="Correo Electrónico"
+              className="login-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <label htmlFor="email">Correo Electrónico</label>
           </div>
 
-          {/* Contraseña */}
-          <div className="form-floating mb-4 position-relative">
-            <input
-              type={show ? "text" : "password"}
-              name="password"
-              id="password"
-              className="form-control"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+          <div className="login-group">
             <label htmlFor="password">Contraseña</label>
-
-            <i
-              className={`bi ${show ? "bi-eye-slash" : "bi-eye"} position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer`}
-              style={{ cursor: "pointer" }}
-              onClick={() => setShow(!show)}
-            ></i>
+            <div className="password-wrapper">
+              <input
+                type={show ? "text" : "password"}
+                id="password"
+                className="login-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                className="toggle-password"
+                onClick={() => setShow(!show)}
+              >
+                <i className={`bi ${show ? "bi-eye-slash" : "bi-eye"}`}></i>
+              </span>
+            </div>
           </div>
 
-          {/* Botón */}
-          <div className="d-grid mb-3">
-            <button type="submit" className="btn btn-primary">
-              <i className="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-            </button>
-          </div>
+          <button type="submit" className="custom-btn">Iniciar Sesión</button>
 
-          {/* Enlaces */}
-          <div className="text-center">
-            <a href="#" className="d-block mb-2 text-decoration-none">¿Olvidaste tu contraseña?</a>
-            <span>¿No tienes una cuenta?</span>
-            <a href="/register" className="text-decoration-none ms-1">Regístrate</a>
+          <div className="login-links">
+            <a href="#">¿Olvidaste tu contraseña?</a>
+            <br />
+            <span>¿No tienes una cuenta? <a href="/register">Regístrate</a></span>
           </div>
         </form>
       </div>

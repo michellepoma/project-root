@@ -1,15 +1,9 @@
-from django.contrib import admin
-from django.urls import path, include
+# backend/assignments/urls.py
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
+from rest_framework.routers import DefaultRouter
+from .views import AssignmentViewSet
 
-    # API de usuarios
-    path('api/', include('users.urls')),
+router = DefaultRouter()
+router.register(r'assignments', AssignmentViewSet, basename='assignment')
 
-    # API de cursos, materiales, participantes, asistencia
-    path('api/', include('courses.urls')),
-
-    # API de tareas y calificaciones
-    path('api/', include('assignments.urls')),
-]
+urlpatterns = router.urls  # ✅ Correcto: ES UNA LISTA, no un include()
