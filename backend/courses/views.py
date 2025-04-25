@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from .models import Course, CourseParticipant
 from .serializers import CourseSerializer, CourseParticipantSerializer
@@ -96,6 +97,21 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         return Response(CourseParticipantSerializer(participant).data,
                         status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        # Solo el profesor del curso puede actualizarlo
+        course = self.get_object()
+        if self.request.user != course.teacher:
+            raise PermissionDenied("Solo el profesor puede actualizar este curso.")
+        serializer.save()
 
 
 class CourseParticipantViewSet(viewsets.ModelViewSet):

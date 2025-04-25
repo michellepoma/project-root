@@ -7,7 +7,7 @@ __pycache__/
 backend/.env/
 .venv/
 db.sqlite3
-
+backend/core/settings.py
 # Django
 /static/
 media/

@@ -14,13 +14,13 @@ class Course(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=10, unique=True, default=generate_course_code)
     description = models.TextField(blank=True, null=True)
+    semester = models.CharField(max_length=20, blank=True, null=True)
     teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                 related_name='created_courses')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name} ({self.code})"
-
 
 class CourseParticipant(models.Model):
     ROLE_CHOICES = (

@@ -1,7 +1,6 @@
 # backend/users/views.py
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model, authenticate
 from .serializers import UserSerializer, UserRegistrationSerializer
@@ -24,11 +23,8 @@ class RegisterView(generics.CreateAPIView):
         refresh = RefreshToken.for_user(user)
 
         return Response({
-            "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "tokens": {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            }
+            "user": UserSerializer(user).data,
+            "token": str(refresh.access_token)  # Solo devolver el access token
         }, status=status.HTTP_201_CREATED)
 
 
@@ -56,16 +52,9 @@ class LoginView(APIView):
         # Generar token JWT
         refresh = RefreshToken.for_user(user)
 
-        # También podemos mantener el token tradicional si se necesita
-        token, _ = Token.objects.get_or_create(user=user)
-
         return Response({
             "user": UserSerializer(user).data,
-            "tokens": {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            },
-            "token": token.key  # Token tradicional
+            "token": str(refresh.access_token)  # Solo devolver el access token
         })
 
 
@@ -75,3 +64,15 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
