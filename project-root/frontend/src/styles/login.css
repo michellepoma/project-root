@@ -1,0 +1,126 @@
+/* Fondo completo */
+.login-page-container {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Imagen de fondo con zoom más suave y desplazamiento */
+.background-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.4;
+  transform: scale(1.08) translate(3.5%, -15%); /* 👈 puedes ajustar estos valores */
+}
+
+/* Tarjeta */
+.login-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(5px) saturate(120%);
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 70%;
+  max-width: 400px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Título */
+.login-title {
+  color: #333;
+  font-weight: 600;
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Errores */
+.login-error {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: red;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Inputs */
+.login-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.login-group label {
+  margin-bottom: 0.5rem;
+  color: #4c5c7a;
+}
+
+.login-input {
+  padding: 1.2rem 1.5rem;
+  font-size: 1.1rem;
+  height: 3.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 100%;
+}
+
+/* Contraseña */
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.3rem;
+  color: #444;
+}
+
+/* Botón */
+.custom-btn {
+  background-color: #5a6c8a;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.custom-btn:hover {
+  background-color: #3c4d68;
+  color: #fff;
+}
+
+/* Enlaces */
+.login-links {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.login-links a {
+  color: #495f8f;
+  text-decoration: none;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+}

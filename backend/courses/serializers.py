@@ -11,8 +11,8 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'code', 'description', 'semester', 'teacher', 'teacher_name', 'created_at']
-        read_only_fields = ['code', 'created_at', 'teacher']
+        fields = ['id', 'name', 'code', 'description', 'teacher', 'teacher_name', 'created_at']
+        read_only_fields = ['code', 'created_at', 'teacher']  # Add 'teacher' here
 
     def get_teacher_name(self, obj):
         return obj.teacher.name

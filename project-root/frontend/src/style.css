@@ -1,0 +1,162 @@
+/* ========== BASE ========== */
+body {
+  background-color: #f8f9fa;
+}
+
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
+/* ========== NAVBAR ========== */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 56px;
+  z-index: 1051;
+}
+
+
+/* Custom styles */
+.custom-navbar {
+  padding-left: 4rem !important;
+  padding-right: 0.5rem !important;
+  height: 56px; /* debe coincidir con top del sidebar */
+  font-size: 1.1rem;
+  overflow: visible !important;
+}
+
+.navbar .bi {
+  font-size: 1.5rem;
+}
+
+.navbar span,
+.navbar a {
+  font-size: 1.1rem;
+}
+
+/* Ajuste de menu desplegable del navbar */
+.navbar .dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0;
+  left: auto;
+  z-index: 1051;
+  transition: all 0.2s ease;
+}
+.dropdown-menu .btn {
+  text-align: left;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  position: fixed;
+  top: 56px;
+  right: 0;
+  width: 85px;
+  height: calc(100vh - 56px);
+  padding-top: 0;
+  padding-right: 0.5rem !important;
+  background-color: #fff;
+  border-left: 1px solid #dee2e6;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
+  margin-top: 0 !important;
+}
+
+/* Sidebar icons and spacing */
+.sidebar .bi {
+  font-size: 1.5rem;
+}
+
+.sidebar .nav-link span {
+  font-size: 1.1rem;
+  display: inline-block;
+  white-space: nowrap;
+  transition: opacity 0.3s ease, width 0.3s ease;
+}
+
+.sidebar .nav-link {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* Oculta texto si no esta en hover */
+@media (min-width: 769px) {
+  .sidebar:hover {
+    width: 250px;
+  }
+
+  .sidebar:not(:hover) .nav-link span,
+  .sidebar:not(:hover) h5 span {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    display: inline-block;
+  }
+}
+
+/* ========== CONTENIDO PRINCIPAL ========== */
+#main-content {
+  margin-right: 70px;
+  transition: margin-right 0.3s ease;
+}
+
+.sidebar:hover ~ #main-content {
+  margin-right: 250px;
+}
+
+/* ========== RESPONSIVE MOVIL ========== */
+@media (max-width: 768px) {
+  .sidebar {
+    right: -250px;
+    width: 250px !important;
+    height: calc(100vh - 56px);
+    background-color: #fff;
+    border-left: 1px solid #dee2e6;
+    transition: right 0.3s ease;
+  }
+
+  .sidebar.active {
+    right: 0;
+  }
+
+  #main-content {
+    margin-right: 0 !important;
+  }
+
+  .sidebar .nav-link span,
+  .sidebar h5 span {
+    opacity: 1 !important;
+    width: auto !important;
+    overflow: visible !important;
+    display: inline !important;
+  }
+
+  .dropdown-menu {
+    width: 90vw !important;
+    max-width: 260px;
+    padding: 0.75rem !important;
+    border-radius: 0.5rem;
+    top: 120% !important;
+    z-index: 9999 !important;
+  }
+
+  #overlay {
+    display: none;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1030;
+  }
+}
