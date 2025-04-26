@@ -1,7 +1,7 @@
-//frontend/src/pages/MainPage.jsx
 import api from "../api/axiosConfig";
 import { useState, useEffect } from "react";
 import imagen from "/imagen.jpg";
+import "@/styles/MainPage.css";
 
 function MainPage() {
   const [form, setForm] = useState({
@@ -11,7 +11,7 @@ function MainPage() {
     description: "",
   });
 
-  const [alert, setAlert] = useState(null); // { message: "", type: "success" | "danger" }
+  const [alert, setAlert] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,7 +19,6 @@ function MainPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await api.post("/courses/", form, {
         headers: {
@@ -31,12 +30,11 @@ function MainPage() {
       if (response.status === 201) {
         setAlert({ message: "Clase creada correctamente.", type: "success" });
         setForm({ name: "", subject_code: "", semester: "", description: "" });
-        document.querySelector("#crearClaseModal .btn-close").click(); // cierra el modal
+        document.querySelector("#crearClaseModal .btn-close").click();
       }
     } catch (err) {
       const message =
-        err.response?.data?.detail ||
-        "Ocurrió un error al crear la clase.";
+        err.response?.data?.detail || "Ocurrió un error al crear la clase.";
       setAlert({ message, type: "danger" });
     }
   };
@@ -51,28 +49,24 @@ function MainPage() {
   }, [alert]);
 
   return (
-    <div className="container col-md-8">
-      {/* Mensaje */}
+    <div className="main-container">
       {alert && (
-        <div className={`alert alert-${alert.type} alert-dismissible fade show mt-3`} role="alert">
+        <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert">
           {alert.message}
           <button
             type="button"
             className="btn-close"
+            aria-label="Cerrar alerta"
             onClick={() => setAlert(null)}
           ></button>
         </div>
       )}
 
-      {/* Imagen */}
-      <div className="p-4 mb-4 rounded text-body-emphasis bg-body-secondary">
-        <img src={imagen} className="img-fluid w-100 rounded" alt="Imagen" />
-      </div>
-
-      {/* Botón para abrir modal */}
-      <div className="text-center my-4">
+      {/* Imagen y botón juntos */}
+      <div className="content">
+        <img src={imagen} className="main-image" alt="Imagen principal" />
         <button
-          className="btn btn-primary btn-md"
+          className="custom-btn mt-3"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#crearClaseModal"
@@ -90,7 +84,7 @@ function MainPage() {
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
+          <div className="modal-content login-card">
             <div className="modal-header">
               <h5 className="modal-title" id="crearClaseModalLabel">
                 Crear Nueva Clase
@@ -104,11 +98,10 @@ function MainPage() {
             </div>
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
-                {/* Nombre de la clase */}
                 <div className="form-floating mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control login-input"
                     name="name"
                     id="nombreClase"
                     placeholder="Nombre de la clase"
@@ -120,12 +113,10 @@ function MainPage() {
                     <i className="bi bi-book me-2"></i>Nombre de la clase *
                   </label>
                 </div>
-
-                {/* Sigla del curso */}
                 <div className="form-floating mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control login-input"
                     name="subject_code"
                     id="siglaCurso"
                     placeholder="Sigla del curso"
@@ -136,27 +127,23 @@ function MainPage() {
                     <i className="bi bi-hash me-2"></i>Sigla del curso
                   </label>
                 </div>
-
-                {/* Semestre */}
                 <div className="form-floating mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control login-input"
                     name="semester"
                     id="semestre"
                     placeholder="Semestre"
                     value={form.semester}
                     onChange={handleChange}
                   />
-                  <label htmlFor="semester">
+                  <label htmlFor="semestre">
                     <i className="bi bi-calendar me-2"></i>Semestre
                   </label>
                 </div>
-
-                {/* Descripción */}
                 <div className="form-floating mb-3">
                   <textarea
-                    className="form-control"
+                    className="form-control login-input"
                     name="description"
                     id="descripcionCurso"
                     placeholder="Descripción"
@@ -169,8 +156,7 @@ function MainPage() {
                     <i className="bi bi-file-text me-2"></i>Descripción
                   </label>
                 </div>
-
-                <button type="submit" className="btn btn-primary w-100">
+                <button type="submit" className="custom-btn w-100 mt-3">
                   Guardar
                 </button>
               </form>
