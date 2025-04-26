@@ -1,15 +1,13 @@
 //frontend/src/pages/MainPage.jsx
 import api from "../api/axiosConfig";
 import { useState, useEffect } from "react";
-//import axios from "axios";
-import imagen from "/imagen.jpg"; // debe estar en /public
-import { Modal, Button } from "bootstrap"; // solo si quieres usarlo programáticamente
+import imagen from "/imagen.jpg";
 
 function MainPage() {
   const [form, setForm] = useState({
     name: "",
-    code: "",
-    teacher_name: "",
+    subject_code: "",
+    semester: "",
     description: "",
   });
 
@@ -23,7 +21,7 @@ function MainPage() {
     e.preventDefault();
 
     try {
-      const response = await api.post("/api/courses/", form, {
+      const response = await api.post("/courses/", form, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access")}`,
           "Content-Type": "application/json",
@@ -32,7 +30,7 @@ function MainPage() {
 
       if (response.status === 201) {
         setAlert({ message: "Clase creada correctamente.", type: "success" });
-        setForm({ name: "", code: "", teacher_name: "", description: "" });
+        setForm({ name: "", subject_code: "", semester: "", description: "" });
         document.querySelector("#crearClaseModal .btn-close").click(); // cierra el modal
       }
     } catch (err) {
@@ -128,10 +126,10 @@ function MainPage() {
                   <input
                     type="text"
                     className="form-control"
-                    name="code"
+                    name="subject_code"
                     id="siglaCurso"
                     placeholder="Sigla del curso"
-                    value={form.code}
+                    value={form.subject_code}
                     onChange={handleChange}
                   />
                   <label htmlFor="siglaCurso">
@@ -139,19 +137,19 @@ function MainPage() {
                   </label>
                 </div>
 
-                {/* Nombre del docente */}
+                {/* Semestre */}
                 <div className="form-floating mb-3">
                   <input
                     type="text"
                     className="form-control"
-                    name="teacher_name"
-                    id="nombreDocente"
-                    placeholder="Nombre del Docente"
-                    value={form.teacher_name}
+                    name="semester"
+                    id="semestre"
+                    placeholder="Semestre"
+                    value={form.semester}
                     onChange={handleChange}
                   />
-                  <label htmlFor="nombreDocente">
-                    <i className="bi bi-person-badge me-2"></i>Nombre del Docente
+                  <label htmlFor="semester">
+                    <i className="bi bi-calendar me-2"></i>Semestre
                   </label>
                 </div>
 

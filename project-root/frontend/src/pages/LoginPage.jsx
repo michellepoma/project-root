@@ -1,6 +1,7 @@
 // frontend/src/pages/LoginPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/login.css";
 
@@ -81,9 +82,9 @@ function LoginPage() {
           <button type="submit" className="custom-btn">Iniciar Sesión</button>
 
           <div className="login-links">
-            <a href="#">¿Olvidaste tu contraseña?</a>
+            <Link to="#">¿Olvidaste tu contraseña?</Link>
             <br />
-            <span>¿No tienes una cuenta? <a href="/register">Regístrate</a></span>
+            <span>¿No tienes una cuenta? <Link to="/register">Regístrate</Link></span>
           </div>
         </form>
       </div>

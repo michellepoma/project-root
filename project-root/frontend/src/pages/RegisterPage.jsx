@@ -1,6 +1,7 @@
 //frontend/src/pages/RegisterPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 function RegisterPage() {
@@ -176,9 +177,9 @@ function RegisterPage() {
           <div className="text-center">
             <small>
               ¿Ya tienes una cuenta?{" "}
-              <a href="/login" className="text-decoration-none">
+              <Link to="/login" className="text-decoration-none">
                 Inicia sesión
-              </a>
+              </Link>
             </small>
           </div>
         </form>
