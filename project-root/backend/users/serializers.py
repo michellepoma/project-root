@@ -5,6 +5,37 @@ from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
+# backend/users/serializers.py (abajo del todo)
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Puedes agregar claims personalizados aquí si quieres
+        token['email'] = user.email
+        token['name'] = user.name
+        return token
+
+    def validate(self, attrs):
+        # Modificamos para autenticar por email
+        credentials = {
+            'email': attrs.get('email'),
+            'password': attrs.get('password')
+        }
+
+        user = authenticate(**credentials)
+
+        if user is None:
+            raise serializers.ValidationError('Invalid credentials.')
+
+        refresh = self.get_token(user)
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
 
 
 class UserSerializer(serializers.ModelSerializer):
