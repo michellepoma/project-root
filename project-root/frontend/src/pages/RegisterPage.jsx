@@ -1,8 +1,8 @@
-//frontend/src/pages/RegisterPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import "@/styles/RegisterPage.css"; // Importar tu CSS personalizado
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -56,14 +56,12 @@ function RegisterPage() {
   };
 
   return (
-    <div className="bg-light d-flex align-items-center justify-content-center vh-100">
-      <div className="card shadow p-4" style={{ width: "100%", maxWidth: "500px" }}>
-        <div className="text-center mb-4">
-          <h3 className="text-primary fw-bold">Crear una Cuenta</h3>
-        </div>
+    <div className="register-container">
+      <div className="register-card">
+        <h2 className="register-title">Crear una Cuenta</h2>
 
         {Object.keys(errors).length > 0 && (
-          <div className="alert alert-danger">
+          <div className="register-error">
             {errors.global ? (
               <p>{errors.global[0]}</p>
             ) : (
@@ -81,100 +79,78 @@ function RegisterPage() {
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* Nombre */}
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="form-control"
-              placeholder="Nombre Completo"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
-            <label htmlFor="name">Nombre Completo</label>
-          </div>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            className="register-input"
+            placeholder="Nombre Completo"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
 
-          {/* CI */}
-          <div className="input-group mb-3">
-            <span className="input-group-text">
-              <i className="bi bi-person-vcard"></i>
-            </span>
-            <input
-              type="text"
-              id="ci"
-              name="ci"
-              className="form-control"
-              placeholder="Carnet de Identidad"
-              value={form.ci}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <input
+            type="text"
+            id="ci"
+            name="ci"
+            className="register-input"
+            placeholder="Carnet de Identidad"
+            value={form.ci}
+            onChange={handleChange}
+            required
+          />
 
-          {/* Email */}
-          <div className="form-floating mb-3">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="form-control"
-              placeholder="Correo electrónico"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-            <label htmlFor="email">Correo electrónico</label>
-          </div>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            className="register-input"
+            placeholder="Correo Electrónico"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
 
-          {/* Password */}
-          <div className="form-floating mb-3 position-relative">
+          <div className="position-relative">
             <input
               type={showPassword ? "text" : "password"}
               id="password"
               name="password"
-              className="form-control"
+              className="register-input"
               placeholder="Contraseña"
               value={form.password}
               onChange={handleChange}
               required
             />
-            <label htmlFor="password">Contraseña</label>
             <i
-              className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"} position-absolute top-50 end-0 translate-middle-y me-3`}
-              style={{ cursor: "pointer" }}
+              className="bi bi-eye toggle-password"
               onClick={() => togglePassword("password")}
             ></i>
           </div>
 
-          {/* Confirm password */}
-          <div className="form-floating mb-4 position-relative">
+          <div className="position-relative">
             <input
               type={showConfirm ? "text" : "password"}
               id="password_confirm"
               name="password_confirm"
-              className="form-control"
+              className="register-input"
               placeholder="Confirmar Contraseña"
               value={form.password_confirm}
               onChange={handleChange}
               required
             />
-            <label htmlFor="password_confirm">Confirmar Contraseña</label>
             <i
-              className={`bi ${showConfirm ? "bi-eye-slash" : "bi-eye"} position-absolute top-50 end-0 translate-middle-y me-3`}
-              style={{ cursor: "pointer" }}
+              className="bi bi-eye toggle-password"
               onClick={() => togglePassword("password_confirm")}
             ></i>
           </div>
 
-          <div className="d-grid mb-3">
-            <button type="submit" className="btn btn-success">
-              <i className="bi bi-person-plus"></i> Registrarse
-            </button>
-          </div>
+          <button type="submit" className="register-button">
+            Registrarse
+          </button>
 
-          <div className="text-center">
+          <div className="register-footer">
             <small>
               ¿Ya tienes una cuenta?{" "}
               <Link to="/login" className="text-decoration-none">

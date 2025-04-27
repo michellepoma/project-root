@@ -39,7 +39,6 @@ function LoginPage() {
 
   return (
     <div className="login-page-container">
-      <img src="/fondo1.png" alt="Fondo" className="background-img" />
 
       <div className="login-card">
         <h3 className="login-title">Iniciar Sesión</h3>
