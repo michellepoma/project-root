@@ -3,10 +3,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import useProfile from "../hooks/useProfile";
+import "@/styles/JoinCoursePage.css"; // 🎨 Importamos el nuevo CSS
 
 function JoinCoursePage() {
   const [code, setCode] = useState("");
-  const [alert, setAlert] = useState(null); // { type: "success" | "danger", message: string }
+  const [alert, setAlert] = useState(null);
   const navigate = useNavigate();
   const user = useProfile();
 
@@ -16,74 +17,62 @@ function JoinCoursePage() {
 
     try {
       const res = await api.post("/courses/join_by_code/", { code });
-      const courseId = res.data.course; // << aquí tomamos el ID del curso desde CourseParticipant
+      const courseId = res.data.course;
 
       setAlert({ type: "success", message: "¡Te uniste correctamente!" });
       setCode("");
 
-      // Redirigir después de 1s
       setTimeout(() => {
         navigate(`/courses/${courseId}`);
-      }, 1000);
+      }, 1200);
     } catch (err) {
-      const msg =
-        err.response?.data?.detail || "Error al unirse al curso.";
+      const msg = err.response?.data?.detail || "Error al unirse al curso.";
       setAlert({ type: "danger", message: msg });
     }
   };
 
   return (
-    <div className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <p className="fs-5 mb-4">Unirse a la clase con:</p>
+    <div className="join-course-container">
+      <div className="join-course-card">
 
-          <div className="p-4 rounded shadow-sm bg-white mb-4">
-            <div className="d-flex align-items-center justify-content-between">
-              <div className="d-flex align-items-center">
-                <div className="me-3">
-                  <div
-                    className="rounded-circle bg-secondary"
-                    style={{ width: 40, height: 40 }}
-                  ></div>
-                </div>
-                <div>
-                  <div className="text-capitalize">{user?.name}</div>
-                  <strong>{user?.email}</strong>
-                </div>
-              </div>
-              <a href="/login" className="text-decoration-none text-primary">
-                Usar otra cuenta
-              </a>
-            </div>
+        {alert && (
+          <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert">
+            {alert.message}
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setAlert(null)}
+            ></button>
           </div>
+        )}
 
-          <div className="p-4 rounded shadow-sm bg-white">
-            {alert && (
-              <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert">
-                {alert.message}
-                <button type="button" className="btn-close" onClick={() => setAlert(null)}></button>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit}>
-              <label htmlFor="codigo" className="form-label">
-                Código del curso:
-              </label>
-              <input
-                type="text"
-                id="codigo"
-                className="form-control mb-3"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                required
-              />
-              <button className="btn btn-primary w-100" type="submit">
-                Unirse
-              </button>
-            </form>
+        {/* Información del usuario */}
+        <div className="user-info mb-4">
+          <div className="user-avatar"></div>
+          <div className="user-details">
+            <div className="text-capitalize">{user?.name}</div>
+            <strong>{user?.email}</strong>
           </div>
         </div>
+
+        {/* Formulario */}
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="codigo" className="form-label mb-2">
+            Código del curso:
+          </label>
+          <input
+            type="text"
+            id="codigo"
+            className="join-input"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            required
+          />
+          <button type="submit" className="join-btn mt-3">
+            Unirse
+          </button>
+        </form>
+
       </div>
     </div>
   );

@@ -1,0 +1,98 @@
+/* Fondo general */
+.join-course-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa, #e0e0e0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 2rem;
+    animation: fadeIn 1s ease;
+  }
+  
+  /* Tarjeta principal */
+  .join-course-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    padding: 3rem 2rem;
+    border-radius: 1.5rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    animation: popUp 0.8s ease;
+  }
+  
+  /* Información del usuario */
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+    background: #6c757d;
+    border-radius: 50%;
+    margin-right: 1rem;
+  }
+  
+  .user-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .user-details strong {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  /* Input */
+  .join-input {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 0.8rem;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .join-input:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(255, 145, 0, 0.6);
+  }
+  
+  /* Botón */
+  .join-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    border: none;
+    border-radius: 0.8rem;
+    color: white;
+    font-weight: bold;
+    transition: background 0.4s ease;
+  }
+  
+  .join-btn:hover {
+    background: linear-gradient(to right, #cc3700, #ff6600);
+  }
+  
+  /* Alerta */
+  .alert {
+    font-size: 0.95rem;
+  }
+  
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes popUp {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  

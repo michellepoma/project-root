@@ -1,0 +1,262 @@
+/* Fondo general del layout */
+body {
+  background: linear-gradient(135deg, #f8f9fa, #e0e0e0);
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+}
+
+/* --- NAVBAR MEJORADO CON LETRAS GRANDES --- */
+/* Navbar principal */
+.custom-navbar {
+  background: linear-gradient(135deg, #f8f9fa, #e0e0e0);
+  padding: 1rem 2rem; /* Aumentamos padding */
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  animation: slideDown 0.8s ease;
+}
+
+/* Título (Logo + nombre página) */
+.navbar-title {
+  display: flex;
+  align-items: center;
+  font-size: 2.2rem; /* MÁS GRANDE */
+  font-weight: 800;
+  color: #333;
+  gap: 1.2rem;
+}
+
+/* Imagen del logo */
+.navbar-title img {
+  height: 100px; /* AUMENTAMOS TAMAÑO */
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+/* Efecto hover en el logo */
+.navbar-title img:hover {
+  transform: scale(1.1);
+}
+
+/* Opciones del navbar */
+.navbar-nav .nav-link {
+  font-size: 1.5rem; /* MÁS GRANDE */
+  font-weight: 700;
+  color: #444;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ff6600; /* Hover naranja */
+}
+
+/* Dropdown */
+.dropdown-menu {
+  animation: fadeIn 0.5s ease;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Botón Cerrar Sesión */
+.logout-btn {
+  background: linear-gradient(to right, #ff4500, #ff9900);
+  color: #fff; /* Letras blancas */
+  font-weight: bold;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.8rem;
+  width: 100%;
+  box-shadow: 0 5px 15px rgba(255, 85, 0, 0.4);
+  transition: background 0.4s ease, transform 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(to right, #cc3700, #ff6600);
+  transform: scale(1.05);
+  color: #fff;
+}
+
+
+/* Botón hamburguesa (sidebar toggle) */
+#sidebarToggle {
+  background: linear-gradient(to right, #ff4500, #ff9900);
+  border: none;
+  color: white;
+  font-weight: bold;
+  transition: background 0.3s ease;
+  font-size: 1.5rem;
+}
+
+#sidebarToggle:hover {
+  background: linear-gradient(to right, #cc3700, #ff6600)
+  
+}
+
+/* Animaciones */
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* --- SIDEBAR --- */
+/* --- SIDEBAR --- */
+.sidebar {
+  background: rgba(255, 255, 255, 0.15); /* 👈 Más suave para trasluz */
+  backdrop-filter: blur(20px) saturate(150%); /* 👈 Más blur para efecto vidrio */
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  width: 70px;
+  min-height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 60px;
+  overflow-x: hidden;
+  padding-top: 2rem;
+  transition: width 0.4s ease, right 0.4s ease;
+  border-left: 1px solid rgba(255, 145, 0, 0.3);
+  animation: fadeIn 1s ease;
+  z-index: 1050;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15); /* 👈 sombra ligera */
+}
+
+/* Expansión al pasar mouse */
+.sidebar:hover {
+  width: 250px;
+}
+
+/* Enlaces del sidebar */
+.sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  color: #555;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  border-radius: 0.8rem;
+}
+
+.sidebar .nav-link i {
+  font-size: 1.6rem;
+  color: #ff6600;
+  margin-right: 0.5rem;
+}
+
+/* Textos inicialmente ocultos */
+.sidebar .nav-link span {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+
+/* Mostrar textos cuando expande */
+.sidebar:hover .nav-link span {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hover sobre link */
+.sidebar .nav-link:hover {
+  background: linear-gradient(to right, #ff4500, #ff9900);
+  color: white;
+  transform: translateX(-5px);
+}
+
+.sidebar .nav-link:hover i {
+  color: white;
+}
+
+/* Link activo */
+.sidebar .nav-link.active {
+  background: linear-gradient(to right, #ff4500, #ff9900);
+  color: white;
+  font-weight: bold;
+}
+
+.sidebar .nav-link.active i {
+  color: white;
+}
+
+/* --- RESPONSIVE para móviles --- */
+@media (max-width: 768px) {
+  .sidebar {
+    right: -100%;
+    width: 200px;
+    background: rgba(255, 255, 255, 0.9); /* Un poquito más sólido en mobile */
+    backdrop-filter: blur(15px) saturate(120%);
+    -webkit-backdrop-filter: blur(15px) saturate(120%);
+    transition: all 0.4s ease;
+  }
+
+  .sidebar.active {
+    right: 0;
+  }
+
+  .sidebar .nav-link span {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #sidebarToggle {
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    border-radius: 0.6rem;
+    transition: background 0.3s ease;
+  }
+
+  #sidebarToggle:hover {
+    background: linear-gradient(to right, #cc3700, #ff6600);
+  }
+}
+
+/* --- Animación de entrada --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
+
+
+
+/* --- Ajuste del main-content --- */
+#main-content {
+  margin-right: 70px;
+  padding-top: 5rem;
+  transition: margin-right 0.4s ease;
+}
+
+.sidebar:hover ~ #main-content {
+  margin-right: 250px;
+}
+
+/* Overlay (para móvil) */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 60px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1040;
+}
+
+.overlay.active {
+  display: block;
+}
+
+/* --- Animaciones suaves --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

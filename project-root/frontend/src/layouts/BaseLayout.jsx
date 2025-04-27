@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import useProfile from "../hooks/useProfile";
+import "@/styles/BaseLayout.css";
 
 
 function BaseLayout() {
@@ -49,44 +50,51 @@ function BaseLayout() {
     <>
       {/* NAVBAR */}
       <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top custom-navbar">
-        <div className="container-fluid justify-content-between align-items-center px-3">
-          <div className="text-primary fw-bold d-flex align-items-center gap-2 mx-auto">
-            <i>LOGO</i>
-            <span className="d-none d-md-inline">NOMBRE DE LA PAGINA WEB</span>
+  <div className="container-fluid justify-content-between align-items-center px-3">
+    <div className="d-flex align-items-center gap-2 mx-auto navbar-title">
+      {/* 👇 AQUI el logo */}
+      <img 
+        src="/logo.png" 
+        alt="Logo" 
+        style={{ height: "50px", width: "auto", objectFit: "contain" }} 
+      />
+      <span className="d-none d-md-inline">ONE TECHNOLOGY</span>
+    </div>
+
+    <ul className="navbar-nav d-flex flex-row align-items-center gap-2 ms-auto">
+      <li className="nav-item dropdown position-relative">
+        <Link
+          className="nav-link dropdown-toggle d-flex align-items-center"
+          to="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i className="bi bi-person-circle me-2"></i>
+        </Link>
+        <div className="dropdown-menu dropdown-menu-end p-3 position-absolute shadow border-0" style={{ width: 260, zIndex: 1055 }}>
+          <div className="text-center mb-3">
+            <h6 className="mb-0 text-capitalize">{user?.name || "Usuario"}</h6>
+            <small className="text-muted">{user?.email}</small>
           </div>
 
-          <ul className="navbar-nav d-flex flex-row align-items-center gap-2 ms-auto">
-            <li className="nav-item dropdown position-relative">
-              <Link
-                className="nav-link dropdown-toggle d-flex align-items-center"
-                to="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="bi bi-person-circle me-2"></i>
-              </Link>
-              <div className="dropdown-menu dropdown-menu-end p-3 position-absolute shadow border-0" style={{ width: 260, zIndex: 1055 }}>
-                <div className="text-center mb-3">
-                    <h6 className="mb-0 text-capitalize">{user?.name || "Usuario"}</h6>
-                    <small className="text-muted">{user?.email}</small>
-                </div>
-
-                <div className="d-grid gap-2">
-                    <button className="btn btn-outline-danger" onClick={handleLogout}>
-                    <i className="bi bi-box-arrow-right me-1"></i> Cerrar sesión
-                    </button>
-                </div>
-              </div>
-            </li>
-            <li>
-              <button className="btn btn-outline-primary d-md-none pb-1" id="sidebarToggle">
-                <i className="bi bi-list fs-6"></i>
+          <div className="d-grid gap-2">
+              <button className="logout-btn" onClick={handleLogout}>
+                <i className="bi bi-box-arrow-right me-2"></i> Cerrar sesión
               </button>
-            </li>
-          </ul>
+
+          </div>
         </div>
-      </nav>
+      </li>
+      <li>
+        <button className="btn btn-outline-primary d-md-none pb-1" id="sidebarToggle">
+          <i className="bi bi-list fs-6"></i>
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 
       {/* SIDEBAR */}
       <div ref={sidebarRef} className="sidebar bg-white border-start position-fixed pt-0 px-2" id="sidebar">
