@@ -1,8 +1,8 @@
+// frontend/src/pages/RegisterPage.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import "@/styles/RegisterPage.css"; // Importar tu CSS personalizado
+import "@/styles/RegisterPage.css"; // Importa tu CSS
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -40,11 +40,8 @@ function RegisterPage() {
     try {
       const response = await axios.post("http://localhost:8000/api/users/register/", form);
 
-      const { tokens } = response.data;
-      localStorage.setItem("access", tokens.access);
-      localStorage.setItem("refresh", tokens.refresh);
-
-      navigate("/main");
+      // NO USAMOS TOKENS AL REGISTRARSE, solo lo redirigimos
+      navigate("/login");
     } catch (err) {
       if (err.response?.data) {
         setErrors(err.response.data);
@@ -124,7 +121,7 @@ function RegisterPage() {
               required
             />
             <i
-              className="bi bi-eye toggle-password"
+              className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"} toggle-password`}
               onClick={() => togglePassword("password")}
             ></i>
           </div>
@@ -141,7 +138,7 @@ function RegisterPage() {
               required
             />
             <i
-              className="bi bi-eye toggle-password"
+              className={`bi ${showConfirm ? "bi-eye-slash" : "bi-eye"} toggle-password`}
               onClick={() => togglePassword("password_confirm")}
             ></i>
           </div>
