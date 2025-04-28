@@ -50,8 +50,27 @@ function CourseLayout() {
               Tareas
             </NavLink>
           </li>
-          <li className="nav-item nav-link text-white">Calificaciones</li>
-          <li className="nav-item nav-link text-white">Usuarios</li>
+          <li className="nav-item">
+            <NavLink
+              to={`/courses/${id}/grades`}
+              className={({ isActive }) =>
+                `nav-link text-white ${isActive ? "fw-bold" : ""}`
+              }
+            >
+              Calificaciones
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              to={`/courses/${id}/participants`}
+              className={({ isActive }) =>
+                `nav-link text-white ${isActive ? "fw-bold" : ""}`
+              }
+            >
+              Participantes
+            </NavLink>
+          </li>
+
         </ul>
       </div>
       <div className="container py-4">

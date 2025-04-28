@@ -121,7 +121,7 @@ body {
   transition: width 0.4s ease, right 0.4s ease;
   border-left: 1px solid rgba(255, 145, 0, 0.3);
   animation: fadeIn 1s ease;
-  z-index: 1050;
+  z-index: 1000 !important;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15); /* 👈 sombra ligera */
 }
 

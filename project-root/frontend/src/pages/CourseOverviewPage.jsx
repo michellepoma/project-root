@@ -16,9 +16,9 @@ function CourseOverviewPage() {
         setCourse(response.data);
 
         setMaterials([
-          { id: 1, title: "Introducción a React", description: "Material básico de introducción", link: "#" },
-          { id: 2, title: "Componentes y Props", description: "Guía de componentes", link: "#" },
-          { id: 3, title: "Hooks Avanzados", description: "Explicación de useEffect y useContext", link: "#" },
+          { id: 1, title: "Datos de prueba", description: "Solo para ver como", link: "#" },
+          { id: 2, title: "Todavia en Desarrollo", description: "Esta estrcuturado", link: "#" },
+          { id: 3, title: "Falta implementacion en Backend", description: "la pagina", link: "#" },
         ]);
       } catch (err) {
         console.error("Error al cargar detalles del curso:", err);
@@ -36,7 +36,7 @@ function CourseOverviewPage() {
 
     fetchCourse();
     fetchMaterials();
-  }, [id]); // <-- aquí id depende
+  }, [id]);
 
   const filteredMaterials = materials.filter((material) =>
     material.title.toLowerCase().includes(query.toLowerCase())
@@ -58,22 +58,25 @@ function CourseOverviewPage() {
           onChange={(e) => setQuery(e.target.value)}
         />
         <ul className="list-group shadow">
-          {filteredMaterials.length > 0 ? (
-            filteredMaterials.map((material) => (
-              <li key={material.id} className="list-group-item">
-                {material.title}
-              </li>
-            ))
-          ) : query ? (
-            <li className="list-group-item text-muted">No encontrado</li>
+          {query ? (
+            filteredMaterials.length > 0 ? (
+              filteredMaterials.map((material) => (
+                <li key={material.id} className="list-group-item">
+                  {material.title}
+                </li>
+              ))
+            ) : (
+              <li className="list-group-item text-muted">No encontrado</li>
+            )
           ) : null}
         </ul>
       </div>
 
+
       {/* Contenido derecho */}
       <div className="mt-5 col-md-9">
-        {filteredMaterials.length > 0 ? (
-          filteredMaterials.map((material) => (
+        {materials.length > 0 ? (
+          materials.map((material) => (
             <div key={material.id} className="bg-light p-3 rounded mb-3">
               <div className="d-flex justify-content-between align-items-center">
                 <div>

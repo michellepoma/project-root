@@ -20,8 +20,10 @@ function RegisterPage() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
+  
 
   const togglePassword = (field) => {
     if (field === "password") setShowPassword(!showPassword);
@@ -31,16 +33,20 @@ function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-
+  
+    const ciRegex = /^[0-9]+(-[a-zA-Z0-9]+)?$/;
+    if (!ciRegex.test(form.ci)) {
+      setErrors({ ci: ["El C.I. debe ser un número o número seguido de complemento alfanumérico (ej. 123456 o 123456-1H)."] });
+      return;
+    }
+  
     if (form.password !== form.password_confirm) {
       setErrors({ password_confirm: ["Las contraseñas no coinciden."] });
       return;
     }
-
+  
     try {
-      const response = await axios.post("http://localhost:8000/api/users/register/", form);
-
-      // NO USAMOS TOKENS AL REGISTRARSE, solo lo redirigimos
+      await axios.post("http://localhost:8000/api/users/register/", form);
       navigate("/login");
     } catch (err) {
       if (err.response?.data) {
@@ -51,6 +57,7 @@ function RegisterPage() {
       }
     }
   };
+  
 
   return (
     <div className="register-container">

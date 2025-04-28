@@ -72,7 +72,7 @@ function BaseLayout() {
         >
           <i className="bi bi-person-circle me-2"></i>
         </Link>
-        <div className="dropdown-menu dropdown-menu-end p-3 position-absolute shadow border-0" style={{ width: 260, zIndex: 1055 }}>
+        <div className="dropdown-menu dropdown-menu-end p-3 position-absolute shadow border-0" style={{ width: 260}}>
           <div className="text-center mb-3">
             <h6 className="mb-0 text-capitalize">{user?.name || "Usuario"}</h6>
             <small className="text-muted">{user?.email}</small>

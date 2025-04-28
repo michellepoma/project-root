@@ -10,6 +10,8 @@ import MyCoursesPage from "./pages/MyCoursesPage";
 import JoinCoursePage from "./pages/JoinCoursePage";
 import CourseOverviewPage from "./pages/CourseOverviewPage";
 import CourseAssignmentsPage from "./pages/CourseAssignmentsPage";
+import CourseParticipantsPage from "./pages/CourseParticipantsPage";
+import CourseGradesPage from "./pages/CourseGradesPage";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
         <Route path="/courses/:id" element={<CourseLayout />}>
           <Route index element={<CourseOverviewPage />} />
           <Route path="assignments" element={<CourseAssignmentsPage />} />
+          <Route path="participants" element={<CourseParticipantsPage />} />
+          <Route path="grades" element={<CourseGradesPage />} />
         </Route>
       </Route>
     </Routes>
