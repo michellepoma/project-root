@@ -61,7 +61,8 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AttendanceRecord
-        fields = ['id', 'student', 'student_name', 'present']
+        fields = ['id', 'session', 'student', 'student_name', 'present']
+        read_only_fields = ['id', 'student_name']
 
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):

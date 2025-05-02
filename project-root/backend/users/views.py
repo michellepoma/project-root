@@ -8,31 +8,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # backend/users/views.py
 
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer
+from .serializers import CustomTokenObtainPairSerializer, AdminUserCreateSerializer
+
 User = get_user_model()
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-
-
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserRegistrationSerializer
-    permission_classes = [permissions.AllowAny]
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-
-        # Generar token JWT
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            "user": UserSerializer(user).data,
-            "token": str(refresh.access_token)  # Solo devolver el access token
-        }, status=status.HTTP_201_CREATED)
-
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -82,3 +63,13 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+class AdminUserCreateView(generics.CreateAPIView):
+    """
+    Sólo un superusuario puede llamar aquí para crear usuarios
+    y asignarles rol (student o teacher).
+    """
+    queryset = User.objects.all()
+    serializer_class = AdminUserCreateSerializer
+    permission_classes = [permissions.IsAdminUser]
+

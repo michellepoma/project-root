@@ -27,6 +27,11 @@ class User(AbstractUser):
         ('student', 'Student'),
         ('teacher', 'Teacher'),
     )
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='student'
+    )
 
     username = None
     email = models.EmailField(unique=True)

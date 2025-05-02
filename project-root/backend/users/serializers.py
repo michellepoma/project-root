@@ -91,3 +91,25 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+class AdminUserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, validators=[validate_password])
+    password_confirm = serializers.CharField(write_only=True)
+    role = serializers.ChoiceField(choices=User.ROLE_CHOICES)  # ahora el admin lo define
+
+    class Meta:
+        model = User
+        fields = ['email', 'name', 'ci', 'password', 'password_confirm', 'role']
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password_confirm']:
+            raise serializers.ValidationError({"password": "Los campos de contraseña no coinciden."})
+        return attrs
+
+    def create(self, validated_data):
+        validated_data.pop('password_confirm')
+        pwd = validated_data.pop('password')
+        user = User.objects.create_user(**validated_data)
+        user.set_password(pwd)
+        user.save()
+        return user
