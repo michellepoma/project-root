@@ -37,7 +37,7 @@ function CourseLayout() {
                 `nav-link text-white ${isActive ? "fw-bold" : ""}`
               }
             >
-              Curso
+              Contenido
             </NavLink>
           </li>
           <li className="nav-item">
