@@ -48,62 +48,58 @@ function BaseLayout() {
 
   return (
     <>
-      {/* NAVBAR */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top custom-navbar">
-  <div className="container-fluid justify-content-between align-items-center px-3">
-    <div className="d-flex align-items-center gap-2 mx-auto navbar-title">
-      {/* 👇 AQUI el logo */}
-      <img 
-        src="/logo.png" 
-        alt="Logo" 
-        style={{ height: "50px", width: "auto", objectFit: "contain" }} 
-      />
-      <span className="d-none d-md-inline">ONE TECHNOLOGY</span>
-    </div>
-
-    <ul className="navbar-nav d-flex flex-row align-items-center gap-2 ms-auto">
-      <li className="nav-item dropdown position-relative">
-        <Link
-          className="nav-link dropdown-toggle d-flex align-items-center"
-          to="#"
-          role="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
+    {/* NAVBAR */}
+    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top custom-navbar">
+      <div className="container-fluid justify-content-between align-items-center">
+      <div className="position-absolute top-50 start-50 d-flex align-items-center gap-2 navbar-title"
+        style={{ transform: "translate(-65%, -50%)" }}
         >
-          <i className="bi bi-person-circle me-2"></i>
-        </Link>
-        <div className="dropdown-menu dropdown-menu-end p-3 position-absolute shadow border-0" style={{ width: 260}}>
-          <div className="text-center mb-3">
-            <h6 className="mb-0 text-capitalize">{user?.name || "Usuario"}</h6>
-            <small className="text-muted">{user?.email}</small>
-          </div>
+        <img
+          src="/logo.png"
+          alt="Logo"
+          style={{ height: "50px", width: "auto", objectFit: "contain" }}
+        />
+        <span className="d-none d-md-inline">ONE TECHNOLOGY</span>
+      </div>
 
-          <div className="d-grid gap-2">
-              <button className="logout-btn" onClick={handleLogout}>
-                <i className="bi bi-box-arrow-right me-2"></i> Cerrar sesión
-              </button>
+        <ul className="navbar-nav d-flex flex-row align-items-center gap-2 ms-auto">
+          <li className="nav-item dropdown position-relative">
+            <Link
+              className="nav-link dropdown-toggle d-flex align-items-center"
+              to="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i className="bi bi-person-circle me-2"></i>
+            </Link>
+            <div className="dropdown-menu dropdown-menu-end p-3 position-absolute shadow border-0" style={{ width: 260}}>
+              <div className="text-center mb-3">
+                <h6 className="mb-0 text-capitalize">{user?.name || "Usuario"}</h6>
+                <small className="text-muted">{user?.email}</small>
+              </div>
 
-          </div>
-        </div>
-      </li>
-      <li>
-        <button className="btn btn-outline-primary d-md-none pb-1" id="sidebarToggle">
-          <i className="bi bi-list fs-6"></i>
-        </button>
-      </li>
-    </ul>
-  </div>
-</nav>
+              <div className="d-grid gap-2">
+                  <button className="logout-btn" onClick={handleLogout}>
+                    <i className="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+                  </button>
+
+              </div>
+            </div>
+          </li>
+          <li className="nav-item position-relative pb-1">
+            <button className="btn btn-outline-primary d-md-none pb-1" id="sidebarToggle">
+              <i className="bi bi-list fs-6"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
 
       {/* SIDEBAR */}
-      <div ref={sidebarRef} className="sidebar bg-white border-start position-fixed pt-0 px-2" id="sidebar">
+      <div ref={sidebarRef} className="sidebar bg-white border-start position-fixed pt-1 px-2" id="sidebar">
         <ul className="nav flex-column">
-          <li className="nav-item">
-            <Link to="/main" className="nav-link d-flex align-items-center">
-              <i className="bi bi-house me-2"></i> <span>Página principal</span>
-            </Link>
-          </li>
           <li className="nav-item">
             <Link to="/join_course" className="nav-link d-flex align-items-center">
               <i className="bi bi-plus-square-fill me-2"></i> <span>Unirse a clases</span>
@@ -115,8 +111,8 @@ function BaseLayout() {
             </Link>
           </li>
           <li className="nav-item mb-5">
-            <Link to="/" className="nav-link d-flex align-items-center">
-              <i className="bi bi-calendar3 me-2"></i> <span>Programar clases</span>
+            <Link to="/schedule" className="nav-link d-flex align-items-center">
+              <i className="bi bi-calendar3 me-2"></i> <span>{user?.role === "student" ? "Clases Programadas" : "Programar clases"}</span>
             </Link>
           </li>
           <li className="nav-item mt-5">

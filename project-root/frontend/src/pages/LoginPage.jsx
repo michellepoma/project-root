@@ -81,7 +81,7 @@ function LoginPage() {
           <button type="submit" className="custom-btn">Iniciar Sesión</button>
 
           <div className="login-links">
-            <Link to="#">¿Olvidaste tu contraseña?</Link>
+            <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
             <br />
             <span>¿No tienes una cuenta? <Link to="/register">Regístrate</Link></span>
           </div>

@@ -1,18 +1,14 @@
-//frontend/src/layouts/MyCoursesPage.jsx
+// frontend/src/layouts/MyCoursesPage.jsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axiosConfig";
 import useProfile from "../hooks/useProfile";
 
-
 function MyCoursesPage() {
   const user = useProfile();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [studentCourses, setStudentCourses] = useState([]);
-  const [teacherCourses, setTeacherCourses] = useState([]);
-
-
+  const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     if (user) {
@@ -23,14 +19,7 @@ function MyCoursesPage() {
   const fetchCourses = async () => {
     try {
       const response = await api.get("/courses/");
-      const allCourses = response.data;
-  
-      const students = allCourses.filter(course => course.teacher !== user.id);
-      const teachers = allCourses.filter(course => course.teacher === user.id);
-
-  
-      setStudentCourses(students);
-      setTeacherCourses(teachers);
+      setCourses(response.data);
     } catch (error) {
       console.error("Error al cargar los cursos:", error);
     } finally {
@@ -42,9 +31,12 @@ function MyCoursesPage() {
     return <div className="text-center mt-5">Cargando cursos...</div>;
   }
 
+  const filteredCourses = courses.filter(course =>
+    course.name.toLowerCase().includes(query.toLowerCase())
+  );
+
   const renderCourseCard = (course) => (
     <div className="card h-100 shadow-sm position-relative">
-      {/* Imagen con semestre */}
       <div className="position-relative bg-light" style={{ height: "150px", overflow: "hidden" }}>
         <span className="position-absolute bottom-0 end-0 bg-light text-dark small m-2 px-2 py-1 rounded">
           <i className="bi bi-calendar3"></i> {course.semester || "Semestre no especificado"}
@@ -55,8 +47,6 @@ function MyCoursesPage() {
           style={{ objectFit: "cover" }}
           alt={course.name}
         />
-  
-        {/* Dropdown de Opciones */}
         <div className="position-absolute top-0 end-0 m-2">
           <div className="dropdown">
             <button
@@ -77,8 +67,7 @@ function MyCoursesPage() {
           </div>
         </div>
       </div>
-  
-      {/* Cuerpo de la Card */}
+
       <div className="card-body text-center">
         <h6 className="card-title mb-1">
           <Link to={`/courses/${course.id}`} className="text-decoration-none">
@@ -92,11 +81,10 @@ function MyCoursesPage() {
         </p>
       </div>
     </div>
-  );  
+  );
 
   return (
     <div className="container pt-4">
-      {/* Barra de Búsqueda */}
       <form className="d-flex mb-4" onSubmit={(e) => e.preventDefault()}>
         <input
           className="form-control me-2"
@@ -105,49 +93,23 @@ function MyCoursesPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button className="btn btn-outline-secondary" type="submit">
-          Buscar
-        </button>
       </form>
-  
-      {/* Mis Cursos como Estudiante */}
-      <h5 className="mb-3">📚 Mis Clases</h5>
-      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mb-5">
-        {studentCourses.length > 0 ? (
-          studentCourses
-            .filter((course) => course.name.toLowerCase().includes(query.toLowerCase()))
-            .map((course) => (
-              <div className="col" key={course.id}>
-                {renderCourseCard(course)}
-              </div>
-            ))
-        ) : (
-          <div className="col-12">
-            <p className="text-center">No estás inscrito en ningún curso.</p>
-          </div>
-        )}
-      </div>
-  
-      {/* Mis Cursos como Profesor */}
-      <h5 className="mb-3">👨‍🏫 Cursos que Creé</h5>
+
       <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-        {teacherCourses.length > 0 ? (
-          teacherCourses
-            .filter((course) => course.name.toLowerCase().includes(query.toLowerCase()))
-            .map((course) => (
-              <div className="col" key={course.id}>
-                {renderCourseCard(course)}
-              </div>
-            ))
+        {filteredCourses.length > 0 ? (
+          filteredCourses.map((course) => (
+            <div className="col" key={course.id}>
+              {renderCourseCard(course)}
+            </div>
+          ))
         ) : (
           <div className="col-12">
-            <p className="text-center">No has creado ningún curso aún.</p>
+            <p className="text-center">No se encontraron cursos.</p>
           </div>
         )}
       </div>
     </div>
   );
-  
 }
 
 export default MyCoursesPage;
