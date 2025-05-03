@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import useProfile from "../hooks/useProfile";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosConfig";
 
-function ScheduleClassesPage() {
-  const { id: _id } = useParams(); // prevent ESLint warning
-  const user = useProfile();
+function CourseSchedulePage() {
+  const { user, loading } = useAuth();
   const [courses, setCourses] = useState([]);
   const [scheduledClasses, setScheduledClasses] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
@@ -19,6 +18,7 @@ function ScheduleClassesPage() {
   const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   useEffect(() => {
+    // Simulamos clases programadas
     setScheduledClasses([
       { id: 1, date: "2025-08-17", time: "10:00", link: "https://zoom.us/abc", className: "Clase 1" },
       { id: 2, date: "2025-08-18", time: "14:00", link: "https://meet.google.com/xyz", className: "Clase 2" },
@@ -26,10 +26,10 @@ function ScheduleClassesPage() {
 
     const fetchCourses = async () => {
       try {
-        const res = await api.get("/courses/");
+        const res = await api.get("/courses/courses/");
         setCourses(res.data);
       } catch (error) {
-        console.error("Error al cargar cursos", error);
+        console.error("Error al cargar cursos:", error);
       }
     };
 
@@ -95,11 +95,17 @@ function ScheduleClassesPage() {
     setModalOpen(true);
   };
 
+  if (loading) return <p className="text-center mt-4">Cargando usuario...</p>;
+  if (!user) return <Navigate to="/unauthorized" />;
+  if (user.role !== "student" && user.role !== "teacher") return <Navigate to="/unauthorized" />;
+
   return (
     <div className="container py-4">
-      <h3 className="mb-4 text-center">Programar Clases</h3>
+      <h3 className="mb-4 text-center">
+        {user.role === "teacher" ? "Programar Clases" : "Clases Programadas"}
+      </h3>
 
-      {user?.role === "teacher" && (
+      {user.role === "teacher" && (
         <>
           <div className="text-end mb-3 d-flex justify-content-end">
             <button className="btn btn-primary d-flex align-items-center gap-2" onClick={handleOpenModal}>
@@ -126,9 +132,8 @@ function ScheduleClassesPage() {
         </>
       )}
 
-      {user?.role === "student" && (
+      {user.role === "student" && (
         <>
-          <h5 className="mb-3">Clases programadas</h5>
           <ul className="list-group">
             {scheduledClasses.map((cls) => (
               <li key={cls.id} className="list-group-item">
@@ -142,6 +147,7 @@ function ScheduleClassesPage() {
         </>
       )}
 
+      {/* Modal Programar/Editar Clase */}
       {modalOpen && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -189,6 +195,7 @@ function ScheduleClassesPage() {
         </div>
       )}
 
+      {/* Modal Confirmar Eliminar */}
       {deleteConfirmOpen && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -212,4 +219,4 @@ function ScheduleClassesPage() {
   );
 }
 
-export default ScheduleClassesPage;
+export default CourseSchedulePage;

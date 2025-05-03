@@ -52,6 +52,7 @@ class CourseParticipant(models.Model):
 class CourseMaterial(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='materials')
     title = models.CharField(max_length=100)
+    description = models.CharField(blank=True, null=True)
     file = models.FileField(upload_to='course_materials/', blank=True, null=True)
     link = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

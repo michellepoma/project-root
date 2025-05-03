@@ -1,39 +1,53 @@
 // frontend/src/pages/LoginPage.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import "@/styles/login.css";
+//import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import "@/styles/login.css";
+import api from "../api/axiosConfig";
+
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
-      const response = await axios.post("http://localhost:8000/api/token/", {
+      const response = await axios.post("http://localhost:8000/token/", {
         email,
         password,
       });
-
+  
       const { access, refresh } = response.data;
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
+  
+      const profileRes = await api.get("/auth/profile/");
+      const role = profileRes.data.role;
 
-      navigate("/main");
+      if (role === "student") {
+        window.location.href = "/student";
+      } else if (role === "teacher") {
+        window.location.href = "/teacher";
+      } else if (role === "superuser") {
+        window.location.href = "/admin";
+      } else {
+        window.location.href = "/unauthorized";
+      }       
+  
     } catch (err) {
-      if (err.response && err.response.status === 401) {
+      if (err.response?.status === 401) {
         setError("Credenciales inválidas.");
       } else {
         setError("Ocurrió un error. Intenta más tarde.");
-        console.error("Error al iniciar sesión:", err);
       }
+      console.error("Error al iniciar sesión:", err);
     }
   };
 
@@ -83,7 +97,6 @@ function LoginPage() {
           <div className="login-links">
             <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
             <br />
-            <span>¿No tienes una cuenta? <Link to="/register">Regístrate</Link></span>
           </div>
         </form>
       </div>

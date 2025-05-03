@@ -135,11 +135,29 @@ class CourseMaterialViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        course_id = self.request.query_params.get('course')
-        if course_id:
-            return self.queryset.filter(course__id=course_id)
-        return self.queryset
+        user = self.request.user
+        # Retorna todos los materiales de cursos donde el usuario esté inscrito
+        return CourseMaterial.objects.filter(course__participants__user=user)
 
+    def perform_create(self, serializer):
+        course = serializer.validated_data['course']
+        user = self.request.user
+        if course.teacher != user:
+            raise PermissionDenied("Solo el profesor puede subir materiales.")
+        serializer.save()
+
+    def perform_update(self, serializer):
+        course = serializer.validated_data.get('course', serializer.instance.course)
+        user = self.request.user
+        if course.teacher != user:
+            raise PermissionDenied("Solo el profesor puede editar este material.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+        if instance.course.teacher != user:
+            raise PermissionDenied("Solo el profesor puede eliminar este material.")
+        instance.delete()
 
 class AttendanceSessionViewSet(viewsets.ModelViewSet):
     queryset = AttendanceSession.objects.all()

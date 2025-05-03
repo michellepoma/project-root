@@ -2,23 +2,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axiosConfig";
-import useProfile from "../hooks/useProfile";
+import { useAuth } from "../context/AuthContext";
 
 function MyCoursesPage() {
-  const user = useProfile();
+  const { user, loading: authLoading } = useAuth();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    if (user) {
-      fetchCourses();
-    }
+    if (user) fetchCourses();
   }, [user]);
 
   const fetchCourses = async () => {
     try {
-      const response = await api.get("/courses/");
+      const response = await api.get("/courses/courses/");
       setCourses(response.data);
     } catch (error) {
       console.error("Error al cargar los cursos:", error);
@@ -26,8 +24,9 @@ function MyCoursesPage() {
       setLoading(false);
     }
   };
+  
 
-  if (loading) {
+  if (authLoading || loading) {
     return <div className="text-center mt-5">Cargando cursos...</div>;
   }
 
@@ -47,30 +46,11 @@ function MyCoursesPage() {
           style={{ objectFit: "cover" }}
           alt={course.name}
         />
-        <div className="position-absolute top-0 end-0 m-2">
-          <div className="dropdown">
-            <button
-              className="btn btn-sm btn-light"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical"></i>
-            </button>
-            <ul className="dropdown-menu dropdown-menu-end">
-              <li>
-                <button className="dropdown-item" type="button">
-                  Salir del curso
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
 
       <div className="card-body text-center">
         <h6 className="card-title mb-1">
-          <Link to={`/courses/${course.id}`} className="text-decoration-none">
+          <Link to={`/${user.role}/courses/${course.id}`} className="text-decoration-none">
             <i className="bi bi-book"></i> {course.name}
           </Link>
         </h6>

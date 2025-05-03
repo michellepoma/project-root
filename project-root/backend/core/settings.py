@@ -113,11 +113,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'proyect_root',
+        'NAME': 'project_root',
         'USER': 'postgres',
-        'PASSWORD': 'harold234fortnite',  # <- o lo que hayas puesto, SIN caracteres especiales raros
+        'PASSWORD': '123456',  # <- o lo que hayas puesto, SIN caracteres especiales raros
         'HOST': 'localhost',
-        'PORT': '5433',
+        'PORT': '5432',
     }
 }
 
@@ -170,3 +170,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vite
     "http://localhost:3000",  # Create React App
 ]
+
+# Media (archivos subidos por usuarios)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+

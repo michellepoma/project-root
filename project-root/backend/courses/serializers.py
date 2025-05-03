@@ -47,6 +47,7 @@ class CourseMaterialSerializer(serializers.ModelSerializer):
             'id',
             'course',
             'title',
+            'description',
             'file',
             'link',
             'created_at'

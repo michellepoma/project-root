@@ -1,16 +1,20 @@
-//frontend/src/components/PrivateRoute.jsx
-import { Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function PrivateRoute({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("access"));
+function PrivateRoute({ allowedRoles = [] }) {
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    const token = localStorage.getItem("access");
-    setIsAuthenticated(!!token);
-  }, []);
+  if (loading) return <p className="text-center mt-4">Cargando perfil...</p>;
+  if (!user) return <Navigate to="/login" replace />;
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  const normalizedRole = user.role?.trim().toLowerCase();
+
+  if (!allowedRoles.includes(normalizedRole)) {
+    console.warn("🔒 Acceso denegado. Rol:", user.role);
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  return <Outlet />;
 }
 
 export default PrivateRoute;
