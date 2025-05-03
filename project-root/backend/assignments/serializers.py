@@ -10,6 +10,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
             'description',
             'due_date',
             'attachment',
+            'link',
             'course',
             'created_at',
         ]

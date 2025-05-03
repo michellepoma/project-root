@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axiosConfig";
-import useProfile from "../hooks/useProfile";
+import { useAuth } from "../context/AuthContext";
 
-function GradesPage() {
+function CourseGradesPage() {
   const { id } = useParams();
-  const user = useProfile();
+  const { user, loading: authLoading } = useAuth();
 
   const [assignments, setAssignments] = useState([]);
   const [grades, setGrades] = useState({});
@@ -17,17 +17,27 @@ function GradesPage() {
   const [uploadType, setUploadType] = useState("file");
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || !user) return;
+
     const fetchAssignments = async () => {
-      const res = await api.get(`/assignments/?course=${id}`);
-      setAssignments(res.data);
+      try {
+        const res = await api.get(`/assignments/assignments/?course=${id}`);
+        setAssignments(res.data);
+      } catch (err) {
+        console.error("Error al cargar tareas:", err);
+      }
     };
+
     fetchAssignments();
-  }, [id]);
+  }, [id, user]);
 
   const fetchGrades = async (assignmentId) => {
-    const res = await api.get(`/grades/?assignment=${assignmentId}`);
-    setGrades((prev) => ({ ...prev, [assignmentId]: res.data }));
+    try {
+      const res = await api.get(`/grades/?assignment=${assignmentId}`);
+      setGrades((prev) => ({ ...prev, [assignmentId]: res.data }));
+    } catch (err) {
+      console.error("Error al cargar calificaciones:", err);
+    }
   };
 
   const openGradeModal = (grade) => {
@@ -36,18 +46,22 @@ function GradesPage() {
   };
 
   const saveGrade = async () => {
-    await api.patch(`/grades/${selectedGrade.id}/`, { score });
-    setSelectedGrade(null);
-    fetchGrades(selectedGrade.assignment);
+    try {
+      await api.patch(`/grades/${selectedGrade.id}/`, { score });
+      setSelectedGrade(null);
+      fetchGrades(selectedGrade.assignment);
+    } catch (err) {
+      console.error("Error al guardar calificación:", err);
+    }
   };
 
-  if (!user) return <div className="text-center mt-5">Cargando usuario...</div>;
+  if (authLoading || !user) return <div className="text-center mt-5">Cargando usuario...</div>;
 
+  // === VISTA PROFESOR ===
   if (user.role === "teacher") {
     return (
       <div className="container py-4">
         <h3 className="mb-4 text-center">Calificaciones</h3>
-
         {assignments.map((a) => (
           <div key={a.id} className="bg-light p-3 mb-3 rounded shadow-sm">
             <div className="d-flex justify-content-between">
@@ -80,7 +94,7 @@ function GradesPage() {
                         className="btn btn-sm btn-danger"
                         onClick={() => openGradeModal(g)}
                       >
-                        Calificar/editar
+                        Calificar / Editar
                       </button>
                     </div>
                   ))
@@ -92,6 +106,7 @@ function GradesPage() {
           </div>
         ))}
 
+        {/* Modal Calificación */}
         {selectedGrade && (
           <div className="modal fade show d-block" tabIndex="-1">
             <div className="modal-dialog modal-md modal-dialog-centered">
@@ -103,29 +118,6 @@ function GradesPage() {
 
                 <div className="modal-body">
                   <p><strong>Estudiante:</strong> {selectedGrade.student_name}</p>
-                  <p><strong>Entrega:</strong></p>
-
-                  {selectedGrade.link ? (
-                    <div className="d-flex align-items-center gap-2">
-                      <input className="form-control" value={selectedGrade.link} disabled />
-                      <a
-                        href={selectedGrade.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn btn-outline-secondary"
-                      >
-                        Ir
-                      </a>
-                    </div>
-                  ) : selectedGrade.file ? (
-                    <div className="text-center">
-                      <i className="bi bi-file-earmark-text fs-1"></i>
-                      <p className="small">{selectedGrade.file_name}</p>
-                    </div>
-                  ) : (
-                    <p className="text-muted">No hay entrega registrada.</p>
-                  )}
-
                   <input
                     type="number"
                     min={0}
@@ -147,10 +139,10 @@ function GradesPage() {
     );
   }
 
-  // STUDENT VIEW
+  // === VISTA ESTUDIANTE ===
   return (
     <div className="container py-4">
-      <h3 className="mb-4 text-center">Mis Tareas</h3>
+      <h3 className="mb-4 text-center">Mis Tareas y Calificaciones</h3>
 
       {assignments.map((task) => (
         <div key={task.id} className="bg-light p-3 mb-3 rounded shadow-sm">
@@ -170,27 +162,19 @@ function GradesPage() {
           {expandedTaskId === task.id && (
             <div className="mt-3">
               <p><strong>Fecha de entrega:</strong> {task.due_date}</p>
-
-              <div className="mb-3">
-                <p><strong>Recursos:</strong></p>
-                <div className="d-flex gap-3">
-                  <i className="bi bi-file-earmark fs-3"></i>
-                  <i className="bi bi-filetype-pdf fs-3"></i>
-                  <i className="bi bi-film fs-3"></i>
-                </div>
-              </div>
-
+              <p className="text-muted">Aquí verás tu nota y entrega cuando estén disponibles.</p>
               <button
                 className="btn btn-danger rounded-pill px-4"
                 onClick={() => setShowModal(true)}
               >
-                Agregar entrega
+                Subir Entrega
               </button>
             </div>
           )}
         </div>
       ))}
 
+      {/* Modal entrega estudiante */}
       {showModal && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog modal-md modal-dialog-centered">
@@ -217,22 +201,15 @@ function GradesPage() {
                 </div>
 
                 {uploadType === "file" ? (
-                  <>
-                    <label className="btn btn-outline-dark rounded-pill">
-                      Seleccionar archivo
-                      <input type="file" hidden />
-                    </label>
-                  </>
+                  <label className="btn btn-outline-dark rounded-pill">
+                    Seleccionar archivo
+                    <input type="file" hidden />
+                  </label>
                 ) : (
-                  <>
-                    <input
-                      className="form-control rounded-pill mb-3"
-                      placeholder="Pegar enlace"
-                    />
-                    <button className="btn btn-outline-dark rounded-pill">
-                      <i className="bi bi-clipboard"></i>
-                    </button>
-                  </>
+                  <input
+                    className="form-control rounded-pill mb-3"
+                    placeholder="Pegar enlace"
+                  />
                 )}
 
                 <div className="mt-4">
@@ -252,4 +229,4 @@ function GradesPage() {
   );
 }
 
-export default GradesPage;
+export default CourseGradesPage;

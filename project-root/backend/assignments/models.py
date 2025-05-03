@@ -6,12 +6,14 @@ class Assignment(models.Model):
     description = models.TextField(blank=True, null=True)
     due_date = models.DateTimeField()
     attachment = models.FileField(upload_to='assignments/', blank=True, null=True)
+    link = models.URLField(max_length=300, blank=True, null=True)
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assignments')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.title} - {self.course.name}"
+
 
 from django.conf import settings
 
