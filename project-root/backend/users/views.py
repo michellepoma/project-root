@@ -5,6 +5,11 @@ from rest_framework.views import APIView
 from django.contrib.auth import get_user_model, authenticate
 from .serializers import UserSerializer, UserRegistrationSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+# users/views.py
+from rest_framework import generics, permissions
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 # backend/users/views.py
 
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -73,3 +78,15 @@ class AdminUserCreateView(generics.CreateAPIView):
     serializer_class = AdminUserCreateSerializer
     permission_classes = [permissions.IsAdminUser]
 
+class UserListView(generics.ListAPIView):
+    """
+    Solo los administradores pueden ver la lista completa de usuarios.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+class AdminUserDeleteView(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+    lookup_field = 'pk'  # usarás /auth/admin/users/<id>/
