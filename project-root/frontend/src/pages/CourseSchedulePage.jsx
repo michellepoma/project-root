@@ -2,28 +2,29 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosConfig";
+import { formatToLocal } from "../utils/time";
+import { DateTime } from "luxon";
 
 function CourseSchedulePage() {
   const { user, loading } = useAuth();
   const [courses, setCourses] = useState([]);
   const [scheduledClasses, setScheduledClasses] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [dateTime, setDateTime] = useState("");
   const [link, setLink] = useState("");
-  const [time, setTime] = useState("");
-  const [className, setClassName] = useState("");
+  const [courseId, setCourseId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editClassId, setEditClassId] = useState(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const filteredClasses = scheduledClasses.filter((cls) => {
+    const classDate = DateTime.fromISO(cls.datetime).startOf("day");
+    const today = DateTime.now().setZone("America/La_Paz").startOf("day");
+    return classDate >= today;
+  });
 
   useEffect(() => {
-    // Simulamos clases programadas
-    setScheduledClasses([
-      { id: 1, date: "2025-08-17", time: "10:00", link: "https://zoom.us/abc", className: "Clase 1" },
-      { id: 2, date: "2025-08-18", time: "14:00", link: "https://meet.google.com/xyz", className: "Clase 2" },
-    ]);
-
     const fetchCourses = async () => {
       try {
         const res = await api.get("/courses/courses/");
@@ -33,71 +34,87 @@ function CourseSchedulePage() {
       }
     };
 
+    const fetchScheduled = async () => {
+      try {
+        const res = await api.get("/courses/scheduled-classes/");
+        setScheduledClasses(res.data);
+      } catch (error) {
+        console.error("Error al cargar clases:", error);
+      }
+    };
+
     if (user) {
       fetchCourses();
+      fetchScheduled();
     }
   }, [user]);
 
-  const handleSave = () => {
-    const newClass = {
-      id: isEditing ? editClassId : Date.now(),
-      date: selectedDate,
-      time,
-      link,
-      className,
-    };
+  const handleSave = async () => {
+    try {
+      const payload = {
+        course_id: parseInt(courseId),
+        datetime: new Date(dateTime).toISOString(),
+        link,
+      };
+      console.log("Payload que se envía:", payload);
 
-    if (isEditing) {
-      setScheduledClasses((prev) =>
-        prev.map((cls) => (cls.id === editClassId ? newClass : cls))
-      );
-    } else {
-      setScheduledClasses((prev) => [...prev, newClass]);
+      if (isEditing) {
+        await api.patch(`/courses/scheduled-classes/${editClassId}/`, payload);
+        setSuccessMsg("Clase editada exitosamente.");
+      } else {
+        await api.post("/courses/scheduled-classes/", payload);
+        setSuccessMsg("Clase programada exitosamente.");
+      }
+
+      const res = await api.get("/courses/scheduled-classes/");
+      setScheduledClasses(res.data);
+
+      resetForm();
+    } catch (error) {
+      console.error("Error guardando clase:", error);
     }
+  };
 
-    setSelectedDate("");
-    setTime("");
+  const resetForm = () => {
+    setDateTime("");
     setLink("");
-    setClassName("");
+    setCourseId("");
     setIsEditing(false);
     setEditClassId(null);
     setModalOpen(false);
   };
 
   const handleEdit = (cls) => {
-    setSelectedDate(cls.date);
-    setTime(cls.time);
+    setDateTime(cls.datetime.slice(0, 16));
     setLink(cls.link);
-    setClassName(cls.className);
+    setCourseId(cls.course_id.toString());
     setIsEditing(true);
     setEditClassId(cls.id);
     setModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    setDeleteTargetId(id);
-    setDeleteConfirmOpen(true);
-  };
-
-  const confirmDelete = () => {
-    setScheduledClasses((prev) => prev.filter((cls) => cls.id !== deleteTargetId));
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/courses/scheduled-classes/${id}/`);
+      setScheduledClasses((prev) => prev.filter((cls) => cls.id !== id));
+      setSuccessMsg("Clase eliminada exitosamente.");
+    } catch (error) {
+      console.error("Error eliminando clase:", error);
+    }
     setDeleteConfirmOpen(false);
-    setDeleteTargetId(null);
   };
 
-  const handleOpenModal = () => {
-    setSelectedDate("");
-    setTime("");
-    setLink("");
-    setClassName("");
-    setIsEditing(false);
-    setEditClassId(null);
-    setModalOpen(true);
-  };
+  useEffect(() => {
+    if (successMsg) {
+      const timer = setTimeout(() => setSuccessMsg(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMsg]);
 
   if (loading) return <p className="text-center mt-4">Cargando usuario...</p>;
   if (!user) return <Navigate to="/unauthorized" />;
-  if (user.role !== "student" && user.role !== "teacher") return <Navigate to="/unauthorized" />;
+  if (user.role !== "student" && user.role !== "teacher")
+    return <Navigate to="/unauthorized" />;
 
   return (
     <div className="container py-4">
@@ -105,78 +122,126 @@ function CourseSchedulePage() {
         {user.role === "teacher" ? "Programar Clases" : "Clases Programadas"}
       </h3>
 
+      {successMsg && (
+        <div className="alert alert-success text-center">{successMsg}</div>
+      )}
+
       {user.role === "teacher" && (
         <>
           <div className="text-end mb-3 d-flex justify-content-end">
-            <button className="btn btn-primary d-flex align-items-center gap-2" onClick={handleOpenModal}>
+            <button
+              className="btn btn-primary d-flex align-items-center gap-2"
+              onClick={() => setModalOpen(true)}
+            >
               <i className="bi bi-plus-lg"></i> Programar clase
             </button>
           </div>
 
           <ul className="list-group">
-            {scheduledClasses.map((cls) => (
-              <li key={cls.id} className="list-group-item d-flex justify-content-between align-items-center">
+            {filteredClasses.map((cls) => (
+              <li
+                key={cls.id}
+                className="list-group-item d-flex justify-content-between align-items-center"
+              >
                 <div>
-                  <strong>{cls.className}</strong>
-                  <p className="mb-1">Fecha: {cls.date}</p>
-                  <p className="mb-1">Hora: {cls.time}</p>
-                  <p className="mb-1">Link: <a href={cls.link} target="_blank" rel="noopener noreferrer">{cls.link}</a></p>
+                  <strong>{cls.course_name}</strong>
+                  <p className="mb-1">
+                    Fecha y hora: {formatToLocal(cls.datetime)}
+                  </p>
+                  <p className="mb-1">
+                    Link:{" "}
+                    <a
+                      href={cls.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {cls.link}
+                    </a>
+                  </p>
                 </div>
                 <div className="d-flex gap-2">
-                  <button className="btn btn-outline-secondary" onClick={() => handleEdit(cls)}>Editar</button>
-                  <button className="btn btn-outline-danger" onClick={() => handleDelete(cls.id)}>Eliminar</button>
+                  <button
+                    className="btn btn-outline-secondary"
+                    onClick={() => handleEdit(cls)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    className="btn btn-outline-danger"
+                    onClick={() => {
+                      setEditClassId(cls.id);
+                      setDeleteConfirmOpen(true);
+                    }}
+                  >
+                    Eliminar
+                  </button>
                 </div>
               </li>
             ))}
+            {filteredClasses.length === 0 && (
+              <p className="text-muted text-center mt-3">
+                No hay clases programadas próximas.
+              </p>
+            )}
           </ul>
         </>
       )}
 
       {user.role === "student" && (
-        <>
-          <ul className="list-group">
-            {scheduledClasses.map((cls) => (
-              <li key={cls.id} className="list-group-item">
-                <strong>{cls.className}</strong>
-                <p className="mb-1">Fecha: {cls.date}</p>
-                <p className="mb-1">Hora: {cls.time}</p>
-                <p className="mb-1">Link: <a href={cls.link} target="_blank" rel="noopener noreferrer">{cls.link}</a></p>
-              </li>
-            ))}
-          </ul>
-        </>
+        <ul className="list-group">
+          {filteredClasses.map((cls) => (
+            <li key={cls.id} className="list-group-item">
+              <strong>{cls.course_name}</strong>
+              <p className="mb-1">
+                Fecha y hora: {formatToLocal(cls.datetime)}
+              </p>
+              <p className="mb-1">
+                Link:{" "}
+                <a href={cls.link} target="_blank" rel="noopener noreferrer">
+                  {cls.link}
+                </a>
+              </p>
+            </li>
+          ))}
+          {filteredClasses.length === 0 && (
+            <p className="text-muted text-center mt-3">
+              No hay clases programadas próximas.
+            </p>
+          )}
+        </ul>
       )}
 
-      {/* Modal Programar/Editar Clase */}
+      {/* Modal */}
       {modalOpen && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content rounded-4 p-4">
               <div className="modal-header border-0">
-                <h5 className="modal-title">{isEditing ? "Editar Clase" : "Programar Clase"}</h5>
-                <button className="btn-close" onClick={() => setModalOpen(false)}></button>
+                <h5 className="modal-title">
+                  {isEditing ? "Editar Clase" : "Programar Clase"}
+                </h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setModalOpen(false)}
+                ></button>
               </div>
               <div className="modal-body">
                 <select
-                  value={className}
-                  onChange={(e) => setClassName(e.target.value)}
+                  value={courseId}
+                  onChange={(e) => setCourseId(e.target.value)}
                   className="form-select mb-3"
                 >
                   <option value="">Selecciona una clase</option>
                   {courses.map((course) => (
-                    <option key={course.id} value={course.name}>{course.name}</option>
+                    <option key={course.id} value={course.id}>
+                      {course.name}
+                    </option>
                   ))}
                 </select>
                 <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="form-control mb-3"
-                />
-                <input
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
+                  type="datetime-local"
+                  value={dateTime}
+                  onChange={(e) => setDateTime(e.target.value)}
                   className="form-control mb-3"
                 />
                 <input
@@ -202,13 +267,26 @@ function CourseSchedulePage() {
             <div className="modal-content rounded-4 p-4">
               <div className="modal-header border-0">
                 <h5 className="modal-title">Eliminar clase programada</h5>
-                <button className="btn-close" onClick={() => setDeleteConfirmOpen(false)}></button>
+                <button
+                  className="btn-close"
+                  onClick={() => setDeleteConfirmOpen(false)}
+                ></button>
               </div>
               <div className="modal-body">
                 <p>¿Estás seguro de que deseas eliminar esta clase?</p>
                 <div className="d-flex justify-content-end gap-2">
-                  <button className="btn btn-secondary" onClick={() => setDeleteConfirmOpen(false)}>Cancelar</button>
-                  <button className="btn btn-danger" onClick={confirmDelete}>Eliminar</button>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setDeleteConfirmOpen(false)}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleDelete(editClassId)}
+                  >
+                    Eliminar
+                  </button>
                 </div>
               </div>
             </div>
