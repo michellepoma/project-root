@@ -1,33 +1,39 @@
 // frontend/src/pages/ForgotPasswordPage.jsx
-
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import "@/styles/ForgotPasswordPage.css";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Por ahora solo simular
     alert(`Solicitud de recuperación enviada a: ${email}`);
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
-      <form onSubmit={handleSubmit} className="p-4 shadow rounded bg-white" style={{ maxWidth: 400, width: "100%" }}>
-        <h4 className="mb-4 text-center">Recuperar Contraseña</h4>
-        <div className="mb-3">
+    <div className="forgot-page-container">
+      <div className="background-img"></div>
+
+      <div className="forgot-card animate-pop">
+        <Link to="/login" className="forgot-back">
+          <i className="bi bi-arrow-left-circle-fill"></i>
+
+        </Link>
+        <h4 className="text-center mb-4">Recuperar Contraseña</h4>
+        <form onSubmit={handleSubmit}>
           <label className="form-label">Correo electrónico</label>
           <input
             type="email"
-            className="form-control"
+            className="form-control forgot-input mb-4"
             placeholder="Ingresa tu correo"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </div>
-        <button type="submit" className="btn btn-primary w-100">Enviar enlace</button>
-      </form>
+          <button type="submit" className="forgot-btn">Enviar enlace</button>
+        </form>
+      </div>
     </div>
   );
 }
