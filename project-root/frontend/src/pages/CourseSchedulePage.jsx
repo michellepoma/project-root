@@ -128,7 +128,7 @@ function CourseSchedulePage() {
 
       {user.role === "teacher" && (
         <>
-          <div className="text-end mb-3 d-flex justify-content-end">
+          <div className="text-end mb-3">
             <button
               className="btn btn-primary d-flex align-items-center gap-2"
               onClick={() => setModalOpen(true)}
@@ -137,78 +137,68 @@ function CourseSchedulePage() {
             </button>
           </div>
 
-          <ul className="list-group">
+          <div className="d-flex flex-column align-items-center gap-3">
             {filteredClasses.map((cls) => (
-              <li
-                key={cls.id}
-                className="list-group-item d-flex justify-content-between align-items-center"
-              >
-                <div>
-                  <strong>{cls.course_name}</strong>
-                  <p className="mb-1">
-                    Fecha y hora: {formatToLocal(cls.datetime)}
-                  </p>
-                  <p className="mb-1">
-                    Link:{" "}
-                    <a
-                      href={cls.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {cls.link}
-                    </a>
-                  </p>
-                </div>
-                <div className="d-flex gap-2">
+              <div key={cls.id} className="p-4 rounded-4 shadow-sm bg-white bg-opacity-75 w-100" style={{ maxWidth: "600px" }}>
+                <h5>{cls.className}</h5>
+                <p><i className="bi bi-calendar-event me-2"></i>Fecha y hora: {formatToLocal(cls.datetime)}</p>
+                <p className="d-flex align-items-center gap-2">
+                  <i className="bi bi-link-45deg"></i>
+                  Link:
+                  <a href={cls.link} target="_blank" rel="noopener noreferrer" className="text-break">
+                    {cls.link}
+                  </a>
                   <button
-                    className="btn btn-outline-secondary"
-                    onClick={() => handleEdit(cls)}
+                    className="btn btn-sm btn-outline-secondary ms-2"
+                    onClick={() => navigator.clipboard.writeText(cls.link)}
+                    title="Copiar enlace"
+                    style={{ borderRadius: "50%" }}
                   >
-                    Editar
+                    <i className="bi bi-copy"></i>
                   </button>
-                  <button
-                    className="btn btn-outline-danger"
-                    onClick={() => {
+                </p>
+                <div className="d-flex justify-content-end gap-2 mt-3">
+                  <button className="btn btn-outline-secondary" onClick={() => handleEdit(cls)}>Editar</button>
+                  <button className="btn btn-outline-danger" onClick={() => {
                       setEditClassId(cls.id);
                       setDeleteConfirmOpen(true);
-                    }}
-                  >
-                    Eliminar
-                  </button>
+                    }}>Eliminar</button>
                 </div>
-              </li>
+              </div>
             ))}
             {filteredClasses.length === 0 && (
               <p className="text-muted text-center mt-3">
                 No hay clases programadas próximas.
               </p>
             )}
-          </ul>
+          </div>
         </>
       )}
 
       {user.role === "student" && (
-        <ul className="list-group">
+        <div className="d-flex flex-column align-items-center gap-3">
           {filteredClasses.map((cls) => (
-            <li key={cls.id} className="list-group-item">
-              <strong>{cls.course_name}</strong>
-              <p className="mb-1">
-                Fecha y hora: {formatToLocal(cls.datetime)}
-              </p>
-              <p className="mb-1">
-                Link:{" "}
-                <a href={cls.link} target="_blank" rel="noopener noreferrer">
+            <div key={cls.id} className="p-4 rounded-4 shadow-sm bg-white bg-opacity-75 w-100" style={{ maxWidth: "600px" }}>
+              <h5>{cls.className}</h5>
+              <p><i className="bi bi-calendar-event me-2"></i>Fecha y hora: {formatToLocal(cls.datetime)}</p>
+              <p className="d-flex align-items-center gap-2">
+                <i className="bi bi-link-45deg"></i>
+                Link:
+                <a href={cls.link} target="_blank" rel="noopener noreferrer" className="text-break">
                   {cls.link}
                 </a>
+                <button
+                  className="btn btn-sm btn-outline-secondary ms-2"
+                  onClick={() => navigator.clipboard.writeText(cls.link)}
+                  title="Copiar enlace"
+                  style={{ borderRadius: "50%" }}
+                >
+                  <i className="bi bi-copy"></i>
+                </button>
               </p>
-            </li>
+            </div>
           ))}
-          {filteredClasses.length === 0 && (
-            <p className="text-muted text-center mt-3">
-              No hay clases programadas próximas.
-            </p>
-          )}
-        </ul>
+        </div>
       )}
 
       {/* Modal */}
@@ -260,7 +250,7 @@ function CourseSchedulePage() {
         </div>
       )}
 
-      {/* Modal Confirmar Eliminar */}
+      {/* Modal Confirmación de Eliminación */}
       {deleteConfirmOpen && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">

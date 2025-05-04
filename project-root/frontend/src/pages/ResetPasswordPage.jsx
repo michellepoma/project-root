@@ -1,8 +1,7 @@
-// frontend/src/pages/ResetPasswordPage.jsx
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import api from "../api/axiosConfig"; // o usa axios directamente si prefieres
+import api from "../api/axiosConfig";
+import "@/styles/ResetPasswordPage.css"; // Asegúrate de tener este archivo
 
 function ResetPasswordPage() {
   const { token } = useParams();
@@ -44,9 +43,9 @@ function ResetPasswordPage() {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
-      <form onSubmit={handleSubmit} className="p-4 shadow rounded bg-white" style={{ maxWidth: 400, width: "100%" }}>
-        <h4 className="mb-4 text-center">Restablecer Contraseña</h4>
+    <div className="reset-container">
+      <form onSubmit={handleSubmit} className="reset-card">
+        <h4 className="reset-title">Restablecer Contraseña</h4>
 
         {error && <div className="alert alert-danger">{error}</div>}
         {success && <div className="alert alert-success">Contraseña actualizada. Redirigiendo...</div>}
@@ -55,7 +54,7 @@ function ResetPasswordPage() {
           <label className="form-label">Nueva contraseña</label>
           <input
             type="password"
-            className="form-control"
+            className="form-control reset-input"
             name="password"
             value={form.password}
             onChange={handleChange}
@@ -67,7 +66,7 @@ function ResetPasswordPage() {
           <label className="form-label">Confirmar contraseña</label>
           <input
             type="password"
-            className="form-control"
+            className="form-control reset-input"
             name="confirm"
             value={form.confirm}
             onChange={handleChange}
@@ -75,7 +74,7 @@ function ResetPasswordPage() {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary w-100">Guardar nueva contraseña</button>
+        <button type="submit" className="reset-btn">Guardar nueva contraseña</button>
       </form>
     </div>
   );

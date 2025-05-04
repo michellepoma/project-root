@@ -1,0 +1,150 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url("/fondo1.png") no-repeat center center fixed;
+    background-size: cover;
+  }
+  
+  /* Contenedor principal */
+  .container {
+    animation: fadeIn 0.8s ease;
+  }
+  
+  /* Título */
+  h3.text-center {
+    font-size: 2.7rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 2.7rem;
+    animation: slideInDown 0.6s ease;
+  }
+  
+  /* Botón de programar clase */
+  .btn.btn-primary {
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    border: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .btn.btn-primary:hover {
+    background: linear-gradient(to right, #cc3700, #ff6600);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 102, 0, 0.4);
+  }
+  
+  /* Tarjetas de clases */
+  .class-card {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+    animation: fadeInUp 0.5s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .class-card h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #222;
+  }
+  
+  .class-card p {
+    margin-bottom: 0.6rem;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  /* Enlace */
+  .class-card a {
+    color: #0077cc;
+    word-break: break-all;
+  }
+  
+  /* Botón copiar */
+  .copy-btn {
+    border: none;
+    background: transparent;
+    color: #333;
+    font-size: 1.2rem;
+    margin-left: 0.5rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .copy-btn:hover {
+    color: #ff6600;
+    transform: scale(1.2);
+  }
+  
+  /* Botones */
+  .btn-outline-secondary,
+  .btn-outline-danger {
+    border-radius: 0.5rem;
+    padding: 0.4rem 1rem;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .btn-outline-secondary:hover {
+    background-color: #ddd;
+    color: #000;
+  }
+  
+  .btn-outline-danger:hover {
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    border: none;
+    color: white;
+  }
+  
+  /* Modal */
+  .modal-content {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: popUp 0.4s ease;
+  }
+  
+  /* Inputs */
+  .modal-body input,
+  .modal-body select {
+    border-radius: 0.7rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .modal-body input:focus,
+  .modal-body select:focus {
+    box-shadow: 0 0 6px rgba(255, 145, 0, 0.6);
+    outline: none;
+  }
+  
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slideInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes popUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  
