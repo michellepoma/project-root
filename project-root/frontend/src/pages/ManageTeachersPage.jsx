@@ -5,6 +5,7 @@ import AdminUserTable from "../components/AdminUserTable";
 import AdminUserModal from "../components/AdminUserModal";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import SearchBar from "../components/SearchBar";
+import "@/styles/ManageTeachersPage.css";
 
 function ManageTeachersPage() {
   const [teachers, setTeachers] = useState([]);

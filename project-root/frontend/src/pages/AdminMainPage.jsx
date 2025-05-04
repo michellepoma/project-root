@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
-import "@/styles/admin.css";
+import "@/styles/AdminMain.css"; // Asegúrate que este archivo existe
 
 const AdminMainPage = () => {
   const [user, setUser] = useState(null);
@@ -25,7 +25,7 @@ const AdminMainPage = () => {
     fetchProfile();
   }, [navigate]);
 
-  if (!user) return <div>Cargando...</div>;
+  if (!user) return <div className="loading">Cargando...</div>;
 
   return (
     <div className="admin-container">
