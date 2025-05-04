@@ -8,7 +8,14 @@ function PrivateRoute({ allowedRoles = [] }) {
   if (!user) return <Navigate to="/login" replace />;
 
   const normalizedRole = user.role?.trim().toLowerCase();
+  const isSuperUser = user.is_superuser === true;
 
+  // Si se permite superuser explícitamente
+  if (allowedRoles.includes("superuser") && isSuperUser) {
+    return <Outlet />;
+  }
+
+  // Caso normal por rol
   if (!allowedRoles.includes(normalizedRole)) {
     console.warn("🔒 Acceso denegado. Rol:", user.role);
     return <Navigate to="/unauthorized" replace />;

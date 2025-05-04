@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, CourseParticipant, CourseMaterial
+from .models import Course, CourseParticipant, CourseMaterial, ScheduledClass
 
 from django.contrib.auth import get_user_model
 
@@ -72,3 +72,11 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttendanceSession
         fields = ['id', 'course', 'date', 'created_at', 'records']
+
+class ScheduledClassSerializer(serializers.ModelSerializer):
+    course_name = serializers.CharField(source='course.name', read_only=True)
+
+    class Meta:
+        model = ScheduledClass
+        fields = ['id', 'course_id', 'course_name', 'datetime', 'link', 'created_at']
+        read_only_fields = ['id', 'created_at', 'course_name']

@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
 
+import { DateTime } from "luxon";
+import { formatToLocal, getTimeRemaining } from "../utils/time";
+
 function CourseGradesPage() {
   const { id } = useParams();
   const { user, loading: authLoading } = useAuth();
@@ -55,7 +58,8 @@ function CourseGradesPage() {
     }
   };
 
-  if (authLoading || !user) return <div className="text-center mt-5">Cargando usuario...</div>;
+  if (authLoading || !user)
+    return <div className="text-center mt-5">Cargando usuario...</div>;
 
   // === VISTA PROFESOR ===
   if (user.role === "teacher") {
@@ -113,11 +117,16 @@ function CourseGradesPage() {
               <div className="modal-content p-4">
                 <div className="modal-header">
                   <h5 className="modal-title">Calificar tarea</h5>
-                  <button className="btn-close" onClick={() => setSelectedGrade(null)}></button>
+                  <button
+                    className="btn-close"
+                    onClick={() => setSelectedGrade(null)}
+                  ></button>
                 </div>
 
                 <div className="modal-body">
-                  <p><strong>Estudiante:</strong> {selectedGrade.student_name}</p>
+                  <p>
+                    <strong>Estudiante:</strong> {selectedGrade.student_name}
+                  </p>
                   <input
                     type="number"
                     min={0}
@@ -129,7 +138,9 @@ function CourseGradesPage() {
                 </div>
 
                 <div className="modal-footer">
-                  <button className="btn btn-danger" onClick={saveGrade}>Guardar</button>
+                  <button className="btn btn-danger" onClick={saveGrade}>
+                    Guardar
+                  </button>
                 </div>
               </div>
             </div>
@@ -153,7 +164,10 @@ function CourseGradesPage() {
             </div>
             <button
               className="btn btn-outline-primary btn-sm"
-              onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
+              onClick={() => {
+                setExpandedTaskId(expandedTaskId === task.id ? null : task.id);
+                fetchGrades(task.id); // Asegúrate de que cargue calificaciones
+              }}
             >
               {expandedTaskId === task.id ? "Ocultar" : "Ver tarea"}
             </button>
@@ -161,14 +175,35 @@ function CourseGradesPage() {
 
           {expandedTaskId === task.id && (
             <div className="mt-3">
-              <p><strong>Fecha de entrega:</strong> {task.due_date}</p>
-              <p className="text-muted">Aquí verás tu nota y entrega cuando estén disponibles.</p>
-              <button
-                className="btn btn-danger rounded-pill px-4"
-                onClick={() => setShowModal(true)}
-              >
-                Subir Entrega
-              </button>
+              <p>
+                <strong>Fecha de entrega:</strong>{" "}
+                {formatToLocal(task.due_date)}
+                <br />
+                <span className="text-muted">
+                  {getTimeRemaining(task.due_date) || "⏱️ Plazo vencido"}
+                </span>
+              </p>
+
+              {grades[task.id]?.length > 0 ? (
+                grades[task.id]
+                  .filter((g) => g.student === user.id)
+                  .map((g) => (
+                    <p key={g.id}>
+                      <strong>Tu nota:</strong> {g.score}/100
+                      <br />
+                      <strong>Feedback:</strong>{" "}
+                      {g.feedback || "Sin comentarios"}
+                    </p>
+                  ))
+              ) : DateTime.now().toUTC() > DateTime.fromISO(task.due_date) ? (
+                <p className="text-danger">
+                  No entregaste esta tarea antes del plazo.
+                </p>
+              ) : (
+                <p className="text-muted">
+                  Aún no has recibido una calificación para esta tarea.
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -181,19 +216,26 @@ function CourseGradesPage() {
             <div className="modal-content p-4">
               <div className="modal-header border-0">
                 <h5 className="modal-title">Agregar Entrega</h5>
-                <button className="btn-close" onClick={() => setShowModal(false)}></button>
+                <button
+                  className="btn-close"
+                  onClick={() => setShowModal(false)}
+                ></button>
               </div>
 
               <div className="modal-body text-center">
                 <div className="btn-group mb-3 rounded-pill">
                   <button
-                    className={`btn ${uploadType === "file" ? "btn-danger" : "btn-light"}`}
+                    className={`btn ${
+                      uploadType === "file" ? "btn-danger" : "btn-light"
+                    }`}
                     onClick={() => setUploadType("file")}
                   >
                     Archivo
                   </button>
                   <button
-                    className={`btn ${uploadType === "link" ? "btn-danger" : "btn-light"}`}
+                    className={`btn ${
+                      uploadType === "link" ? "btn-danger" : "btn-light"
+                    }`}
                     onClick={() => setUploadType("link")}
                   >
                     Enlace

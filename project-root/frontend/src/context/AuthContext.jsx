@@ -21,8 +21,6 @@ export function AuthProvider({ children }) {
           const userData = res.data;
           userData.role = userData.role?.trim().toLowerCase();
           setUser(userData);
-          // En AuthContext.jsx
-          console.log("🧠 Rol cargado:", res.data.role);
 
         } catch (err) {
           setError(err);

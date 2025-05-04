@@ -7,6 +7,7 @@ from .views import (
     UserProfileView,
     CustomTokenObtainPairView,
     AdminUserCreateView,
+    AdminUserUpdateView,
     UserListView  # ✅ Importación correcta
 )
 
@@ -22,7 +23,9 @@ urlpatterns = [
 
     # Listado de todos los usuarios (admin-only)
     path('all/', UserListView.as_view(), name='user-list'),  # ✅ Aquí se incluye correctamente
-
+    
+    # Editar Usuario (admin-only)
+    path('admin/users/<int:pk>/', AdminUserUpdateView.as_view(), name='admin-user-update'),
     # JWT
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

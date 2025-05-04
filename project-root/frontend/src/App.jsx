@@ -21,6 +21,13 @@ import CourseAssignmentsPage from "./pages/CourseAssignmentsPage";
 import CourseParticipantsPage from "./pages/CourseParticipantsPage";
 import CourseGradesPage from "./pages/CourseGradesPage";
 
+// SuperUser
+import AdminDashboard from "./pages/AdminDashboard";
+import ManageTeachersPage from "./pages/ManageTeachersPage";
+import ManageStudentsPage from "./pages/ManageStudentsPage";
+import ManageCoursesPage from "./pages/ManageCoursesPage";
+import ManageAdminsPage from "./pages/ManageAdminsPage";
+
 function App() {
   return (
     <Routes>
@@ -30,6 +37,15 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+      {/* Rutas privadas - superuser */}
+      <Route element={<PrivateRoute allowedRoles={["superuser"]} />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/manage-teachers" element={<ManageTeachersPage />} />
+        <Route path="/admin/manage-students" element={<ManageStudentsPage />} />
+        <Route path="/admin/manage-courses" element={<ManageCoursesPage />} />
+        <Route path="/admin/manage-admins" element={<ManageAdminsPage />} />
+      </Route>
 
       {/* Rutas privadas - student */}
       <Route element={<PrivateRoute allowedRoles={["student"]} />}>

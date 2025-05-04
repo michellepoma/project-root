@@ -68,7 +68,6 @@ class AttendanceSession(models.Model):
     def __str__(self):
         return f"Asistencia {self.course.name} - {self.date}"
 
-
 class AttendanceRecord(models.Model):
     session = models.ForeignKey(AttendanceSession, on_delete=models.CASCADE, related_name='records')
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -79,4 +78,13 @@ class AttendanceRecord(models.Model):
 
     def __str__(self):
         return f"{self.student.name} - {'Presente' if self.present else 'Ausente'}"
+
+class ScheduledClass(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='scheduled_classes')
+    datetime = models.DateTimeField()
+    link = models.URLField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.course.name} - {self.datetime.strftime('%Y-%m-%d %H:%M')}"
 

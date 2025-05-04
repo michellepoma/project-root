@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import api from "../api/axiosConfig";
 
-
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,30 +16,30 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-  
+
     try {
       const response = await axios.post("http://localhost:8000/token/", {
         email,
         password,
       });
-  
+
       const { access, refresh } = response.data;
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
-  
-      const profileRes = await api.get("/auth/profile/");
-      const role = profileRes.data.role;
 
-      if (role === "student") {
+      const profileRes = await api.get("/auth/profile/");
+      const { role, is_superuser } = profileRes.data;
+
+      if (is_superuser) {
+        window.location.href = "/admin";
+      } else if (role === "student") {
         window.location.href = "/student";
       } else if (role === "teacher") {
         window.location.href = "/teacher";
-      } else if (role === "superuser") {
-        window.location.href = "/admin";
       } else {
         window.location.href = "/unauthorized";
-      }       
-  
+      }
+
     } catch (err) {
       if (err.response?.status === 401) {
         setError("Credenciales inválidas.");
@@ -53,7 +52,6 @@ function LoginPage() {
 
   return (
     <div className="login-page-container">
-
       <div className="login-card">
         <h3 className="login-title">Iniciar Sesión</h3>
 
@@ -83,16 +81,15 @@ function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <span
-                className="toggle-password"
-                onClick={() => setShow(!show)}
-              >
+              <span className="toggle-password" onClick={() => setShow(!show)}>
                 <i className={`bi ${show ? "bi-eye-slash" : "bi-eye"}`}></i>
               </span>
             </div>
           </div>
 
-          <button type="submit" className="custom-btn">Iniciar Sesión</button>
+          <button type="submit" className="custom-btn">
+            Iniciar Sesión
+          </button>
 
           <div className="login-links">
             <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>

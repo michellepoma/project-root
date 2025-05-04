@@ -41,7 +41,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'name', 'role', 'ci', 'profile_picture', 'created_at']
+        fields = ['id', 'email', 'first_name', 'last_name', 'name', 'role', 'ci', 'profile_picture', 'created_at', 'is_superuser']
         read_only_fields = ['created_at']
 
 
@@ -95,11 +95,11 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 class AdminUserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
     password_confirm = serializers.CharField(write_only=True)
-    role = serializers.ChoiceField(choices=User.ROLE_CHOICES)  # ahora el admin lo define
+    role = serializers.ChoiceField(choices=User.ROLE_CHOICES)
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'ci', 'password', 'password_confirm', 'role']
+        fields = ['first_name', 'last_name', 'email', 'ci', 'name', 'role', 'password', 'password_confirm']
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
@@ -108,8 +108,16 @@ class AdminUserCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('password_confirm')
-        pwd = validated_data.pop('password')
+        password = validated_data.pop('password')
         user = User.objects.create_user(**validated_data)
-        user.set_password(pwd)
+        user.set_password(password)
         user.save()
         return user
+    
+class AdminUserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'ci', 'name', 'role', 'profile_picture']
+        read_only_fields = ['role']
+
+

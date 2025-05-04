@@ -5,20 +5,23 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 
+
 from users.permissions import IsAdminOrTeacher
 from .models import (
     Course,
     CourseParticipant,
     CourseMaterial,
     AttendanceSession,
-    AttendanceRecord
+    AttendanceRecord,
+    ScheduledClass
 )
 from .serializers import (
     CourseSerializer,
     CourseParticipantSerializer,
     CourseMaterialSerializer,
     AttendanceSessionSerializer,
-    AttendanceRecordSerializer
+    AttendanceRecordSerializer,
+    ScheduledClassSerializer
 )
 
 User = get_user_model()
@@ -126,8 +129,45 @@ class CourseParticipantViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return CourseParticipant.objects.filter(user=user)
+        course_id = self.request.query_params.get("course")
 
+        if not course_id:
+            return CourseParticipant.objects.none()
+
+        is_participant = CourseParticipant.objects.filter(user=user, course_id=course_id).exists()
+        if not is_participant:
+            return CourseParticipant.objects.none()
+
+        return CourseParticipant.objects.filter(course_id=course_id)
+
+    @action(detail=False, methods=['post'], url_path='add-by-email')
+    def add_by_email(self, request):
+        email = request.data.get("email")
+        course_id = request.data.get("course_id")
+
+        if not email or not course_id:
+            return Response({"detail": "Se requieren 'email' y 'course_id'"}, status=400)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"detail": "Usuario no encontrado"}, status=404)
+
+        try:
+            course = Course.objects.get(id=course_id)
+        except Course.DoesNotExist:
+            return Response({"detail": "Curso no encontrado"}, status=404)
+
+        # Verificar si ya es participante
+        if CourseParticipant.objects.filter(user=user, course=course).exists():
+            return Response({"detail": "Este usuario ya está inscrito."}, status=400)
+
+        participant = CourseParticipant.objects.create(
+            user=user,
+            course=course,
+            role="student"
+        )
+        return Response(CourseParticipantSerializer(participant).data, status=201)
 
 class CourseMaterialViewSet(viewsets.ModelViewSet):
     queryset = CourseMaterial.objects.all()
@@ -183,3 +223,24 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return AttendanceRecord.objects.filter(session__course__participants__user=user)
+
+class ScheduledClassViewSet(viewsets.ModelViewSet):
+    queryset = ScheduledClass.objects.all()
+    serializer_class = ScheduledClassSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return ScheduledClass.objects.filter(course__participants__user=user)
+
+    def perform_create(self, serializer):
+        course = serializer.validated_data['course']
+        if course.teacher != self.request.user:
+            raise PermissionDenied("Solo el profesor puede programar clases.")
+        serializer.save()
+
+    def perform_update(self, serializer):
+        course = serializer.validated_data.get('course', serializer.instance.course)
+        if course.teacher != self.request.user:
+            raise PermissionDenied("Solo el profesor puede editar esta clase.")
+        serializer.save()
