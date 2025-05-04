@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
+import "@/styles/MyCoursesPage.css";
+
 
 function MyCoursesPage() {
   const { user, loading: authLoading } = useAuth();

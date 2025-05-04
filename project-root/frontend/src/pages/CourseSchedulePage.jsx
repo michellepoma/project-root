@@ -18,7 +18,6 @@ function CourseSchedulePage() {
   const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   useEffect(() => {
-    // Simulamos clases programadas
     setScheduledClasses([
       { id: 1, date: "2025-08-17", time: "10:00", link: "https://zoom.us/abc", className: "Clase 1" },
       { id: 2, date: "2025-08-18", time: "14:00", link: "https://meet.google.com/xyz", className: "Clase 2" },
@@ -33,9 +32,7 @@ function CourseSchedulePage() {
       }
     };
 
-    if (user) {
-      fetchCourses();
-    }
+    if (user) fetchCourses();
   }, [user]);
 
   const handleSave = () => {
@@ -48,9 +45,7 @@ function CourseSchedulePage() {
     };
 
     if (isEditing) {
-      setScheduledClasses((prev) =>
-        prev.map((cls) => (cls.id === editClassId ? newClass : cls))
-      );
+      setScheduledClasses((prev) => prev.map((cls) => (cls.id === editClassId ? newClass : cls)));
     } else {
       setScheduledClasses((prev) => [...prev, newClass]);
     }
@@ -107,47 +102,71 @@ function CourseSchedulePage() {
 
       {user.role === "teacher" && (
         <>
-          <div className="text-end mb-3 d-flex justify-content-end">
+          <div className="text-end mb-3">
             <button className="btn btn-primary d-flex align-items-center gap-2" onClick={handleOpenModal}>
               <i className="bi bi-plus-lg"></i> Programar clase
             </button>
           </div>
 
-          <ul className="list-group">
+          <div className="d-flex flex-column align-items-center gap-3">
             {scheduledClasses.map((cls) => (
-              <li key={cls.id} className="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>{cls.className}</strong>
-                  <p className="mb-1">Fecha: {cls.date}</p>
-                  <p className="mb-1">Hora: {cls.time}</p>
-                  <p className="mb-1">Link: <a href={cls.link} target="_blank" rel="noopener noreferrer">{cls.link}</a></p>
-                </div>
-                <div className="d-flex gap-2">
+              <div key={cls.id} className="p-4 rounded-4 shadow-sm bg-white bg-opacity-75 w-100" style={{ maxWidth: "600px" }}>
+                <h5>{cls.className}</h5>
+                <p><i className="bi bi-calendar-event me-2"></i> Fecha: {cls.date}</p>
+                <p><i className="bi bi-clock me-2"></i> Hora: {cls.time}</p>
+                <p className="d-flex align-items-center gap-2">
+                  <i className="bi bi-link-45deg"></i>
+                  Link:
+                  <a href={cls.link} target="_blank" rel="noopener noreferrer" className="text-break">
+                    {cls.link}
+                  </a>
+                  <button
+                    className="btn btn-sm btn-outline-secondary ms-2"
+                    onClick={() => navigator.clipboard.writeText(cls.link)}
+                    title="Copiar enlace"
+                    style={{ borderRadius: "50%" }}
+                  >
+                    <i className="bi bi-copy"></i>
+                  </button>
+                </p>
+                <div className="d-flex justify-content-end gap-2 mt-3">
                   <button className="btn btn-outline-secondary" onClick={() => handleEdit(cls)}>Editar</button>
                   <button className="btn btn-outline-danger" onClick={() => handleDelete(cls.id)}>Eliminar</button>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </>
       )}
 
       {user.role === "student" && (
-        <>
-          <ul className="list-group">
-            {scheduledClasses.map((cls) => (
-              <li key={cls.id} className="list-group-item">
-                <strong>{cls.className}</strong>
-                <p className="mb-1">Fecha: {cls.date}</p>
-                <p className="mb-1">Hora: {cls.time}</p>
-                <p className="mb-1">Link: <a href={cls.link} target="_blank" rel="noopener noreferrer">{cls.link}</a></p>
-              </li>
-            ))}
-          </ul>
-        </>
+        <div className="d-flex flex-column align-items-center gap-3">
+          {scheduledClasses.map((cls) => (
+            <div key={cls.id} className="p-4 rounded-4 shadow-sm bg-white bg-opacity-75 w-100" style={{ maxWidth: "600px" }}>
+              <h5>{cls.className}</h5>
+              <p><i className="bi bi-calendar-event me-2"></i> Fecha: {cls.date}</p>
+              <p><i className="bi bi-clock me-2"></i> Hora: {cls.time}</p>
+              <p className="d-flex align-items-center gap-2">
+                <i className="bi bi-link-45deg"></i>
+                Link:
+                <a href={cls.link} target="_blank" rel="noopener noreferrer" className="text-break">
+                  {cls.link}
+                </a>
+                <button
+                  className="btn btn-sm btn-outline-secondary ms-2"
+                  onClick={() => navigator.clipboard.writeText(cls.link)}
+                  title="Copiar enlace"
+                  style={{ borderRadius: "50%" }}
+                >
+                  <i className="bi bi-copy"></i>
+                </button>
+              </p>
+            </div>
+          ))}
+        </div>
       )}
 
-      {/* Modal Programar/Editar Clase */}
+      {/* Modal Programar / Editar */}
       {modalOpen && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -157,35 +176,15 @@ function CourseSchedulePage() {
                 <button className="btn-close" onClick={() => setModalOpen(false)}></button>
               </div>
               <div className="modal-body">
-                <select
-                  value={className}
-                  onChange={(e) => setClassName(e.target.value)}
-                  className="form-select mb-3"
-                >
+                <select value={className} onChange={(e) => setClassName(e.target.value)} className="form-select mb-3">
                   <option value="">Selecciona una clase</option>
                   {courses.map((course) => (
                     <option key={course.id} value={course.name}>{course.name}</option>
                   ))}
                 </select>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="form-control mb-3"
-                />
-                <input
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  className="form-control mb-3"
-                />
-                <input
-                  type="text"
-                  placeholder="Link de la clase"
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  className="form-control mb-3"
-                />
+                <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="form-control mb-3" />
+                <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="form-control mb-3" />
+                <input type="text" placeholder="Link de la clase" value={link} onChange={(e) => setLink(e.target.value)} className="form-control mb-3" />
                 <button className="btn btn-primary w-100" onClick={handleSave}>
                   Guardar
                 </button>
@@ -195,7 +194,7 @@ function CourseSchedulePage() {
         </div>
       )}
 
-      {/* Modal Confirmar Eliminar */}
+      {/* Modal Confirmación de Eliminación */}
       {deleteConfirmOpen && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
