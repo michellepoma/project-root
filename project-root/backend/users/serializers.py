@@ -96,10 +96,14 @@ class AdminUserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
     password_confirm = serializers.CharField(write_only=True)
     role = serializers.ChoiceField(choices=User.ROLE_CHOICES)
+    is_superuser = serializers.BooleanField(default=False)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'ci', 'name', 'role', 'password', 'password_confirm']
+        fields = [
+            'first_name', 'last_name', 'email', 'ci', 'name', 
+            'role', 'is_superuser', 'password', 'password_confirm'
+        ]
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
@@ -117,7 +121,7 @@ class AdminUserCreateSerializer(serializers.ModelSerializer):
 class AdminUserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'ci', 'name', 'role', 'profile_picture']
+        fields = ['first_name', 'last_name', 'email', 'ci', 'name', 'role', 'profile_picture', 'is_superuser']
         read_only_fields = ['role']
 
 

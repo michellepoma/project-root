@@ -29,9 +29,7 @@ function ManageTeachersPage() {
 
   const fetchTeachers = async (page = 1, search = "") => {
     try {
-      const res = await api.get(
-        `/auth/all/?role=teacher&page=${page}&search=${search}`
-      );
+      const res = await api.get(`/auth/all/?role=teacher&is_superuser=false&page=${page}&search=${search}`);
       setTeachers(res.data.results);
       setTotalPages(Math.ceil(res.data.count / 10));
       setCurrentPage(page);

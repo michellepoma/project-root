@@ -13,7 +13,8 @@ from .models import (
     CourseMaterial,
     AttendanceSession,
     AttendanceRecord,
-    ScheduledClass
+    ScheduledClass,
+    CourseSchedule
 )
 from .serializers import (
     CourseSerializer,
@@ -21,7 +22,8 @@ from .serializers import (
     CourseMaterialSerializer,
     AttendanceSessionSerializer,
     AttendanceRecordSerializer,
-    ScheduledClassSerializer
+    ScheduledClassSerializer,
+    CourseScheduleSerializer
 )
 
 User = get_user_model()

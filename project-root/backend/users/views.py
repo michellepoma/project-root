@@ -107,14 +107,8 @@ class UserListView(generics.ListAPIView):
 
         return queryset
 
-class AdminUserUpdateView(generics.UpdateAPIView):
+class AdminUserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = AdminUserUpdateSerializer
     permission_classes = [permissions.IsAdminUser]
     lookup_field = 'pk'
-
-
-class AdminUserDeleteView(generics.DestroyAPIView):
-    queryset = User.objects.all()
-    permission_classes = [permissions.IsAdminUser]
-    lookup_field = 'pk'  # usarás /auth/admin/users/<id>/

@@ -1,13 +1,19 @@
 from rest_framework import serializers
-from .models import Course, CourseParticipant, CourseMaterial, ScheduledClass
+from .models import Course, CourseParticipant, CourseMaterial, ScheduledClass, CourseSchedule
 
 from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
 
+class CourseScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseSchedule
+        fields = ['day', 'start_time', 'end_time']
+
 
 class CourseSerializer(serializers.ModelSerializer):
+    schedules = CourseScheduleSerializer(many=True)
     teacher_name = serializers.SerializerMethodField()
 
     class Meta:
@@ -17,16 +23,39 @@ class CourseSerializer(serializers.ModelSerializer):
             'name',
             'code',
             'description',
-            'subject_code',     # Nuevo campo
-            'semester',         # Nuevo campo
-            'teacher_name',     # Mostrado al frontend
+            'subject_code',
+            'teacher_name',
             'teacher',
+            'schedules',
             'created_at',
         ]
         read_only_fields = ['code', 'created_at', 'teacher']
 
     def get_teacher_name(self, obj):
         return obj.teacher.name
+
+    def create(self, validated_data):
+        schedules_data = validated_data.pop('schedules')
+        course = Course.objects.create(**validated_data)
+        for sched in schedules_data:
+            CourseSchedule.objects.create(course=course, **sched)
+        return course
+
+    def update(self, instance, validated_data):
+        schedules_data = validated_data.pop('schedules', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if schedules_data is not None:
+            # Limpiar horarios anteriores y crear nuevos
+            instance.schedules.all().delete()
+            for sched in schedules_data:
+                CourseSchedule.objects.create(course=instance, **sched)
+
+        return instance
+
 
 
 class CourseParticipantSerializer(serializers.ModelSerializer):
