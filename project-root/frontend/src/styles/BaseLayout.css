@@ -60,7 +60,7 @@ body {
 }
 
 /* Botón Cerrar Sesión */
-.logout-btn {
+.logout {
   background: linear-gradient(to right, #ff4500, #ff9900);
   color: #fff; /* Letras blancas */
   font-weight: bold;

@@ -80,7 +80,7 @@ function BaseLayout() {
                 </div>
 
                 <div className="d-grid gap-2">
-                  <button className="logout-btn" onClick={logout}>
+                  <button className="logout" onClick={logout}>
                     <i className="bi bi-box-arrow-right me-2"></i> Cerrar sesión
                   </button>
                 </div>
