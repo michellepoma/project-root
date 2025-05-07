@@ -32,14 +32,34 @@ class CourseSerializer(serializers.ModelSerializer):
         read_only_fields = ['code', 'created_at', 'teacher']
 
     def get_teacher_name(self, obj):
-        return obj.teacher.name
+        if obj.teacher:
+            first = obj.teacher.first_name.capitalize()
+            last = obj.teacher.last_name.capitalize()
+            return f"{first} {last}"
+        return ""
+
 
     def create(self, validated_data):
         schedules_data = validated_data.pop('schedules')
+        
+        # Si es superuser, permitir que especifique el docente
+        request = self.context.get('request')
+        if request and request.user.is_superuser:
+            teacher = validated_data.get('teacher', request.user)
+        else:
+            teacher = request.user  # Forzar que el teacher sea quien hace la solicitud
+        
+        validated_data['teacher'] = teacher
         course = Course.objects.create(**validated_data)
+
         for sched in schedules_data:
             CourseSchedule.objects.create(course=course, **sched)
+
+        # Registrar al creador como participante con rol 'teacher'
+        CourseParticipant.objects.create(user=request.user, course=course, role='teacher')
+
         return course
+
 
     def update(self, instance, validated_data):
         schedules_data = validated_data.pop('schedules', None)

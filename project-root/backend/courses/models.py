@@ -26,7 +26,6 @@ class Course(models.Model):
     description = models.TextField(blank=True, null=True)
 
     subject_code = models.CharField(max_length=20, blank=True, null=True)  # Siglas del curso
-    teacher_name = models.CharField(max_length=100, blank=True, null=True) # Nombre del docente
 
     teacher = models.ForeignKey(
         settings.AUTH_USER_MODEL,

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
-
+from rest_framework import filters
 
 from users.permissions import IsAdminOrTeacher
 from .models import (
@@ -33,6 +33,9 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated]
+    
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'description', 'subject_code', 'teacher__name', 'code']
 
     def get_permissions(self):
         # Students can join courses
@@ -56,20 +59,33 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+
+        if user.is_superuser:
+            return Course.objects.all()
+
         enrolled_ids = CourseParticipant.objects.filter(user=user).values_list('course_id', flat=True)
         return Course.objects.filter(id__in=enrolled_ids)
 
+
     def update(self, request, *args, **kwargs):
         course = self.get_object()
-        if course.teacher != request.user:
-            raise PermissionDenied("Solo el profesor puede editar este curso.")
+        user = request.user
+
+        if not user.is_superuser and course.teacher != user:
+            raise PermissionDenied("Solo el profesor asignado o un administrador puede editar este curso.")
+
         return super().update(request, *args, **kwargs)
+
 
     def destroy(self, request, *args, **kwargs):
         course = self.get_object()
-        if course.teacher != request.user:
-            raise PermissionDenied("Solo el profesor puede eliminar este curso.")
+        user = request.user
+
+        if not user.is_superuser and course.teacher != user:
+            raise PermissionDenied("Solo el profesor asignado o un administrador puede eliminar este curso.")
+
         return super().destroy(request, *args, **kwargs)
+
 
     @action(detail=True, methods=['post'])
     def join(self, request, pk=None):
