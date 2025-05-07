@@ -92,7 +92,7 @@ function CourseFormModal({
   };
 
   const handleSubmit = async () => {
-    console.log(formData.schedules);
+    //console.log(formData.schedules);
     for (let s of formData.schedules) {
       if (!s.day || !s.start_time || !s.end_time) {
         alert("Todos los horarios deben estar completos.");
@@ -114,9 +114,11 @@ function CourseFormModal({
       schedules: formData.schedules,
     };
 
-    if (!editingCourse && formData.teacher) {
+    if (formData.teacher) {
       payload.teacher = formData.teacher;
-    }
+    }    
+
+    console.log("Payload enviado:", payload);
 
     try {
       if (editingCourse) {
@@ -168,21 +170,19 @@ function CourseFormModal({
               onChange={handleChange}
             />
 
-            {!editingCourse && (
-              <select
-                name="teacher"
-                className="form-select mb-2"
-                value={formData.teacher}
-                onChange={handleChange}
-              >
-                <option value="">Seleccionar docente</option>
-                {teachers.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.first_name} {t.last_name}
-                  </option>
-                ))}
-              </select>
-            )}
+            <select
+              name="teacher"
+              className="form-select mb-2"
+              value={formData.teacher}
+              onChange={handleChange}
+            >
+              <option value="">Seleccionar docente</option>
+              {(Array.isArray(teachers) ? teachers : []).map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.first_name} {t.last_name}
+                </option>
+              ))}
+            </select>
 
             <div className="mb-2">
               <label className="form-label">Horarios</label>

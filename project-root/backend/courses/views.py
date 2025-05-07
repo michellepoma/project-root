@@ -47,16 +47,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         # Creation, updates, deletions, participants listing and promotion require teacher/admin
         return [IsAuthenticated(), IsAdminOrTeacher()]
 
-    def perform_create(self, serializer):
-        # Only teacher/admin creates courses
-        serializer.save(teacher=self.request.user)
-        # Enroll the creator as teacher in the course
-        CourseParticipant.objects.create(
-            user=self.request.user,
-            course=serializer.instance,
-            role='teacher'
-        )
-
     def get_queryset(self):
         user = self.request.user
 
@@ -75,7 +65,32 @@ class CourseViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("Solo el profesor asignado o un administrador puede editar este curso.")
 
         return super().update(request, *args, **kwargs)
+    
+    def perform_update(self, serializer):
+        course = self.get_object()
+        request = self.request
+        old_teacher = course.teacher
+        new_teacher_id = request.data.get("teacher")
 
+        updated_course = serializer.save()
+
+        if new_teacher_id and str(old_teacher.id) != str(new_teacher_id):
+            try:
+                new_teacher = User.objects.get(pk=new_teacher_id, role='teacher')
+            except User.DoesNotExist:
+                raise PermissionDenied("El nuevo docente no es válido.")
+
+            CourseParticipant.objects.filter(
+                course=course, user=old_teacher, role='teacher'
+            ).delete()
+
+            CourseParticipant.objects.get_or_create(
+                course=course,
+                user=new_teacher,
+                defaults={"role": "teacher"}
+            )
+
+        return updated_course
 
     def destroy(self, request, *args, **kwargs):
         course = self.get_object()

@@ -29,7 +29,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'schedules',
             'created_at',
         ]
-        read_only_fields = ['code', 'created_at', 'teacher']
+        read_only_fields = ['code', 'created_at']
 
     def get_teacher_name(self, obj):
         if obj.teacher:
@@ -37,29 +37,44 @@ class CourseSerializer(serializers.ModelSerializer):
             last = obj.teacher.last_name.capitalize()
             return f"{first} {last}"
         return ""
-
+    
+    def validate_teacher(self, value):
+        request = self.context.get('request')
+        if request and not request.user.is_superuser:
+            raise serializers.ValidationError("Solo los administradores pueden asignar el docente.")
+        return value
 
     def create(self, validated_data):
         schedules_data = validated_data.pop('schedules')
-        
-        # Si es superuser, permitir que especifique el docente
         request = self.context.get('request')
+
+        raw_teacher = validated_data.get('teacher')  # ← no usar pop aquí
+
         if request and request.user.is_superuser:
-            teacher = validated_data.get('teacher', request.user)
+            if not raw_teacher:
+                raise serializers.ValidationError("Debe seleccionar un docente.")
+
+            if isinstance(raw_teacher, User):
+                teacher = raw_teacher
+            else:
+                try:
+                    teacher = User.objects.get(pk=raw_teacher, role='teacher')
+                except User.DoesNotExist:
+                    raise serializers.ValidationError("El docente no existe o no es válido.")
         else:
-            teacher = request.user  # Forzar que el teacher sea quien hace la solicitud
-        
-        validated_data['teacher'] = teacher
+            teacher = request.user
+
+        validated_data['teacher'] = teacher  # ← esto se usa para crear el curso
+
         course = Course.objects.create(**validated_data)
 
         for sched in schedules_data:
             CourseSchedule.objects.create(course=course, **sched)
 
-        # Registrar al creador como participante con rol 'teacher'
-        CourseParticipant.objects.create(user=request.user, course=course, role='teacher')
+        if request.user != teacher:
+            CourseParticipant.objects.create(user=request.user, course=course, role='teacher')
 
         return course
-
 
     def update(self, instance, validated_data):
         schedules_data = validated_data.pop('schedules', None)

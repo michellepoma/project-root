@@ -36,10 +36,11 @@ function ManageCoursesPage() {
 
   const fetchTeachers = async () => {
     try {
-      const res = await api.get("/auth/all/?role=teacher");
-      setTeachers(res.data);
+      const res = await api.get("/auth/all/?role=teacher&is_superuser=false");
+      setTeachers(res.data.results);
     } catch (err) {
       console.error("Error cargando docentes:", err);
+      setTeachers([]);
     }
   };
 
