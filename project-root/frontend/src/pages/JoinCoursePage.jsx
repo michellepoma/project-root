@@ -45,7 +45,8 @@ function JoinCoursePage() {
       setCode("");
 
       setTimeout(() => {
-        navigate(`/courses/${courseId}`);
+        const basePath = user.role === "student" ? "/student" : "/teacher";
+        navigate(`${basePath}/courses/${courseId}`);
       }, 1200);
     } catch (err) {
       let msg = "Error al unirse al curso.";

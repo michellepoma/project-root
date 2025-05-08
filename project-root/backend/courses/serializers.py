@@ -147,6 +147,10 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
 class ScheduledClassSerializer(serializers.ModelSerializer):
     course_name = serializers.CharField(source='course.name', read_only=True)
+    course_id = serializers.PrimaryKeyRelatedField(
+        queryset=Course.objects.all(),
+        source='course'
+    )
 
     class Meta:
         model = ScheduledClass

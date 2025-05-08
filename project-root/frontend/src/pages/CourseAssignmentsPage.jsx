@@ -98,13 +98,9 @@ function CourseAssignmentsPage() {
       }
 
       if (editingTask) {
-        await api.patch(
-          `/assignments/assignments/${editingTask.id}/`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
+        await api.patch(`/assignments/assignments/${editingTask.id}/`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
         await api.post("/assignments/assignments/", formData, {
           headers: { "Content-Type": "multipart/form-data" },

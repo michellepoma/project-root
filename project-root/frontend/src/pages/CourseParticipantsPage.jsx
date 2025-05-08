@@ -49,9 +49,10 @@ function CourseParticipantsPage() {
     return <div className="text-center mt-5">Cargando participantes...</div>;
   }
 
-  const isTeacher = participants.some(
-    (p) => p.user === user.id && p.role === "teacher"
-  );
+  const isTeacher =
+    Array.isArray(participants) &&
+    participants.some((p) => p.user === user.id && p.role === "teacher");
+
   const teachers = participants.filter((p) => p.role === "teacher");
   const students = participants.filter((p) => p.role === "student");
 
@@ -92,7 +93,10 @@ function CourseParticipantsPage() {
       });
 
       const updated = await api.get(`/courses/participants/?course=${id}`);
-      setParticipants(updated.data);
+      const updatedList = Array.isArray(updated.data)
+        ? updated.data
+        : updated.data.results || [];
+      setParticipants(updatedList);
 
       setSuccessMsg("✅ Estudiante agregado exitosamente.");
       setShowModal(false);

@@ -215,6 +215,8 @@ class CourseParticipantViewSet(viewsets.ModelViewSet):
         )
         return Response(CourseParticipantSerializer(participant).data, status=201)
 
+from django.db import models
+
 class CourseMaterialViewSet(viewsets.ModelViewSet):
     serializer_class = CourseMaterialSerializer
     permission_classes = [IsAuthenticated]
@@ -223,13 +225,16 @@ class CourseMaterialViewSet(viewsets.ModelViewSet):
         user = self.request.user
         course_id = self.request.query_params.get("course")
 
+        # Si se está listando por curso (ej. /materials/?course=18)
         if course_id:
             if CourseParticipant.objects.filter(user=user, course_id=course_id).exists():
                 return CourseMaterial.objects.filter(course_id=course_id)
-            else:
-                return CourseMaterial.objects.none()
+            return CourseMaterial.objects.none()
 
-        return CourseMaterial.objects.none()
+        # Si es un acceso directo por ID (ej. /materials/3/), verificar que el usuario tenga acceso
+        return CourseMaterial.objects.filter(
+            course__participants__user=user
+        ).distinct()
 
 
     def perform_create(self, serializer):
@@ -251,6 +256,7 @@ class CourseMaterialViewSet(viewsets.ModelViewSet):
         if instance.course.teacher != user:
             raise PermissionDenied("Solo el profesor puede eliminar este material.")
         instance.delete()
+
 
 class AttendanceSessionViewSet(viewsets.ModelViewSet):
     queryset = AttendanceSession.objects.all()
@@ -287,10 +293,17 @@ class ScheduledClassViewSet(viewsets.ModelViewSet):
         return ScheduledClass.objects.filter(course__participants__user=user)
 
     def perform_create(self, serializer):
-        course = serializer.validated_data['course']
-        if course.teacher != self.request.user:
+        user = self.request.user
+        course = serializer.validated_data.get('course')
+
+        if not course:
+            raise PermissionDenied("Falta el campo 'course' o no es válido.")
+
+        if course.teacher != user:
             raise PermissionDenied("Solo el profesor puede programar clases.")
+
         serializer.save()
+
 
     def perform_update(self, serializer):
         course = serializer.validated_data.get('course', serializer.instance.course)

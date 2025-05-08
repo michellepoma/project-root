@@ -17,31 +17,37 @@ function CourseSchedulePage() {
   const [editClassId, setEditClassId] = useState(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+  const [copiedId, setCopiedId] = useState(null);
 
   const filteredClasses = Array.isArray(scheduledClasses)
-  ? scheduledClasses.filter((cls) => {
-      const classDate = DateTime.fromISO(cls.datetime).startOf("day");
-      const today = DateTime.now().setZone("America/La_Paz").startOf("day");
-      return classDate >= today;
-    })
-  : [];
-
+    ? scheduledClasses.filter((cls) => {
+        const classDate = DateTime.fromISO(cls.datetime).startOf("day");
+        const today = DateTime.now().setZone("America/La_Paz").startOf("day");
+        return classDate >= today;
+      })
+    : [];
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const res = await api.get("/courses/courses/");
-        setCourses(res.data);
+        const data = Array.isArray(res.data)
+          ? res.data
+          : res.data.results || [];
+        setCourses(data);
       } catch (error) {
         console.error("Error al cargar cursos:", error);
+        setCourses([]); // Evita que quede como null
       }
     };
 
     const fetchScheduled = async () => {
       try {
         const res = await api.get("/courses/scheduled-classes/");
-        const data = Array.isArray(res.data) ? res.data : res.data.results || [];
-setScheduledClasses(data);
+        const data = Array.isArray(res.data)
+          ? res.data
+          : res.data.results || [];
+        setScheduledClasses(data);
       } catch (error) {
         console.error("Error al cargar clases:", error);
       }
@@ -71,7 +77,8 @@ setScheduledClasses(data);
       }
 
       const res = await api.get("/courses/scheduled-classes/");
-      setScheduledClasses(res.data);
+      const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+      setScheduledClasses(data);
 
       resetForm();
     } catch (error) {
@@ -143,30 +150,66 @@ setScheduledClasses(data);
 
           <div className="d-flex flex-column align-items-center gap-3">
             {filteredClasses.map((cls) => (
-              <div key={cls.id} className="p-4 rounded-4 shadow-sm bg-white bg-opacity-75 w-100" style={{ maxWidth: "600px" }}>
+              <div
+                key={cls.id}
+                className="p-4 rounded-4 shadow-sm bg-white bg-opacity-75 w-100"
+                style={{ maxWidth: "600px" }}
+              >
                 <h5>{cls.className}</h5>
-                <p><i className="bi bi-calendar-event me-2"></i>Fecha y hora: {formatToLocal(cls.datetime)}</p>
+                <p>
+                  <i className="bi bi-book me-2"></i>Curso:{" "}
+                  <span className="fw-semibold">{cls.course_name}</span>
+                </p>
+
+                <p>
+                  <i className="bi bi-calendar-event me-2"></i>Fecha y hora:{" "}
+                  {formatToLocal(cls.datetime)}
+                </p>
                 <p className="d-flex align-items-center gap-2">
                   <i className="bi bi-link-45deg"></i>
                   Link:
-                  <a href={cls.link} target="_blank" rel="noopener noreferrer" className="text-break">
+                  <a
+                    href={cls.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-break"
+                  >
                     {cls.link}
                   </a>
                   <button
                     className="btn btn-sm btn-outline-secondary ms-2"
-                    onClick={() => navigator.clipboard.writeText(cls.link)}
+                    onClick={() => {
+                      navigator.clipboard.writeText(cls.link);
+                      setCopiedId(cls.id);
+                      setTimeout(() => setCopiedId(null), 2000);
+                    }}
                     title="Copiar enlace"
                     style={{ borderRadius: "50%" }}
                   >
                     <i className="bi bi-copy"></i>
                   </button>
+                  {copiedId === cls.id && (
+                    <small className="text-secondary ms-2">
+                      Enlace copiado <i class="bi bi-check"></i>
+                    </small>
+                  )}
                 </p>
                 <div className="d-flex justify-content-end gap-2 mt-3">
-                  <button className="btn btn-outline-secondary" onClick={() => handleEdit(cls)}>Editar</button>
-                  <button className="btn btn-outline-danger" onClick={() => {
+                  <button
+                    className="btn btn-outline-secondary"
+                    onClick={() => handleEdit(cls)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    className="btn btn-outline-danger"
+                    onClick={() => {
                       setEditClassId(cls.id);
                       setDeleteConfirmOpen(true);
-                    }}>Eliminar</button>
+                    }}
+                  >
+                    Eliminar
+                  </button>
                 </div>
               </div>
             ))}
@@ -182,23 +225,49 @@ setScheduledClasses(data);
       {user.role === "student" && (
         <div className="d-flex flex-column align-items-center gap-3">
           {filteredClasses.map((cls) => (
-            <div key={cls.id} className="p-4 rounded-4 shadow-sm bg-white bg-opacity-75 w-100" style={{ maxWidth: "600px" }}>
+            <div
+              key={cls.id}
+              className="p-4 rounded-4 shadow-sm bg-white bg-opacity-75 w-100"
+              style={{ maxWidth: "600px" }}
+            >
               <h5>{cls.className}</h5>
-              <p><i className="bi bi-calendar-event me-2"></i>Fecha y hora: {formatToLocal(cls.datetime)}</p>
+              <p>
+                <i className="bi bi-book me-2"></i>Curso:{" "}
+                <span className="fw-semibold">{cls.course_name}</span>
+              </p>
+
+              <p>
+                <i className="bi bi-calendar-event me-2"></i>Fecha y hora:{" "}
+                {formatToLocal(cls.datetime)}
+              </p>
               <p className="d-flex align-items-center gap-2">
                 <i className="bi bi-link-45deg"></i>
                 Link:
-                <a href={cls.link} target="_blank" rel="noopener noreferrer" className="text-break">
+                <a
+                  href={cls.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-break"
+                >
                   {cls.link}
                 </a>
                 <button
-                  className="btn btn-sm btn-outline-secondary ms-2"
-                  onClick={() => navigator.clipboard.writeText(cls.link)}
-                  title="Copiar enlace"
-                  style={{ borderRadius: "50%" }}
-                >
-                  <i className="bi bi-copy"></i>
-                </button>
+                    className="btn btn-sm btn-outline-secondary ms-2"
+                    onClick={() => {
+                      navigator.clipboard.writeText(cls.link);
+                      setCopiedId(cls.id);
+                      setTimeout(() => setCopiedId(null), 2000);
+                    }}
+                    title="Copiar enlace"
+                    style={{ borderRadius: "50%" }}
+                  >
+                    <i className="bi bi-copy"></i>
+                  </button>
+                  {copiedId === cls.id && (
+                    <small className="text-secondary ms-2">
+                      Enlace copiado <i class="bi bi-check"></i>
+                    </small>
+                  )}
               </p>
             </div>
           ))}
@@ -267,7 +336,7 @@ setScheduledClasses(data);
                 ></button>
               </div>
               <div className="modal-body">
-                <p>¿Estás seguro de que deseas eliminar esta clase?</p>
+                <p>¿Estás seguro de que deseas eliminar esta clase programada?</p>
                 <div className="d-flex justify-content-end gap-2">
                   <button
                     className="btn btn-secondary"

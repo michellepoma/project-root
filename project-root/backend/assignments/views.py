@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions
+from rest_framework.exceptions import PermissionDenied
 from .models import Assignment
 from .serializers import AssignmentSerializer
 from courses.models import CourseParticipant
@@ -10,15 +11,14 @@ class AssignmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        base_qs = Assignment.objects.filter(course__participants__user=user)
+
         course_id = self.request.query_params.get("course")
-
         if course_id:
-            if CourseParticipant.objects.filter(user=user, course_id=course_id).exists():
-                return Assignment.objects.filter(course_id=course_id)
-            else:
-                return Assignment.objects.none()
+            base_qs = base_qs.filter(course_id=course_id)
 
-        return Assignment.objects.none()
+        return base_qs
+
 
 
     def perform_create(self, serializer):
@@ -27,7 +27,7 @@ class AssignmentViewSet(viewsets.ModelViewSet):
 
         # Solo el teacher del curso puede crear tareas
         if course.teacher != user:
-            raise permissions.PermissionDenied("Solo el profesor puede crear tareas en este curso.")
+            raise PermissionDenied("Solo el profesor puede crear tareas en este curso.")
 
         serializer.save()
 
@@ -42,22 +42,19 @@ class GradeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        course_id = self.request.query_params.get("course")
+        qs = Grade.objects.none()
 
         if user.role == 'student':
-            if course_id:
-                return Grade.objects.filter(student=user, assignment__course_id=course_id)
-            return Grade.objects.filter(student=user)
+            qs = Grade.objects.filter(student=user)
 
-        if user.role == 'teacher':
-            if course_id:
-                return Grade.objects.filter(
-                    assignment__course__teacher=user,
-                    assignment__course_id=course_id
-                )
-            return Grade.objects.filter(assignment__course__teacher=user)
+        elif user.role == 'teacher':
+            qs = Grade.objects.filter(assignment__course__teacher=user)
 
-        return Grade.objects.none()
+        course_id = self.request.query_params.get("course")
+        if course_id:
+            qs = qs.filter(assignment__course_id=course_id)
+
+        return qs
 
 
     def perform_create(self, serializer):
@@ -67,11 +64,11 @@ class GradeViewSet(viewsets.ModelViewSet):
 
         # Validar que solo el teacher del curso pueda calificar
         if assignment.course.teacher != user:
-            raise permissions.PermissionDenied("Solo el profesor puede calificar esta tarea.")
+            raise PermissionDenied("Solo el profesor puede calificar esta tarea.")
 
         # Asegurar que el estudiante esté inscrito en el curso
         if not assignment.course.participants.filter(user=student).exists():
-            raise permissions.PermissionDenied("El estudiante no está inscrito en este curso.")
+            raise PermissionDenied("El estudiante no está inscrito en este curso.")
 
         serializer.save()
 
