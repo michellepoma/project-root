@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions
 from .models import Assignment
 from .serializers import AssignmentSerializer
+from courses.models import CourseParticipant
 
 class AssignmentViewSet(viewsets.ModelViewSet):
     queryset = Assignment.objects.all()
@@ -9,8 +10,16 @@ class AssignmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        # Filtrar solo las tareas de los cursos donde el usuario es participante
-        return Assignment.objects.filter(course__participants__user=user)
+        course_id = self.request.query_params.get("course")
+
+        if course_id:
+            if CourseParticipant.objects.filter(user=user, course_id=course_id).exists():
+                return Assignment.objects.filter(course_id=course_id)
+            else:
+                return Assignment.objects.none()
+
+        return Assignment.objects.none()
+
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -33,20 +42,36 @@ class GradeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        course_id = self.request.query_params.get("course")
 
-        # Los estudiantes solo pueden ver sus propias notas
         if user.role == 'student':
+            if course_id:
+                return Grade.objects.filter(student=user, assignment__course_id=course_id)
             return Grade.objects.filter(student=user)
 
-        # Los profesores pueden ver todas las calificaciones
-        return Grade.objects.all()
+        if user.role == 'teacher':
+            if course_id:
+                return Grade.objects.filter(
+                    assignment__course__teacher=user,
+                    assignment__course_id=course_id
+                )
+            return Grade.objects.filter(assignment__course__teacher=user)
+
+        return Grade.objects.none()
+
 
     def perform_create(self, serializer):
         user = self.request.user
-
-        # Solo el profesor debe poder asignar calificaciones
         assignment = serializer.validated_data.get('assignment')
+        student = serializer.validated_data.get('student')
+
+        # Validar que solo el teacher del curso pueda calificar
         if assignment.course.teacher != user:
             raise permissions.PermissionDenied("Solo el profesor puede calificar esta tarea.")
 
+        # Asegurar que el estudiante esté inscrito en el curso
+        if not assignment.course.participants.filter(user=student).exists():
+            raise permissions.PermissionDenied("El estudiante no está inscrito en este curso.")
+
         serializer.save()
+

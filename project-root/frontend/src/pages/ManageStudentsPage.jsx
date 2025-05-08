@@ -12,6 +12,8 @@ function ManageStudentsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [formError, setFormError] = useState("");
+
   const [showModal, setShowModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [formData, setFormData] = useState({
@@ -58,7 +60,18 @@ function ManageStudentsPage() {
   };
 
   const handleSubmit = async () => {
+    if (
+      !formData.first_name.trim() ||
+      !formData.last_name.trim() ||
+      !formData.email.trim() ||
+      !formData.ci.trim()
+    ) {
+      setFormError("Todos los campos son obligatorios.");
+      return;
+    }
     try {
+      setFormError("");
+
       const fullName = `${formData.first_name} ${formData.last_name}`.trim();
       const password = `${formData.ci}${formData.first_name}`;
 
@@ -80,6 +93,17 @@ function ManageStudentsPage() {
       fetchStudents(currentPage, searchTerm);
       setShowModal(false);
     } catch (err) {
+      const res = err.response?.data;
+      if (typeof res === "string") {
+        setFormError(res);
+      } else if (typeof res === "object") {
+        const firstField = Object.keys(res)[0];
+        const firstError = res[firstField]?.[0] || "Error al guardar.";
+        setFormError(`${firstField}: ${firstError}`);
+      } else {
+        setFormError("Error desconocido al guardar.");
+      }
+
       console.error("Error al guardar estudiante:", err);
     }
   };
@@ -126,6 +150,7 @@ function ManageStudentsPage() {
         formData={formData}
         setFormData={setFormData}
         editing={editingStudent}
+        formError={formError}
       />
 
       <DeleteConfirmModal

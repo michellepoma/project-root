@@ -13,7 +13,12 @@ function CourseOverviewPage() {
 
   const [showModal, setShowModal] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState(null);
-  const [form, setForm] = useState({ title: "", description: "", file: null, link: "" });
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    file: null,
+    link: "",
+  });
 
   useEffect(() => {
     if (user) {
@@ -25,16 +30,27 @@ function CourseOverviewPage() {
   const fetchCourse = async () => {
     try {
       const response = await api.get(`/courses/courses/${id}/`);
+  
+      // Validación: ¿el curso tiene como participante al usuario actual?
+      if (!response.data.is_participant) {
+        return setCourse(null); // bloquea acceso
+      }
+  
       setCourse(response.data);
     } catch (err) {
       console.error("Error al cargar detalles del curso:", err);
+      setCourse(null);
     }
   };
+  
 
   const fetchMaterials = async () => {
     try {
       const response = await api.get(`/courses/materials/?course=${id}`);
-      setMaterials(response.data);
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data.results || [];
+      setMaterials(data);
     } catch (err) {
       console.error("Error al cargar materiales del curso:", err);
     }
@@ -68,7 +84,8 @@ function CourseOverviewPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("¿Estás seguro de que deseas eliminar este material?")) return;
+    if (!window.confirm("¿Estás seguro de que deseas eliminar este material?"))
+      return;
     try {
       await api.delete(`/courses/materials/${id}/`);
       fetchMaterials();
@@ -79,11 +96,14 @@ function CourseOverviewPage() {
 
   if (loading) return <div className="text-center mt-5">Cargando...</div>;
   if (!user) return <Navigate to="/unauthorized" />;
-  if (!course) return <div className="text-center mt-5">Cargando datos del curso...</div>;
+  if (!course)
+    return <div className="text-center mt-5">Cargando datos del curso...</div>;
 
-  const filteredMaterials = materials.filter((m) =>
-    m.title.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredMaterials = Array.isArray(materials)
+    ? materials.filter((m) =>
+        m.title.toLowerCase().includes(query.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="container py-4">
@@ -110,14 +130,24 @@ function CourseOverviewPage() {
       </div>
 
       {filteredMaterials.map((m) => (
-        <div key={m.id} className="bg-light p-3 rounded mb-3 d-flex justify-content-between align-items-center">
+        <div
+          key={m.id}
+          className="bg-light p-3 rounded mb-3 d-flex justify-content-between align-items-center"
+        >
           <div>
             <strong>{m.title}</strong>
-            <p className="mb-0 text-muted">{m.description || "Sin descripción"}</p>
+            <p className="mb-0 text-muted">
+              {m.description || "Sin descripción"}
+            </p>
           </div>
           <div className="d-flex gap-2">
             {m.link && (
-              <a href={m.link} target="_blank" rel="noopener noreferrer" className="btn btn-outline-primary">
+              <a
+                href={m.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline-primary"
+              >
                 Ver enlace
               </a>
             )}
@@ -138,13 +168,21 @@ function CourseOverviewPage() {
                   className="btn btn-outline-warning"
                   onClick={() => {
                     setEditingMaterial(m);
-                    setForm({ title: m.title, description: m.description, file: null, link: m.link });
+                    setForm({
+                      title: m.title,
+                      description: m.description,
+                      file: null,
+                      link: m.link,
+                    });
                     setShowModal(true);
                   }}
                 >
                   Editar
                 </button>
-                <button className="btn btn-outline-danger" onClick={() => handleDelete(m.id)}>
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={() => handleDelete(m.id)}
+                >
                   Eliminar
                 </button>
               </>
@@ -159,9 +197,14 @@ function CourseOverviewPage() {
             <div className="modal-content p-4 rounded-4">
               <div className="modal-header border-0">
                 <h5 className="modal-title">
-                  {editingMaterial ? "Editar Material" : "Agregar Nuevo Material"}
+                  {editingMaterial
+                    ? "Editar Material"
+                    : "Agregar Nuevo Material"}
                 </h5>
-                <button className="btn-close" onClick={() => setShowModal(false)}></button>
+                <button
+                  className="btn-close"
+                  onClick={() => setShowModal(false)}
+                ></button>
               </div>
               <div className="modal-body">
                 <input
@@ -175,7 +218,9 @@ function CourseOverviewPage() {
                   placeholder="Descripción"
                   rows={3}
                   value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                 ></textarea>
                 <input
                   className="form-control mb-3"
@@ -186,10 +231,15 @@ function CourseOverviewPage() {
                 <input
                   type="file"
                   className="form-control mb-3"
-                  onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
+                  onChange={(e) =>
+                    setForm({ ...form, file: e.target.files[0] })
+                  }
                 />
                 <div className="text-center">
-                  <button className="btn btn-danger rounded-pill px-5" onClick={handleSave}>
+                  <button
+                    className="btn btn-danger rounded-pill px-5"
+                    onClick={handleSave}
+                  >
                     Guardar
                   </button>
                 </div>

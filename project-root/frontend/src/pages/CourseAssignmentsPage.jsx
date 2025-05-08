@@ -28,7 +28,10 @@ function CourseAssignmentsPage() {
   const fetchAssignments = useCallback(async () => {
     try {
       const response = await api.get(`/assignments/assignments/?course=${id}`);
-      setAssignments(response.data);
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data.results || [];
+      setAssignments(data);
     } catch (error) {
       console.error("Error al cargar tareas:", error);
     }

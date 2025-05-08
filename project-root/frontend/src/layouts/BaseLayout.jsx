@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import "@/styles/BaseLayout.css";
 import { useAuth } from "../context/AuthContext";
+import { capitalizeFullName } from "../utils/format";
 
 function BaseLayout() {
   const sidebarRef = useRef();
@@ -74,7 +75,10 @@ function BaseLayout() {
               >
                 <div className="text-center mb-3">
                   <h6 className="mb-0 text-capitalize">
-                    {user?.name || "Usuario"}
+                    {" "}
+                    {capitalizeFullName(
+                      `${user?.first_name || ""} ${user?.last_name || ""}`
+                    )}
                   </h6>
                   <small className="text-muted">{user?.email}</small>
                 </div>

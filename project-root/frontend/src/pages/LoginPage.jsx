@@ -11,7 +11,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
-  //const navigate = useNavigate();
+  const [showToast, setShowToast] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -39,10 +39,10 @@ function LoginPage() {
       } else {
         window.location.href = "/unauthorized";
       }
-
     } catch (err) {
       if (err.response?.status === 401) {
         setError("Credenciales inválidas.");
+        setShowToast(true); // ← muestra el toast
       } else {
         setError("Ocurrió un error. Intenta más tarde.");
       }
@@ -97,6 +97,30 @@ function LoginPage() {
           </div>
         </form>
       </div>
+      {showToast && (
+        <div
+          className="toast show position-fixed bottom-0 end-0 m-4 text-bg-dark"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          style={{ zIndex: 1055 }}
+        >
+          <div className="toast-header bg-danger text-white">
+            <strong className="me-auto">¿Primera vez?</strong>
+            <button
+              type="button"
+              className="btn-close btn-close-white"
+              onClick={() => setShowToast(false)}
+            ></button>
+          </div>
+          <div className="toast-body">
+            Si es tu primer inicio de sesión, tu contraseña es tu CI seguido de
+            tus nombres.
+            <br />
+            Ejemplo: <code>12345678MarcoEsteban</code>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

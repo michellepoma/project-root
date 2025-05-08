@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosConfig";
+import { capitalizeFullName } from "../utils/format";
 import "@/styles/JoinCoursePage.css";
 
 function JoinCoursePage() {
@@ -28,13 +29,16 @@ function JoinCoursePage() {
     if (!codePattern.test(trimmedCode)) {
       setAlert({
         type: "danger",
-        message: "El código debe tener exactamente 6 caracteres (mayúsculas y números).",
+        message:
+          "El código debe tener exactamente 6 caracteres (mayúsculas y números).",
       });
       return;
     }
 
     try {
-      const res = await api.post("/courses/courses/join_by_code/", { code: trimmedCode });
+      const res = await api.post("/courses/courses/join_by_code/", {
+        code: trimmedCode,
+      });
       const courseId = res.data.course;
 
       setAlert({ type: "success", message: "¡Te uniste correctamente!" });
@@ -52,7 +56,10 @@ function JoinCoursePage() {
 
         if (status === 404) {
           msg = data.detail || "No se encontró ningún curso con este código.";
-        } else if (status === 400 && data.detail === "Ya estás inscrito en este curso.") {
+        } else if (
+          status === 400 &&
+          data.detail === "Ya estás inscrito en este curso."
+        ) {
           msg = "Ya estás inscrito en este curso.";
         } else if (data.detail) {
           msg = data.detail;
@@ -67,9 +74,16 @@ function JoinCoursePage() {
     <div className="join-course-container">
       <div className="join-course-card">
         {alert && (
-          <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert">
+          <div
+            className={`alert alert-${alert.type} alert-dismissible fade show`}
+            role="alert"
+          >
             {alert.message}
-            <button type="button" className="btn-close" onClick={() => setAlert(null)}></button>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setAlert(null)}
+            ></button>
           </div>
         )}
 
@@ -84,7 +98,12 @@ function JoinCoursePage() {
             />
           </div>
           <div className="user-details">
-            <div className="text-capitalize">{user.name}</div>
+            <div className="text-capitalize">
+              {" "}
+              {capitalizeFullName(
+                `${user?.first_name || ""} ${user?.last_name || ""}`
+              )}
+            </div>
             <strong>{user.email}</strong>
           </div>
         </div>

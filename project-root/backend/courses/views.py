@@ -91,6 +91,19 @@ class CourseViewSet(viewsets.ModelViewSet):
             )
 
         return updated_course
+    
+    def retrieve(self, request, *args, **kwargs):
+        course = self.get_object()
+        user = request.user
+
+        if user.is_superuser:
+            return super().retrieve(request, *args, **kwargs)
+
+        if not CourseParticipant.objects.filter(course=course, user=user).exists():
+            raise PermissionDenied("No tienes acceso a este curso.")
+
+        return super().retrieve(request, *args, **kwargs)
+
 
     def destroy(self, request, *args, **kwargs):
         course = self.get_object()
@@ -203,14 +216,21 @@ class CourseParticipantViewSet(viewsets.ModelViewSet):
         return Response(CourseParticipantSerializer(participant).data, status=201)
 
 class CourseMaterialViewSet(viewsets.ModelViewSet):
-    queryset = CourseMaterial.objects.all()
     serializer_class = CourseMaterialSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        # Retorna todos los materiales de cursos donde el usuario esté inscrito
-        return CourseMaterial.objects.filter(course__participants__user=user)
+        course_id = self.request.query_params.get("course")
+
+        if course_id:
+            if CourseParticipant.objects.filter(user=user, course_id=course_id).exists():
+                return CourseMaterial.objects.filter(course_id=course_id)
+            else:
+                return CourseMaterial.objects.none()
+
+        return CourseMaterial.objects.none()
+
 
     def perform_create(self, serializer):
         course = serializer.validated_data['course']

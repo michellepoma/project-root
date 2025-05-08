@@ -25,7 +25,10 @@ function CourseGradesPage() {
     const fetchAssignments = async () => {
       try {
         const res = await api.get(`/assignments/assignments/?course=${id}`);
-        setAssignments(res.data);
+        const data = Array.isArray(res.data)
+        ? res.data
+        : res.data.results || [];
+      setAssignments(data);
       } catch (err) {
         console.error("Error al cargar tareas:", err);
       }

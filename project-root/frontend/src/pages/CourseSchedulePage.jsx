@@ -18,11 +18,14 @@ function CourseSchedulePage() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
 
-  const filteredClasses = scheduledClasses.filter((cls) => {
-    const classDate = DateTime.fromISO(cls.datetime).startOf("day");
-    const today = DateTime.now().setZone("America/La_Paz").startOf("day");
-    return classDate >= today;
-  });
+  const filteredClasses = Array.isArray(scheduledClasses)
+  ? scheduledClasses.filter((cls) => {
+      const classDate = DateTime.fromISO(cls.datetime).startOf("day");
+      const today = DateTime.now().setZone("America/La_Paz").startOf("day");
+      return classDate >= today;
+    })
+  : [];
+
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -37,7 +40,8 @@ function CourseSchedulePage() {
     const fetchScheduled = async () => {
       try {
         const res = await api.get("/courses/scheduled-classes/");
-        setScheduledClasses(res.data);
+        const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+setScheduledClasses(data);
       } catch (error) {
         console.error("Error al cargar clases:", error);
       }

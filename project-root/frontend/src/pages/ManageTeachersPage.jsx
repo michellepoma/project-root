@@ -12,6 +12,8 @@ function ManageTeachersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [formError, setFormError] = useState("");
+
   const [showModal, setShowModal] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState(null);
   const [formData, setFormData] = useState({
@@ -29,7 +31,9 @@ function ManageTeachersPage() {
 
   const fetchTeachers = async (page = 1, search = "") => {
     try {
-      const res = await api.get(`/auth/all/?role=teacher&is_superuser=false&page=${page}&search=${search}`);
+      const res = await api.get(
+        `/auth/all/?role=teacher&is_superuser=false&page=${page}&search=${search}`
+      );
       setTeachers(res.data.results);
       setTotalPages(Math.ceil(res.data.count / 10));
       setCurrentPage(page);
@@ -60,7 +64,19 @@ function ManageTeachersPage() {
   };
 
   const handleSubmit = async () => {
+    if (
+      !formData.first_name.trim() ||
+      !formData.last_name.trim() ||
+      !formData.email.trim() ||
+      !formData.ci.trim()
+    ) {
+      setFormError("Todos los campos son obligatorios.");
+      return;
+    }
+    
     try {
+      setFormError("");
+
       const fullName = `${formData.first_name} ${formData.last_name}`.trim();
       const password = `${formData.ci}${formData.first_name}`;
 
@@ -82,6 +98,17 @@ function ManageTeachersPage() {
       fetchTeachers();
       setShowModal(false);
     } catch (err) {
+      const res = err.response?.data;
+      if (typeof res === "string") {
+        setFormError(res);
+      } else if (typeof res === "object") {
+        const firstField = Object.keys(res)[0];
+        const firstError = res[firstField]?.[0] || "Error al guardar.";
+        setFormError(`${firstField}: ${firstError}`);
+      } else {
+        setFormError("Error desconocido al guardar.");
+      }
+
       console.error("Error al guardar docente:", err);
     }
   };
@@ -133,6 +160,7 @@ function ManageTeachersPage() {
         formData={formData}
         setFormData={setFormData}
         editing={editingTeacher}
+        formError={formError}
       />
 
       <DeleteConfirmModal

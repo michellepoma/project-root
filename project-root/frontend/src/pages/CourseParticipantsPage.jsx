@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
+import { capitalizeFullName } from "../utils/format";
 
 function CourseParticipantsPage() {
   const { id } = useParams();
@@ -20,7 +21,10 @@ function CourseParticipantsPage() {
     const fetchParticipants = async () => {
       try {
         const response = await api.get(`/courses/participants/?course=${id}`);
-        setParticipants(response.data);
+        const data = Array.isArray(response.data)
+          ? response.data
+          : response.data.results || [];
+        setParticipants(data);
       } catch (error) {
         console.error("Error al cargar participantes:", error);
       } finally {
@@ -36,11 +40,10 @@ function CourseParticipantsPage() {
       const timer = setTimeout(() => {
         setSuccessMsg("");
       }, 4000); // Desaparece a los 4 segundos
-  
+
       return () => clearTimeout(timer); // Limpieza si el componente cambia antes
     }
   }, [successMsg]);
-  
 
   if (authLoading || loading || !user) {
     return <div className="text-center mt-5">Cargando participantes...</div>;
@@ -63,10 +66,16 @@ function CourseParticipantsPage() {
           style={{ width: 40, height: 40 }}
         >
           <span className="text-uppercase fw-bold">
-            {participant.user_name?.charAt(0) || "U"}
+            {participant.user_name.charAt(0) || "U"}
           </span>
         </div>
-        <span>{participant.user_name || "Usuario"}</span>
+        <span>
+          {participant?.first_name && participant?.last_name
+            ? capitalizeFullName(
+                `${participant.first_name} ${participant.last_name}`
+              )
+            : "Usuario"}
+        </span>
       </div>
       <i className="bi bi-check2-square"></i>
     </li>
@@ -75,7 +84,7 @@ function CourseParticipantsPage() {
   const handleAddStudent = async () => {
     try {
       setErrorMsg("");
-      setSuccessMsg(""); // limpia antes
+      setSuccessMsg("");
 
       await api.post("/courses/participants/add-by-email/", {
         email: studentEmail,
@@ -103,15 +112,18 @@ function CourseParticipantsPage() {
   return (
     <div className="position-relative">
       {successMsg && (
-        <div className="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        {successMsg}
-        <button
-          type="button"
-          className="btn-close"
-          onClick={() => setSuccessMsg("")}
-          aria-label="Close"
-        ></button>
-      </div>
+        <div
+          className="alert alert-success alert-dismissible fade show mt-3"
+          role="alert"
+        >
+          {successMsg}
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setSuccessMsg("")}
+            aria-label="Close"
+          ></button>
+        </div>
       )}
 
       {isTeacher && (
@@ -129,7 +141,7 @@ function CourseParticipantsPage() {
       {/* Profesor */}
       {teachers.length > 0 && (
         <div className="mb-4">
-          <h6 className="text-muted">👨‍🏫 Profesor del Curso</h6>
+          <h6 className="text-muted">👨‍🏫 Docente del Curso</h6>
           <ul className="list-group">{teachers.map(renderParticipant)}</ul>
         </div>
       )}

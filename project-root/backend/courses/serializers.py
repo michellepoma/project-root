@@ -15,6 +15,7 @@ class CourseScheduleSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     schedules = CourseScheduleSerializer(many=True)
     teacher_name = serializers.SerializerMethodField()
+    is_participant = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -28,9 +29,14 @@ class CourseSerializer(serializers.ModelSerializer):
             'teacher',
             'schedules',
             'created_at',
+            'is_participant',
         ]
         read_only_fields = ['code', 'created_at']
 
+    def get_is_participant(self, obj):
+        user = self.context['request'].user
+        return obj.participants.filter(user=user).exists()
+    
     def get_teacher_name(self, obj):
         if obj.teacher:
             first = obj.teacher.first_name.capitalize()
@@ -95,10 +101,12 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class CourseParticipantSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField()
+    first_name = serializers.CharField(source="user.first_name", read_only=True)
+    last_name = serializers.CharField(source="user.last_name", read_only=True)
 
     class Meta:
         model = CourseParticipant
-        fields = ['id', 'user', 'user_name', 'course', 'role', 'joined_at']
+        fields = ['id', 'user', 'first_name', 'last_name', 'user_name', 'course', 'role', 'joined_at']
         read_only_fields = ['joined_at']
 
     def get_user_name(self, obj):
