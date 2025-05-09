@@ -7,7 +7,8 @@ from .views import (
     CustomTokenObtainPairView,
     AdminUserCreateView,
     AdminUserDetailView,
-    UserListView  # ✅ Importación correcta
+    UserListView,
+    PasswordChangeView,  # ✅ Importación correcta
 )
 
 urlpatterns = [
@@ -22,14 +23,23 @@ urlpatterns = [
 
     # Listado de todos los usuarios (admin-only)
     path('all/', UserListView.as_view(), name='user-list'),
-    
+
     # Editar/eliminar Usuario (admin-only)
-    path('admin/users/<int:pk>/', AdminUserDetailView.as_view(), name='admin-user-detail'),
+    path('admin/users/<int:pk>/', AdminUserDetailView.as_view(),
+         name='admin-user-detail'),
     # JWT
-    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', CustomTokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Recuperación de contraseña
-    path('password-reset/', PasswordResetRequestView.as_view(), name='password_reset'),
-    path('password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password-reset/', PasswordResetRequestView.as_view(),
+         name='password_reset'),
+    path('password-reset/confirm/', PasswordResetConfirmView.as_view(),
+         name='password_reset_confirm'),
+
+    # Configuracion de Usuario
+    path('me/', UserProfileView.as_view(), name='user-profile'),
+    path('change-password/',
+         PasswordChangeView.as_view(), name='change-password'),
 ]

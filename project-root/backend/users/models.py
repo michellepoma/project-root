@@ -38,9 +38,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    name = models.CharField(max_length=100)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
-    profile_picture = models.URLField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     ci = models.CharField(max_length=20, blank=True, null=True, unique=True, verbose_name="Cédula de Identidad")
     created_at = models.DateTimeField(auto_now_add=True)
 

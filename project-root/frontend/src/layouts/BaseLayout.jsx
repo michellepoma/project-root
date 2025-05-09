@@ -148,7 +148,7 @@ function BaseLayout() {
 
           <li className="nav-item mt-5">
             <hr />
-            <Link to="/" className="nav-link d-flex align-items-center">
+            <Link to={`/${user?.role}/settings`} className="nav-link d-flex align-items-center">
               <i className="bi bi-gear me-2"></i>
               <span>Configuración</span>
             </Link>

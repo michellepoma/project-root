@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
+import "@/styles/CourseFormModal.css";
 
 const daysOfWeek = [
   { label: "Lunes", value: "mon" },

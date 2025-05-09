@@ -1,5 +1,5 @@
 # backend/users/views.py
-from .serializers import CustomTokenObtainPairSerializer, AdminUserCreateSerializer, AdminUserUpdateSerializer
+from .serializers import CustomTokenObtainPairSerializer, AdminUserCreateSerializer, AdminUserUpdateSerializer, PasswordChangeSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
@@ -75,6 +75,20 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
 
+class PasswordChangeView(generics.UpdateAPIView):
+    serializer_class = PasswordChangeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        new_password = serializer.validated_data['new_password']
+        user = request.user
+        user.set_password(new_password)
+        user.save()
+
+        return Response({"detail": "Contraseña actualizada correctamente."}, status=status.HTTP_200_OK)
 
 class AdminUserCreateView(generics.CreateAPIView):
     """
