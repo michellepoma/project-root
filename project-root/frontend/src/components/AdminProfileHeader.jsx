@@ -1,4 +1,7 @@
 // src/components/AdminProfileHeader.jsx
+//admin nombre 
+import "@/styles/AdminProfileHeader.css";
+
 function AdminProfileHeader({ name, avatar }) {
     return (
       <div className="text-center mb-5">

@@ -1,3 +1,5 @@
+//es el formulario de los componetes de admin 
+import "@/styles/AdminUserModal.css";
 function AdminUserModal({
   show,
   onClose,
@@ -12,62 +14,71 @@ function AdminUserModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  return show ? (
-    <div className="modal fade show d-block" tabIndex="-1">
+  if (!show) return null;
+
+  return (
+    <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
-          <div className="modal-header">
+          {/* Header */}
+          <div className="modal-header border-0">
             <h5 className="modal-title">
               {editing ? "Editar Usuario" : "Añadir Usuario"}
             </h5>
-            <button className="btn-close" onClick={onClose}></button>
+            <button type="button" className="btn-close" onClick={onClose} aria-label="Cerrar"></button>
           </div>
+
+          {/* Error Alert */}
           {formError && (
             <div className="alert alert-danger py-2 px-3">{formError}</div>
           )}
 
+          {/* Body */}
           <div className="modal-body">
             <input
               name="first_name"
-              className="form-control mb-2"
+              className="form-control mb-3"
               placeholder="Nombre"
               value={formData.first_name}
               onChange={handleChange}
             />
             <input
               name="last_name"
-              className="form-control mb-2"
+              className="form-control mb-3"
               placeholder="Apellido"
               value={formData.last_name}
               onChange={handleChange}
             />
             <input
               name="email"
-              className="form-control mb-2"
+              type="email"
+              className="form-control mb-3"
               placeholder="Correo"
               value={formData.email}
               onChange={handleChange}
             />
             <input
               name="ci"
-              className="form-control mb-2"
+              className="form-control mb-3"
               placeholder="CI"
               value={formData.ci}
               onChange={handleChange}
             />
           </div>
-          <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={onClose}>
+
+          {/* Footer */}
+          <div className="modal-footer border-0">
+            <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button className="btn btn-danger" onClick={onSubmit}>
+            <button type="button" className="btn btn-danger" onClick={onSubmit}>
               Guardar
             </button>
           </div>
         </div>
       </div>
     </div>
-  ) : null;
+  );
 }
 
 export default AdminUserModal;
