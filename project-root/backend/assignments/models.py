@@ -1,6 +1,7 @@
 from django.db import models
 from courses.models import Course
 
+
 class Assignment(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
@@ -29,3 +30,17 @@ class Grade(models.Model):
 
     def __str__(self):
         return f"{self.student.name} - {self.assignment.title}: {self.score}"
+
+class Submission(models.Model):
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='submissions')
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='submissions')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    content = models.TextField(blank=True, null=True) # Para respuestas de texto
+    file = models.FileField(upload_to='submissions/', blank=True, null=True) # Para archivos entregados
+    # Podrías añadir un campo de estado, ej. 'entregado', 'calificado'
+
+    class Meta:
+        unique_together = ('assignment', 'student') # Un estudiante solo entrega una vez por tarea
+
+    def __str__(self):
+        return f"Entrega de {self.student.username} para {self.assignment.title}"

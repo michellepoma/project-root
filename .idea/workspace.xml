@@ -4,17 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="08974740-ee5f-48d2-ac99-a7dc84c094f6" name="Changes" comment="✨ Add initial project setup: create project files, add semester field to courses, and update user role choices">
-      <change afterPath="$PROJECT_DIR$/project-root/backend/users/permissions.py" afterDir="false" />
+    <list default="true" id="08974740-ee5f-48d2-ac99-a7dc84c094f6" name="Changes" comment="✨ Add user role management and permissions: implement role field, create admin user serializer, and update course permissions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project-root/backend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project-root/backend/assignments/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/assignments/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project-root/backend/assignments/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/assignments/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project-root/backend/assignments/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/assignments/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project-root/backend/assignments/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/assignments/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project-root/backend/core/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/core/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project-root/backend/core/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/core/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project-root/backend/courses/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/courses/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project-root/backend/courses/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/courses/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project-root/backend/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/users/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project-root/backend/users/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/users/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project-root/backend/users/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/users/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project-root/backend/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/backend/users/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project-root/contenido_directorio.txt" beforeDir="false" afterPath="$PROJECT_DIR$/project-root/contenido_directorio.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,18 +32,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "HAjiMe-0"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;HAjiMe-0&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/michellepoma/project-root.git",
-    "accountId": "3cfb2bcc-6fb9-44e8-92d2-7e8d26a72cf9"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/michellepoma/project-root.git&quot;,
+    &quot;accountId&quot;: &quot;3cfb2bcc-6fb9-44e8-92d2-7e8d26a72cf9&quot;
   }
-}]]></component>
+}</component>
   <component name="InvalidFacetManager">
     <ignored-facets>
       <facet id="django-test/invalid/Django" />
@@ -63,26 +60,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.directorio.executor": "Run",
-    "Python.manage.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.intellij.python.django.customization.DjangoModulesConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.directorio.executor&quot;: &quot;Run&quot;,
+    &quot;Python.manage.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.python.django.customization.DjangoModulesConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="django-test" type="Python.DjangoServer" factoryName="Django server">
       <module name="django-test" />
@@ -138,7 +135,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745545003376</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="✨ Add user role management and permissions: implement role field, create admin user serializer, and update course permissions">
+      <option name="closed" value="true" />
+      <created>1746157962031</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1746157962031</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -147,6 +152,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Enhance course and user management: add semester field, update serializers, and implement course update permissions" />
     <MESSAGE value="✨ Add initial project setup: create project files, add semester field to courses, and update user role choices" />
-    <option name="LAST_COMMIT_MESSAGE" value="✨ Add initial project setup: create project files, add semester field to courses, and update user role choices" />
+    <MESSAGE value="✨ Add user role management and permissions: implement role field, create admin user serializer, and update course permissions" />
+    <option name="LAST_COMMIT_MESSAGE" value="✨ Add user role management and permissions: implement role field, create admin user serializer, and update course permissions" />
   </component>
 </project>
