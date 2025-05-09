@@ -1,0 +1,35 @@
+.admin-profile-header {
+  animation: fadeInHeader 0.8s ease;
+}
+
+.admin-avatar {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 4px solid white;
+  background-color: #eee;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(255, 102, 0, 0.4);
+}
+
+.admin-profile-header h5 {
+  margin-top: 1rem;
+  color: #555;
+  font-size: 1.2rem;
+}
+
+.admin-profile-header h4 {
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* Animaciones */
+@keyframes fadeInHeader {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

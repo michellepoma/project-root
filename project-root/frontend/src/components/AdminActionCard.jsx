@@ -1,10 +1,13 @@
+//Crea una card clickeable con un ícono y un título. 
+// Se usa para navegar entre secciones administrativas (por ejemplo: "Administrar Docentes", "Cursos", etc.).
 import { Link } from "react-router-dom";
+import "@/styles/AdminActionCard.css";
+
+
 
 function AdminActionCard({ onClick, icon, title, bg = "white", textColor = "dark" }) {
     return (
-      <div
-        className={`card border-0 shadow-sm h-100 text-center bg-${bg} text-${textColor} cursor-pointer`}
-        onClick={onClick}
+      <div className="admin-action-card" onClick={onClick}
         role="button"
         style={{ transition: "0.3s", cursor: "pointer" }}
       >

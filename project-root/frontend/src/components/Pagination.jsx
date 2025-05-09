@@ -1,4 +1,5 @@
 // src/components/Pagination.jsx
+import "@/styles/Pagination.css";
 function Pagination({ currentPage, totalPages, onPageChange }) {
     if (totalPages <= 1) return null;
   
@@ -7,7 +8,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
     return (
       <nav className="d-flex justify-content-center mt-4">
         <ul className="pagination">
-          <li className={`page-item ${currentPage === 1 && "disabled"}`}>
+          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
             <button className="page-link" onClick={() => onPageChange(currentPage - 1)}>
               &laquo;
             </button>
@@ -20,7 +21,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
               </button>
             </li>
           ))}
-  
+    
           <li className={`page-item ${currentPage === totalPages && "disabled"}`}>
             <button className="page-link" onClick={() => onPageChange(currentPage + 1)}>
               &raquo;

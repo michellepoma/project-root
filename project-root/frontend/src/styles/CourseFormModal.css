@@ -1,0 +1,43 @@
+.modal-content {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.4s ease;
+}
+
+.modal-header h5 {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.btn-outline-primary {
+    border-color: #ff6600;
+    color: #ff6600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    color: #fff;
+}
+
+.btn-danger {
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    border: none;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(to right, #cc3700, #ff6600);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
