@@ -14,6 +14,7 @@ import MainPage from "./pages/MainPage";
 import MyCoursesPage from "./pages/MyCoursesPage";
 import JoinCoursePage from "./pages/JoinCoursePage";
 import CourseSchedulePage from "./pages/CourseSchedulePage";
+import SettingsPage from "./pages/SettingsPage";
 
 // Curso: contenido interno
 import CourseOverviewPage from "./pages/CourseOverviewPage";
@@ -54,6 +55,7 @@ function App() {
           <Route path="my_courses" element={<MyCoursesPage />} />
           <Route path="join_course" element={<JoinCoursePage />} />
           <Route path="schedule" element={<CourseSchedulePage />} />
+          <Route path="settings" element={<SettingsPage />} />
 
           {/* Curso */}
           <Route path="courses/:id" element={<CourseLayout />}>
@@ -71,6 +73,7 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="my_courses" element={<MyCoursesPage />} />
           <Route path="schedule" element={<CourseSchedulePage />} />
+          <Route path="settings" element={<SettingsPage />} />
 
           {/* Curso */}
           <Route path="courses/:id" element={<CourseLayout />}>
