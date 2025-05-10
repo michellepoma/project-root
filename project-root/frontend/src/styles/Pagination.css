@@ -1,40 +1,38 @@
-
-
-
 .pagination {
-  display: flex;
-  list-style: none;
-  padding: 0;
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.page-item {
-  margin: 0 0.3rem;
+.page-item .page-link {
+    border: none;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 0.8rem;
+    padding: 0.6rem 1rem;
+    color: #ff6600;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.page-link {
-  background: rgba(255, 255, 255, 0.552);
-  backdrop-filter: blur(10px) saturate(150%);
-  border: none;
-  border-radius: 0.6rem;
-  padding: 0.6rem 1.2rem;
-  color: #ffffff;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.page-link:hover {
-  background: linear-gradient(to right, #ff4500, #ff9900);
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-.page-item.active .page-link {
-  background: linear-gradient(to right, #ff4500, #ff9900);
-  color: #fff;
+.page-item .page-link:hover {
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    color: white;
+    transform: translateY(-3px);
 }
 
 .page-item.disabled .page-link {
-  opacity: 0.5;
-  pointer-events: none;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    color: white;
+    transform: scale(1.1);
 }

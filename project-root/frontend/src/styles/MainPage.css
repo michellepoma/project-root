@@ -1,4 +1,17 @@
 /* MainPage.css actualizado FINAL */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
+  font-family: 'Segoe UI', sans-serif;
+  background-image: url("/fondo1.png");
+  background-size: 115%; /* Ajusta para zoom */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #fef6ec;
+}
 
 /* Fondo que cubre TODO */
 .main-container {

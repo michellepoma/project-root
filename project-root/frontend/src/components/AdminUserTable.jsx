@@ -1,29 +1,28 @@
-//tabla de admin 
 import "@/styles/AdminUserTable.css";
+
 function AdminUserTable({ users, onEdit, onDelete }) {
   return (
-    <div className="admin-table-container p-4 rounded shadow">
-      <table className="table table-hover align-middle text-center">
-        <thead className="table-light">
+    <div className="admin-table-container p-4 rounded shadow animate-fade-in">
+      <table className="table table-hover align-middle text-center animate-slide-in">
+        <thead className="table-header">
           <tr>
             <th>Foto</th>
             <th>Nombres</th>
             <th>Apellidos</th>
             <th>Email</th>
             <th>CI</th>
-            <th>Nombre de Usuario</th>
+            <th>Usuario</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {users.map((t) => (
-            <tr key={t.id}>
+            <tr key={t.id} className="table-row">
               <td>
                 <img
                   src={t.profile_picture || "/default_avatar.png"}
                   alt="Foto"
-                  className="rounded-circle shadow-sm"
-                  style={{ width: 40, height: 40, objectFit: "cover" }}
+                  className="user-avatar"
                 />
               </td>
               <td className="text-capitalize">{t.first_name}</td>
@@ -33,11 +32,19 @@ function AdminUserTable({ users, onEdit, onDelete }) {
               <td>{t.name}</td>
               <td>
                 <div className="btn-group">
-                  <button className="btn btn-outline-secundary btn-sm" onClick={() => onEdit(t)}>
-                    <i className="bi bi-pencil"></i> Editar
+                  <button
+                    className="action-btn edit-btn"
+                    title="Editar"
+                    onClick={() => onEdit(t)}
+                  >
+                    <i className="bi bi-pencil-fill"></i>
                   </button>
-                  <button className="btn btn-outline-danger btn-sm" onClick={() => onDelete(t)}>
-                    <i className="bi bi-trash"></i> Eliminar
+                  <button
+                    className="action-btn delete-btn"
+                    title="Eliminar"
+                    onClick={() => onDelete(t)}
+                  >
+                    <i className="bi bi-trash-fill"></i>
                   </button>
                 </div>
               </td>
@@ -45,7 +52,10 @@ function AdminUserTable({ users, onEdit, onDelete }) {
           ))}
         </tbody>
       </table>
-      {users.length === 0 && <p className="text-muted text-center mt-3">No hay usuarios registrados.</p>}
+
+      {users.length === 0 && (
+        <p className="text-muted text-center mt-3">No hay usuarios registrados.</p>
+      )}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+//admin navbar layout etc  
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import { capitalizeFullName } from "../utils/format";
@@ -38,40 +39,23 @@ function AdminDashboard() {
         </div>
 
         {/* Botones de secciones */}
-        <nav className="admin-nav">
-          <button
-            className={`admin-btn ${
-              activeSection === "teachers" ? "active" : ""
-            }`}
-            onClick={() => setActiveSection("teachers")}
-          >
-            <i className="bi bi-person-video2"></i> Administrar Docentes
-          </button>
-          <button
-            className={`admin-btn ${
-              activeSection === "students" ? "active" : ""
-            }`}
-            onClick={() => setActiveSection("students")}
-          >
-            <i className="bi bi-mortarboard"></i> Administrar Estudiantes
-          </button>
-          <button
-            className={`admin-btn ${
-              activeSection === "courses" ? "active" : ""
-            }`}
-            onClick={() => setActiveSection("courses")}
-          >
-            <i className="bi bi-journal-text"></i> Administrar Cursos
-          </button>
-          <button
-            className={`admin-btn ${
-              activeSection === "admins" ? "active" : ""
-            }`}
-            onClick={() => setActiveSection("admins")}
-          >
-            <i className="bi bi-shield-lock"></i> Administrar Administradores
-          </button>
+        <nav className="admin-tab-nav">
+          {[
+            { key: "teachers", icon: "bi-person-video2", label: "Docentes" },
+            { key: "students", icon: "bi-mortarboard", label: "Estudiantes" },
+            { key: "courses", icon: "bi-journal-text", label: "Cursos" },
+            { key: "admins", icon: "bi-shield-lock", label: "Administradores" },
+          ].map((section) => (
+            <div
+              key={section.key}
+              className={`admin-tab-item ${activeSection === section.key ? "active" : ""}`}
+              onClick={() => setActiveSection(section.key)}
+            >
+              <i className={`bi ${section.icon} me-2`}></i> {section.label}
+            </div>
+          ))}
         </nav>
+
 
         {/* Secciones dinámicas */}
         <main className="admin-main">
