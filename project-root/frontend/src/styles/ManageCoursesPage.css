@@ -1,0 +1,138 @@
+:root {
+  --primary-color: #ff8c00;
+  --secondary-color: #ffffff;
+  --danger-color: #ff4500;
+  --danger-gradient: linear-gradient(to right, #ff4500, #ff9900);
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --blur-effect: blur(15px) saturate(180%);
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f0f0f0;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.7; }
+}
+
+/* ===== General Content ===== */
+.py-3 {
+  animation: fadeIn 0.5s ease;
+}
+
+/* ===== Table Styles ===== */
+.table-responsive {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease;
+}
+
+.table th {
+  font-weight: bold;
+  color: #333;
+}
+
+.table td {
+  vertical-align: middle;
+  animation: fadeIn 0.5s ease;
+}
+
+.table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(255, 140, 0, 0.1);
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Action Buttons ===== */
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 0.8rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn.edit-btn {
+  background-color: #9daab6;
+  color: #fff;
+}
+
+.action-btn.edit-btn:hover {
+  background-color: #7c8b99;
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn.delete-btn {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.action-btn.delete-btn:hover {
+  background-color: #cc3700;
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Custom Add Button ===== */
+.custom-btn.danger {
+  background: var(--danger-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.custom-btn.danger:hover {
+  background: #cc3700;
+  transform: scale(1.05);
+}
+
+/* ===== Loading Animation ===== */
+.loading {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  text-align: center;
+  padding: 2rem;
+  animation: pulse 1.5s infinite;
+}

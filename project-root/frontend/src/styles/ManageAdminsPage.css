@@ -1,0 +1,35 @@
+/*✅gestion de administradores */
+
+.custom-btn {
+  all: unset; /* Quitar estilos por defecto de Bootstrap */
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 1rem;
+  backdrop-filter: var(--blur-effect);
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  background: var(--glass-bg);
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);
+}
+
+.custom-btn:hover {
+  background: rgba(255, 140, 0, 0.15);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 25px rgba(255, 140, 0, 0.5);
+}
+
+.custom-btn.danger {
+  background: var(--danger-gradient);
+  color: #fff;
+  box-shadow: 0 12px 25px rgba(255, 140, 0, 0.6);
+}
+
+.custom-btn.danger:hover {
+  background: linear-gradient(to right, #cc3700, #ff6600);
+  transform: translateY(-2px) scale(1.05);
+}

@@ -1,3 +1,5 @@
+//✅gestion de administradores admin
+
 import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import Pagination from "../components/Pagination";
@@ -5,6 +7,8 @@ import AdminUserTable from "../components/AdminUserTable";
 import AdminUserModal from "../components/AdminUserModal";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import SearchBar from "../components/SearchBar";
+import "@/styles/ManageAdminsPage.css";
+
 
 function ManageAdminsPage() {
   const [admins, setAdmins] = useState([]);
@@ -129,12 +133,14 @@ function ManageAdminsPage() {
     <div className="py-3">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="mb-0">Gestión de Administradores</h3>
+
         <button
-          className="btn btn-outline-danger rounded"
+          className="custom-btn danger"
           onClick={() => openModal()}
         >
           <i className="bi bi-person-plus"></i> Añadir Administrador
         </button>
+
       </div>
 
       <SearchBar placeholder="Buscar administrador..." onSearch={handleSearch} />

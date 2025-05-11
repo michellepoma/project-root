@@ -1,3 +1,5 @@
+//✅Gestion de docente 
+
 import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import Pagination from "../components/Pagination";
@@ -133,12 +135,13 @@ function ManageTeachersPage() {
     <div className="py-3">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="mb-0">Gestión de Docentes</h3>
-        <button
-          className="btn btn-outline-danger rounded"
-          onClick={() => openModal()}
-        >
-          <i className="bi bi-person-plus"></i> Añadir Docente
-        </button>
+       <button
+        className="btn-add-teacher"
+        onClick={() => openModal()}
+      >
+        <i className="bi bi-person-plus"></i> AÑADIR DOCENTE
+      </button>
+
       </div>
       <SearchBar placeholder="Buscar docente..." onSearch={handleSearch} />
       <AdminUserTable

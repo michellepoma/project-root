@@ -8,13 +8,7 @@
   --blur-effect: blur(15px) saturate(180%);
 }
 
-body {
-  font-family: "Poppins", sans-serif;
-  background: #f0f0f0;
-  color: #333;
-  margin: 0;
-  padding: 0;
-}
+
 
 /* ================= Animations ================= */
 @keyframes fadeIn {
@@ -28,14 +22,20 @@ body {
   100% { transform: scale(1); opacity: 0.7; }
 }
 
-.py-3, .d-flex, .table-responsive {
+/* ================= Main Container ================= */
+.py-3 {
   animation: fadeIn 0.5s ease;
 }
 
-/* ================= Añadir Docente Button ================= */
-.btn-add-teacher {
-  background: var(--danger-gradient);
-  color: var(--secondary-color);
+/* ================= Header Section ================= */
+.d-flex {
+  animation: fadeIn 0.5s ease;
+}
+
+/* ================= Añadir Estudiante Button ================= */
+.btn-add-student {
+  background: linear-gradient(to right, #ff4500, #ff9900);
+  color: #ffffff;
   border: none;
   border-radius: 0.8rem;
   padding: 0.75rem 1.5rem;
@@ -49,11 +49,11 @@ body {
   gap: 0.5rem;
 }
 
-.btn-add-teacher i {
+.btn-add-student i {
   font-size: 1.2rem;
 }
 
-.btn-add-teacher:hover {
+.btn-add-student:hover {
   background: linear-gradient(to right, #cc3700, #ff6600);
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 8px 25px rgba(255, 140, 0, 0.6);
@@ -65,6 +65,7 @@ body {
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease;
 }
 
 .table th {
@@ -74,6 +75,7 @@ body {
 
 .table td {
   vertical-align: middle;
+  animation: fadeIn 0.5s ease;
 }
 
 .table tbody tr {
@@ -86,7 +88,7 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* ================= Action Buttons ================= */
+/* ================= Action Buttons (Editar / Eliminar) ================= */
 .btn-group {
   display: flex;
   gap: 0.5rem;
@@ -108,22 +110,22 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Editar (Gris/Plomo) */
+/* Editar en color plomo con animación */
 .action-btn.edit-btn {
-  background: #a0a0a0;
-  color: var(--secondary-color);
+  background: linear-gradient(to right, #b0b0b0, #d3d3d3); /* Degradado gris claro */
+  color: #ffffff;
 }
 
 .action-btn.edit-btn:hover {
-  background: #6c6c6c;
+  background: linear-gradient(to right, #a9a9a9, #c0c0c0); /* Gris más oscuro en hover */
   transform: scale(1.15);
-  box-shadow: 0 8px 20px rgba(160, 160, 160, 0.4);
+  box-shadow: 0 8px 20px rgba(169, 169, 169, 0.4); /* Sombra gris */
 }
 
-/* Eliminar (Naranja/Rojo) */
+/* Eliminar */
 .action-btn.delete-btn {
-  background: var(--danger-gradient);
-  color: var(--secondary-color);
+  background: linear-gradient(to right, #ff4500, #ff9900);
+  color: #ffffff;
 }
 
 .action-btn.delete-btn:hover {
@@ -136,6 +138,7 @@ body {
 .search-bar {
   width: 100%;
   margin-bottom: 1.5rem;
+  animation: fadeIn 0.5s ease;
 }
 
 .search-bar input {

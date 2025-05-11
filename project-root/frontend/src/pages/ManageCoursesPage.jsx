@@ -1,9 +1,12 @@
+//✅gestion de cursos admin
+
 import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import CourseFormModal from "../components/CourseFormModal";
+import "@/styles/ManageCoursesPage.css";
 
 function ManageCoursesPage() {
   const [courses, setCourses] = useState([]);
@@ -14,24 +17,17 @@ function ManageCoursesPage() {
   const [editingCourse, setEditingCourse] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchCourses = async (page = 1, search = "") => {
     try {
-      const res = await api.get(
-        `/courses/courses/?page=${page}&search=${search}`
-      );
+      const res = await api.get(`/courses/courses/?page=${page}&search=${search}`);
       setCourses(res.data.results);
       setTotalPages(Math.ceil(res.data.count / 10));
       setCurrentPage(page);
     } catch (err) {
       console.error("Error cargando cursos:", err);
     }
-  };
-  const handleSearch = (value) => {
-    setSearchTerm(value);
-    fetchCourses(1, value);
   };
 
   const fetchTeachers = async () => {
@@ -64,6 +60,7 @@ function ManageCoursesPage() {
       console.error("Error al eliminar curso:", err);
     }
   };
+
   const dayLabels = {
     mon: "Lunes",
     tue: "Martes",
@@ -80,16 +77,17 @@ function ManageCoursesPage() {
     <div className="py-3">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="mb-0">Gestión de Cursos</h3>
-        <button
-          className="btn btn-outline-danger rounded"
-          onClick={() => openModal()}
-        >
+        <button className="custom-btn danger" onClick={() => openModal()}>
           <i className="bi bi-journal-plus"></i> Añadir Curso
         </button>
       </div>
+
       <SearchBar
         placeholder="Buscar cursos por nombre, sigla o docente"
-        onSearch={handleSearch}
+        onSearch={(value) => {
+          setSearchTerm(value);
+          fetchCourses(1, value);
+        }}
       />
 
       <div className="table-responsive bg-light p-3 rounded shadow-sm">
@@ -121,19 +119,21 @@ function ManageCoursesPage() {
                 <td>
                   <div className="btn-group">
                     <button
-                      className="btn btn-outline-secondary btn-sm"
+                      className="action-btn edit-btn"
+                      title="Editar"
                       onClick={() => openModal(course)}
                     >
-                      Editar
+                      <i className="bi bi-pencil-fill"></i>
                     </button>
                     <button
-                      className="btn btn-outline-danger btn-sm"
+                      className="action-btn delete-btn"
+                      title="Eliminar"
                       onClick={() => {
                         setDeleteTarget(course);
                         setShowDeleteModal(true);
                       }}
                     >
-                      Eliminar
+                      <i className="bi bi-trash-fill"></i>
                     </button>
                   </div>
                 </td>

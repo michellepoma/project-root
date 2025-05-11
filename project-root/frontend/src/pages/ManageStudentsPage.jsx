@@ -1,3 +1,5 @@
+//✅gestion de estudiantes admin 
+
 import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import Pagination from "../components/Pagination";
@@ -5,6 +7,7 @@ import AdminUserTable from "../components/AdminUserTable";
 import AdminUserModal from "../components/AdminUserModal";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import SearchBar from "../components/SearchBar";
+import "@/styles/ManageStudentsPage.css";
 
 function ManageStudentsPage() {
   const [students, setStudents] = useState([]);
@@ -128,9 +131,10 @@ function ManageStudentsPage() {
     <div className="py-3">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="mb-0">Gestión de Estudiantes</h3>
-        <button className="btn btn-outline-danger rounded" onClick={() => openModal()}>
-          <i className="bi bi-person-plus"></i> Añadir Estudiante
+        <button className="btn-add-student" onClick={() => openModal()}>
+          <i className="bi bi-person-plus"></i> AÑADIR ESTUDIANTE
         </button>
+
       </div>
 
       <SearchBar placeholder="Buscar estudiante..." onSearch={handleSearch} />
