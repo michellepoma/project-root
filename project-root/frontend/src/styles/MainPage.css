@@ -1,37 +1,60 @@
-/* MainPage.css actualizado FINAL */
+/* =========================
+   VARIABLES GLOBALES
+========================= */
+:root {
+  --navbar-height: 56px;    /* Altura de tu barra de navegación */
+  --slider-width: 60px;     /* Ancho de tu slider lateral */
+  --primary-color: #ff4500;
+  --primary-gradient: linear-gradient(90deg, #ff4500, #ff9900);
+  --primary-gradient-hover: linear-gradient(90deg, #cc3700, #ff6600);
+  --glass-bg: rgba(255,255,255,0.15);
+  --glass-blur: blur(12px) saturate(160%);
+  --shadow-light: rgba(0,0,0,0.1);
+  --shadow-bold: rgba(0,0,0,0.4);
+}
+
+/* =========================
+   RESET & BODY
+========================= */
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: auto;
   font-family: 'Segoe UI', sans-serif;
-  background-image: url("/fondo1.png");
-  background-size: 115%; /* Ajusta para zoom */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: #fef6ec;
+  overflow: auto;
 }
 
-/* Fondo que cubre TODO */
+/* =========================
+   FONDO 1 EN BODY
+========================= */
+
+
+/* =========================
+   FONDO 2 EN CONTENEDOR
+   (desde nav-bar hasta slider)
+========================= */
 .main-container {
-  min-height: 100vh;
-  width: 100%;
-  background: url('/fondo2.png') no-repeat center center fixed;
-  background-size: cover;
+  position: absolute;
+  top: var(--navbar-height);
+  left: 0;
+  right: var(--slider-width);
+  bottom: 0;
+  background: url("/fondo2.png") center/cover no-repeat fixed;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
-  animation: fadeInBody 1s ease;
+  z-index: 0; /* queda bajo el contenido */
 }
 
-/* Contenedor de imagen + botón */
+/* =========================
+   TARJETA DE CONTENIDO
+========================= */
 .content {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px) saturate(160%);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  position: relative;
+  z-index: 1; /* encima del fondo */
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
   border-radius: 1.5rem;
   padding: 3rem;
   width: 90%;
@@ -40,86 +63,56 @@ html, body {
   flex-direction: column;
   align-items: center;
   gap: 2rem;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 30px var(--shadow-bold);
   animation: fadeUp 1s ease;
 }
 
-/* Imagen principal */
+/* =========================
+   IMAGEN PRINCIPAL
+========================= */
 .main-image {
   width: 100%;
   max-width: 600px;
   height: auto;
   object-fit: cover;
   border-radius: 1rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 20px var(--shadow-bold);
   transition: transform 0.4s ease;
 }
-
 .main-image:hover {
   transform: scale(1.03);
 }
 
-/* Botón principal */
+/* =========================
+   BOTÓN “INICIAR SESIÓN”
+========================= */
 .custom-btn {
   width: 100%;
   max-width: 400px;
   padding: 1.2rem;
   font-size: 1.3rem;
   font-weight: bold;
-  color: white;
-  background: linear-gradient(90deg, #ff4500, #ff9900);
+  color: #fff;
+  background: var(--primary-gradient);
   border: none;
   border-radius: 1rem;
-  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.4);
+  box-shadow: 0 8px 20px var(--shadow-light);
   transition: all 0.4s ease;
+  text-transform: uppercase;
 }
-
 .custom-btn:hover {
-  background: linear-gradient(90deg, #cc3700, #ff6600);
+  background: var(--primary-gradient-hover);
   transform: scale(1.05);
 }
 
-/* Modal Crear Nueva Clase */
-.modal-content.login-card {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px) saturate(180%);
-  -webkit-backdrop-filter: blur(15px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
-}
-
-/* Inputs del modal */
-.login-input {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 1rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 0.8rem;
-  margin-bottom: 1.2rem;
-  width: 100%;
-  transition: box-shadow 0.3s ease;
-}
-
-.login-input:focus {
-  outline: none;
-  box-shadow: 0 0 8px rgba(255, 85, 0, 0.6);
-}
-
-/* Animaciones suaves */
+/* =========================
+   ANIMACIONES GLOBALES
+========================= */
 @keyframes fadeInBody {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(50px); }
+  to { opacity: 1; transform: translateY(0); }
 }
