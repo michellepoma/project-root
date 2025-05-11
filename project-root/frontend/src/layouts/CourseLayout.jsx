@@ -1,7 +1,25 @@
+// src/layouts/CourseLayout.jsx
 import { Outlet, useParams, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
+import "@/styles/CourseLayout.css";
+
+// Icono SVG para el journal
+const JournalIcon = () => (
+  <svg
+    className="icon-svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M4 4.5A2.5 2.5 0 0 1 6.5 7H20V19.5H6.5A2.5 2.5 0 0 1 4 17V4.5Z" />
+  </svg>
+);
 
 function CourseLayout() {
   const { id } = useParams();
@@ -9,81 +27,48 @@ function CourseLayout() {
   const [course, setCourse] = useState(null);
 
   useEffect(() => {
-    const fetchCourse = async () => {
-      try {
-        const response = await api.get(`/courses/courses/${id}/`);
-        setCourse(response.data);
-      } catch (err) {
-        console.error("Error al obtener datos del curso:", err);
-      }
-    };
-
-    if (user) fetchCourse();
+    if (!user) return;
+    api.get(`/courses/courses/${id}/`)
+      .then(res => setCourse(res.data))
+      .catch(err => console.error("Error al obtener datos del curso:", err));
   }, [id, user]);
 
-  if (loading) return <div className="text-center mt-5">Cargando curso...</div>;
+  if (loading) return <div className="loader">Cargando curso…</div>;
   if (!user || !course) return null;
 
-  // Determinar prefijo según el rol (student o teacher)
-  const basePath = `/${user.role}/courses/${id}`;
+  const base = `/${user.role}/courses/${id}`;
 
   return (
     <>
-      {/* Navbar del curso */}
-      <div className="bg-primary text-white px-4 py-3 d-flex align-items-center justify-content-between">
-        <div className="d-flex align-items-center gap-3">
-          <i className="bi bi-journal-text fs-4"></i>
-          <h5 className="mb-0">{course.name}</h5>
+      <header className="course-navbar animate-fadeUp">
+        <div className="course-title">
+          <JournalIcon />
+          <h2>{course.name}</h2>
         </div>
+        <nav className="nav-links">
+          {[
+            ["Contenido", base, true],
+            ["Tareas", `${base}/assignments`],
+            ["Calificaciones", `${base}/grades`],
+            ["Participantes", `${base}/participants`],
+          ].map(([label, to, end]) => (
+            <NavLink
+              key={label}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                `nav-link${isActive ? " active" : ""}`
+              }
+            >
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+      </header>
 
-        <ul className="nav">
-          <li className="nav-item">
-            <NavLink
-              to={basePath}
-              end
-              className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "fw-bold" : ""}`
-              }
-            >
-              Contenido
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              to={`${basePath}/assignments`}
-              className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "fw-bold" : ""}`
-              }
-            >
-              Tareas
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              to={`${basePath}/grades`}
-              className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "fw-bold" : ""}`
-              }
-            >
-              Calificaciones
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              to={`${basePath}/participants`}
-              className={({ isActive }) =>
-                `nav-link text-white ${isActive ? "fw-bold" : ""}`
-              }
-            >
-              Participantes
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-
-      <div className="container py-4">
+      <main className="course-content animate-fadeUp">
         <Outlet />
-      </div>
+      </main>
     </>
   );
 }
