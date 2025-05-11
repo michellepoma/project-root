@@ -1,3 +1,5 @@
+//
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
@@ -40,6 +42,9 @@ const AdminMainPage = () => {
         <button className="nav-button">Crear curso</button>
         <button className="nav-button">Añadir Admin</button>
       </nav>
+
+      <button className="nav-button test-style">Añadir Docente</button>
+
 
       <div className="admin-content">
         <h3>Nombre del admin: {user.name}</h3>

@@ -1,5 +1,5 @@
 //Crea una card clickeable con un ícono y un título. 
-// Se usa para navegar entre secciones administrativas (por ejemplo: "Administrar Docentes", "Cursos", etc.).
+// ✅Se usa para navegar entre secciones administrativas (por ejemplo: "Administrar Docentes", "Cursos", etc.).
 import { Link } from "react-router-dom";
 import "@/styles/AdminActionCard.css";
 

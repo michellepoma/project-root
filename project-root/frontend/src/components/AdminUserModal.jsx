@@ -1,4 +1,4 @@
-//es el formulario de los componetes de admin 
+//✅es el formulario de los componetes de admin 
 import "@/styles/AdminUserModal.css";
 function AdminUserModal({
   show,

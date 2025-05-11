@@ -1,5 +1,5 @@
 // src/components/AdminProfileHeader.jsx
-//admin nombre 
+//✅admin nombre 
 import "@/styles/AdminProfileHeader.css";
 
 function AdminProfileHeader({ name, avatar }) {
