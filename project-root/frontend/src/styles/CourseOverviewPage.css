@@ -1,0 +1,127 @@
+:root {
+  --orange-start: #ff4500;
+  --orange-end:   #ff9900;
+  --green-start: #28a745;
+  --green-end:   #218838;
+  --gray-start:  #6c757d;
+  --gray-end:    #495057;
+  --gray-bg:     rgba(255,255,255,0.2);
+  --glass-border: rgba(255,255,255,0.3);
+  --blur-effect:  blur(15px) saturate(180%);
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f0f0f0;
+  color: #333;
+}
+
+.container {
+  animation: fadeIn 0.4s ease;
+}
+
+/* Tarjetas */
+.bg-light {
+  background: var(--gray-bg) !important;
+  backdrop-filter: var(--blur-effect);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.bg-light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Inputs */
+.form-control {
+  border-radius: 0.6rem !important;
+  border: 1px solid #ddd !important;
+  box-shadow: none !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.form-control:focus {
+  outline: none !important;
+  border-color: var(--orange-start) !important;
+  box-shadow: 0 0 6px rgba(255,102,0,0.4) !important;
+}
+
+/* Botones naranjas (Añadir, Guardar) */
+.btn-orange {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  border-radius: 0.6rem;
+  background: linear-gradient(to right, var(--orange-start), var(--orange-end));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-orange:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+/* Botones de acción individuales */
+button[class^="btn-"]:not(.btn-orange),
+a[class^="btn-"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.25rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* EDITAR: degradado gris/plomo */
+.btn-edit {
+  background: linear-gradient(to right, var(--gray-start), var(--gray-end));
+}
+.btn-edit:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* DESCARGAR: degradado verde */
+.btn-download {
+  background: linear-gradient(to right, var(--green-start), var(--green-end));
+}
+.btn-download:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ELIMINAR: usa mismo naranja */
+.btn-delete {
+  background: linear-gradient(to right, var(--orange-start), var(--orange-end));
+}
+.btn-delete:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Modal */
+.modal-content {
+  background: var(--gray-bg) !important;
+  backdrop-filter: var(--blur-effect) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+  animation: fadeIn 0.3s ease;
+}
+.modal-header,
+.modal-footer {
+  border: none !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

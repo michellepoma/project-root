@@ -2,6 +2,7 @@ import { useParams, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
+import "@/styles/CourseOverviewPage.css";
 
 function CourseOverviewPage() {
   const { id } = useParams();
@@ -30,47 +31,44 @@ function CourseOverviewPage() {
   const fetchCourse = async () => {
     try {
       const response = await api.get(`/courses/courses/${id}/`);
-  
-      // Validación: ¿el curso tiene como participante al usuario actual?
       if (!response.data.is_participant) {
-        return setCourse(null); // bloquea acceso
+        setCourse(null);
+        return;
       }
-  
       setCourse(response.data);
     } catch (err) {
-      console.error("Error al cargar detalles del curso:", err);
+      console.error("Error al cargar curso:", err);
       setCourse(null);
     }
   };
-  
 
   const fetchMaterials = async () => {
     try {
-      const response = await api.get(`/courses/materials/?course=${id}`);
-      const data = Array.isArray(response.data)
-        ? response.data
-        : response.data.results || [];
+      const res = await api.get(`/courses/materials/?course=${id}`);
+      const data = Array.isArray(res.data) ? res.data : res.data.results || [];
       setMaterials(data);
     } catch (err) {
-      console.error("Error al cargar materiales del curso:", err);
+      console.error("Error al cargar materiales:", err);
     }
   };
 
   const handleSave = async () => {
-    const formData = new FormData();
-    formData.append("title", form.title);
-    formData.append("description", form.description);
-    formData.append("course", id);
-    if (form.file) formData.append("file", form.file);
-    if (form.link) formData.append("link", form.link);
+    const fd = new FormData();
+    fd.append("title", form.title);
+    fd.append("description", form.description);
+    fd.append("course", id);
+    if (form.file) fd.append("file", form.file);
+    if (form.link) fd.append("link", form.link);
 
     try {
       if (editingMaterial) {
-        await api.put(`/courses/materials/${editingMaterial.id}/`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.put(
+          `/courses/materials/${editingMaterial.id}/`,
+          fd,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
       } else {
-        await api.post(`/courses/materials/`, formData, {
+        await api.post("/courses/materials/", fd, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
@@ -83,11 +81,10 @@ function CourseOverviewPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("¿Estás seguro de que deseas eliminar este material?"))
-      return;
+  const handleDelete = async (mid) => {
+    if (!window.confirm("¿Eliminar este material?")) return;
     try {
-      await api.delete(`/courses/materials/${id}/`);
+      await api.delete(`/courses/materials/${mid}/`);
       fetchMaterials();
     } catch (err) {
       console.error("Error al eliminar material:", err);
@@ -97,17 +94,15 @@ function CourseOverviewPage() {
   if (loading) return <div className="text-center mt-5">Cargando...</div>;
   if (!user) return <Navigate to="/unauthorized" />;
   if (!course)
-    return <div className="text-center mt-5">Cargando datos del curso...</div>;
+    return <div className="text-center mt-5">Acceso no autorizado.</div>;
 
-  const filteredMaterials = Array.isArray(materials)
-    ? materials.filter((m) =>
-        m.title.toLowerCase().includes(query.toLowerCase())
-      )
-    : [];
+  const filtered = materials.filter((m) =>
+    m.title.toLowerCase().includes(query.toLowerCase())
+  );
 
   return (
     <div className="container py-4">
-      <div className="d-flex justify-content-between mb-3">
+      <div className="d-flex justify-content-between mb-3 align-items-center">
         <input
           type="text"
           className="form-control w-50"
@@ -117,19 +112,19 @@ function CourseOverviewPage() {
         />
         {user.role === "teacher" && (
           <button
-            className="btn btn-danger rounded-pill px-4"
+            className="btn-orange btn-add"
             onClick={() => {
               setEditingMaterial(null);
               setForm({ title: "", description: "", file: null, link: "" });
               setShowModal(true);
             }}
           >
-            <i className="bi bi-plus-lg"></i> Agregar
+            <i className="bi bi-plus-lg me-1"></i>Añadir Contenido
           </button>
         )}
       </div>
 
-      {filteredMaterials.map((m) => (
+      {filtered.map((m) => (
         <div
           key={m.id}
           className="bg-light p-3 rounded mb-3 d-flex justify-content-between align-items-center"
@@ -141,51 +136,42 @@ function CourseOverviewPage() {
             </p>
           </div>
           <div className="d-flex gap-2">
-            {m.link && (
-              <a
-                href={m.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline-primary"
-              >
-                Ver enlace
-              </a>
-            )}
+            <button
+              className="btn-edit"
+              title="Editar"
+              onClick={() => {
+                setEditingMaterial(m);
+                setForm({
+                  title: m.title,
+                  description: m.description,
+                  file: null,
+                  link: m.link,
+                });
+                setShowModal(true);
+              }}
+            >
+              <i className="bi bi-pencil-fill"></i>
+            </button>
+
             {m.file && (
               <a
                 href={m.file}
                 download
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline-secondary rounded-pill ms-3"
+                className="btn-download"
+                title="Descargar"
               >
-                <i className="bi bi-download"></i> Descargar
+                <i className="bi bi-download"></i>
               </a>
             )}
+
             {user.role === "teacher" && (
-              <>
-                <button
-                  className="btn btn-outline-warning"
-                  onClick={() => {
-                    setEditingMaterial(m);
-                    setForm({
-                      title: m.title,
-                      description: m.description,
-                      file: null,
-                      link: m.link,
-                    });
-                    setShowModal(true);
-                  }}
-                >
-                  Editar
-                </button>
-                <button
-                  className="btn btn-outline-danger"
-                  onClick={() => handleDelete(m.id)}
-                >
-                  Eliminar
-                </button>
-              </>
+              <button
+                className="btn-delete"
+                title="Eliminar"
+                onClick={() => handleDelete(m.id)}
+              >
+                <i className="bi bi-trash-fill"></i>
+              </button>
             )}
           </div>
         </div>
@@ -197,9 +183,7 @@ function CourseOverviewPage() {
             <div className="modal-content p-4 rounded-4">
               <div className="modal-header border-0">
                 <h5 className="modal-title">
-                  {editingMaterial
-                    ? "Editar Material"
-                    : "Agregar Nuevo Material"}
+                  {editingMaterial ? "Editar Material" : "Agregar Material"}
                 </h5>
                 <button
                   className="btn-close"
@@ -211,7 +195,9 @@ function CourseOverviewPage() {
                   className="form-control mb-3"
                   placeholder="Título"
                   value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, title: e.target.value })
+                  }
                 />
                 <textarea
                   className="form-control mb-3"
@@ -225,8 +211,10 @@ function CourseOverviewPage() {
                 <input
                   className="form-control mb-3"
                   placeholder="Enlace (opcional)"
-                  value={form.link || ""}
-                  onChange={(e) => setForm({ ...form, link: e.target.value })}
+                  value={form.link}
+                  onChange={(e) =>
+                    setForm({ ...form, link: e.target.value })
+                  }
                 />
                 <input
                   type="file"
@@ -237,7 +225,7 @@ function CourseOverviewPage() {
                 />
                 <div className="text-center">
                   <button
-                    className="btn btn-danger rounded-pill px-5"
+                    className="btn-orange btn-save"
                     onClick={handleSave}
                   >
                     Guardar
