@@ -1,4 +1,4 @@
-//  ✅tareas de cursos 
+// ✅ Tareas de cursos
 // frontend/src/pages/CourseAssignmentsPage.jsx
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
@@ -29,7 +29,9 @@ function CourseAssignmentsPage() {
 
   const fetchAssignments = useCallback(async () => {
     try {
-      const response = await api.get(`/assignments/assignments/?course=${id}`);
+      const response = await api.get(
+        `/assignments/assignments/?course=${id}`
+      );
       const data = Array.isArray(response.data)
         ? response.data
         : response.data.results || [];
@@ -61,8 +63,8 @@ function CourseAssignmentsPage() {
             rel="noopener noreferrer"
             className="text-decoration-none d-flex align-items-center gap-2"
           >
-            <i className="bi bi-file-earmark-text-fill text-primary fs-5"></i>
-            <span className="text-truncate small" style={{ maxWidth: "250px" }}>
+            <i className="bi bi-file-earmark-text-fill fs-5"></i>
+            <span className="text-truncate small" style={{ maxWidth: 250 }}>
               Ver archivo adjunto
             </span>
           </a>
@@ -74,8 +76,8 @@ function CourseAssignmentsPage() {
             rel="noopener noreferrer"
             className="text-decoration-none d-flex align-items-center gap-2"
           >
-            <i className="bi bi-link-45deg text-success fs-5"></i>
-            <span className="text-truncate small" style={{ maxWidth: "250px" }}>
+            <i className="bi bi-link-45deg fs-5"></i>
+            <span className="text-truncate small" style={{ maxWidth: 250 }}>
               {task.link}
             </span>
           </a>
@@ -88,21 +90,22 @@ function CourseAssignmentsPage() {
       const formData = new FormData();
       formData.append("title", newAssignment.title || "");
       formData.append("description", newAssignment.description || "");
-      formData.append("due_date", newAssignment.due_date); // esto es "2025-05-03T18:12"
+      formData.append("due_date", newAssignment.due_date);
       formData.append("course", id);
 
       if (newAssignment.attachment) {
         formData.append("attachment", newAssignment.attachment);
       }
-
       if (newAssignment.link && newAssignment.link.trim() !== "") {
         formData.append("link", newAssignment.link);
       }
 
       if (editingTask) {
-        await api.patch(`/assignments/assignments/${editingTask.id}/`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.patch(
+          `/assignments/assignments/${editingTask.id}/`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
       } else {
         await api.post("/assignments/assignments/", formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -148,6 +151,7 @@ function CourseAssignmentsPage() {
     });
   };
 
+  // ===== Estudiante =====
   if (user?.role === "student") {
     return (
       <div className="container py-4">
@@ -157,18 +161,15 @@ function CourseAssignmentsPage() {
           const stillOpen = isDue(task.due_date);
 
           return (
-            <div
-              key={task.id}
-              className="bg-light p-4 rounded-4 mb-3 shadow-sm"
-            >
-              <div className="d-flex justify-content-between">
+            <div key={task.id} className="assignment-card">
+              <div className="d-flex justify-content-between align-items-start">
                 <div>
                   <strong>{task.title}</strong>
                   <p>{task.description}</p>
                   <ResourceBlock task={task} />
                 </div>
                 <button
-                  className="btn btn-outline-secondary btn-sm"
+                  className="btn-orange btn-toggle"
                   onClick={() => setOpenTaskId(isOpen ? null : task.id)}
                 >
                   {isOpen ? "Ocultar" : "Ver tarea"}
@@ -185,9 +186,8 @@ function CourseAssignmentsPage() {
                       {getTimeRemaining(task.due_date)}
                     </span>
                   </p>
-
                   {stillOpen ? (
-                    <button className="btn btn-danger rounded-pill">
+                    <button className="btn-orange btn-upload">
                       Subir entrega
                     </button>
                   ) : (
@@ -204,12 +204,16 @@ function CourseAssignmentsPage() {
     );
   }
 
+  // ===== Profesor =====
   if (user?.role === "teacher") {
     return (
       <div className="container py-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h4>Tareas del curso</h4>
-          <button className="btn btn-danger" onClick={() => setShowModal(true)}>
+          <button
+            className="btn-orange btn-new"
+            onClick={() => setShowModal(true)}
+          >
             + Nueva tarea
           </button>
         </div>
@@ -217,7 +221,7 @@ function CourseAssignmentsPage() {
         {assignments.map((task) => (
           <div
             key={task.id}
-            className="bg-light rounded-4 p-3 mb-3 shadow-sm d-flex justify-content-between"
+            className="assignment-card d-flex justify-content-between align-items-start"
           >
             <div>
               <strong>{task.title}</strong>
@@ -227,39 +231,33 @@ function CourseAssignmentsPage() {
                 Entrega: {formatToLocal(task.due_date)}
               </small>
             </div>
-
             <div className="d-flex gap-2">
-  <button
-    className="icon-btn edit"
-    onClick={() => {
-      setEditingTask(task);
-      setNewAssignment({
-        title: task.title || "",
-        description: task.description || "",
-        due_date: (task.due_date || "").slice(0, 16),
-        attachment: null,
-        link: task.link || "",
-      });
-      setShowModal(true);
-    }}
-  >
-    <i className="bi bi-pencil"></i>
-  </button>
-
-  <button
-    className="icon-btn delete"
-    onClick={() => {
-      setTaskToDelete(task);
-      setShowDeleteConfirm(true);
-    }}
-  >
-    <i className="bi bi-trash"></i>
-  </button>
-</div>
-
-
-        
-
+              <button
+                className="icon-btn edit"
+                onClick={() => {
+                  setEditingTask(task);
+                  setNewAssignment({
+                    title: task.title || "",
+                    description: task.description || "",
+                    due_date: (task.due_date || "").slice(0, 16),
+                    attachment: null,
+                    link: task.link || "",
+                  });
+                  setShowModal(true);
+                }}
+              >
+                <i className="bi bi-pencil-fill"></i>
+              </button>
+              <button
+                className="icon-btn delete"
+                onClick={() => {
+                  setTaskToDelete(task);
+                  setShowDeleteConfirm(true);
+                }}
+              >
+                <i className="bi bi-trash-fill"></i>
+              </button>
+            </div>
           </div>
         ))}
 
@@ -339,7 +337,7 @@ function CourseAssignmentsPage() {
 
                   <div className="text-center">
                     <button
-                      className="btn btn-danger px-4"
+                      className="btn-orange btn-save"
                       onClick={handleCreateOrEditAssignment}
                     >
                       Guardar
@@ -354,7 +352,7 @@ function CourseAssignmentsPage() {
         {showDeleteConfirm && taskToDelete && (
           <div className="modal fade show d-block" tabIndex="-1">
             <div className="modal-dialog modal-dialog-centered">
-              <div className="modal-content">
+              <div className="modal-content rounded-4 p-4">
                 <div className="modal-header">
                   <h5 className="modal-title">¿Eliminar tarea?</h5>
                   <button
@@ -369,7 +367,7 @@ function CourseAssignmentsPage() {
                     puede deshacer.
                   </p>
                 </div>
-                <div className="modal-footer">
+                <div className="modal-footer d-flex justify-content-end gap-2">
                   <button
                     className="btn btn-secondary"
                     onClick={() => setShowDeleteConfirm(false)}
@@ -377,7 +375,7 @@ function CourseAssignmentsPage() {
                     Cancelar
                   </button>
                   <button
-                    className="btn btn-danger"
+                    className="btn-orange btn-delete-confirm"
                     onClick={async () => {
                       await handleDeleteAssignment(taskToDelete.id);
                       setShowDeleteConfirm(false);
