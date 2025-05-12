@@ -1,0 +1,116 @@
+:root {
+  --orange-start: #ff4500;
+  --orange-end:   #ff9900;
+  --orange-hover-start: #cc3700;
+  --orange-hover-end:   #ff6600;
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --blur-effect: blur(15px) saturate(180%);
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  color: #333;
+}
+
+/* Animación de entrada */
+.container {
+  animation: fadeIn 0.4s ease;
+}
+
+/* Títulos */
+h3.text-center {
+  color: var(--orange-start);
+  margin-bottom: 1rem;
+}
+
+/* Tarjetas de tareas */
+.bg-light {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--blur-effect);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.bg-light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Botón naranja degradado */
+.btn-orange, .btn-orange.btn-sm {
+  background: linear-gradient(
+    to right,
+    var(--orange-start),
+    var(--orange-end)
+  ) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.4rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Tamaños */
+.btn-orange {
+  padding: 0.6rem 1.2rem !important;
+}
+.btn-orange.btn-sm {
+  padding: 0.35rem 0.8rem !important;
+  font-size: 0.9rem !important;
+}
+
+/* Hover: solo escala y sombra, mantiene degradado */
+.btn-orange:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Botón secundario outline para estudiante */
+.btn-outline-primary, .btn-outline-secondary {
+  border: 2px solid var(--orange-start) !important;
+  color: var(--orange-start) !important;
+  background: transparent !important;
+  border-radius: 0.75rem !important;
+  padding: 0.4rem 0.8rem !important;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover {
+  background: var(--orange-start) !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Inputs de modal */
+.form-control {
+  border-radius: 0.6rem !important;
+  border: 1px solid #ddd !important;
+  box-shadow: none !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.form-control:focus {
+  outline: none !important;
+  border-color: var(--orange-start) !important;
+  box-shadow: 0 0 6px rgba(255,102,0,0.4) !important;
+}
+
+/* Modal */
+.modal-content {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--blur-effect) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Animación fadeIn */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

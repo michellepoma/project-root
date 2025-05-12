@@ -1,11 +1,12 @@
-// frontend/src/pages/CourseGradesPage.jsx
+// ✅CAlificaciones 
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
-
 import { DateTime } from "luxon";
 import { formatToLocal, getTimeRemaining } from "../utils/time";
+import "@/styles/CourseGradesPage.css";
 
 function CourseGradesPage() {
   const { id } = useParams();
@@ -17,26 +18,25 @@ function CourseGradesPage() {
   const [selectedGrade, setSelectedGrade] = useState(null);
   const [score, setScore] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
   const [uploadType, setUploadType] = useState("file");
 
+  // Carga inicial de tareas
   useEffect(() => {
     if (!id || !user) return;
-
     const fetchAssignments = async () => {
       try {
         const res = await api.get(`/assignments/assignments/?course=${id}`);
-        const data = Array.isArray(res.data)
-        ? res.data
-        : res.data.results || [];
-      setAssignments(data);
+        const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+        setAssignments(data);
       } catch (err) {
         console.error("Error al cargar tareas:", err);
       }
     };
-
     fetchAssignments();
   }, [id, user]);
 
+  // Carga de calificaciones para una tarea concreta
   const fetchGrades = async (assignmentId) => {
     try {
       const res = await api.get(`/grades/?assignment=${assignmentId}`);
@@ -61,8 +61,9 @@ function CourseGradesPage() {
     }
   };
 
-  if (authLoading || !user)
+  if (authLoading || !user) {
     return <div className="text-center mt-5">Cargando usuario...</div>;
+  }
 
   // === VISTA PROFESOR ===
   if (user.role === "teacher") {
@@ -77,7 +78,7 @@ function CourseGradesPage() {
                 <p className="text-muted">{a.description}</p>
               </div>
               <button
-                className="btn btn-outline-primary"
+                className="btn-orange"
                 onClick={() => {
                   setExpandedTaskId(a.id);
                   fetchGrades(a.id);
@@ -98,7 +99,7 @@ function CourseGradesPage() {
                       <span>{g.student_name}</span>
                       <span>{g.score || 0}/100</span>
                       <button
-                        className="btn btn-sm btn-danger"
+                        className="btn-orange btn-sm"
                         onClick={() => openGradeModal(g)}
                       >
                         Calificar / Editar
@@ -113,7 +114,7 @@ function CourseGradesPage() {
           </div>
         ))}
 
-        {/* Modal Calificación */}
+        {/* Modal de Calificar */}
         {selectedGrade && (
           <div className="modal fade show d-block" tabIndex="-1">
             <div className="modal-dialog modal-md modal-dialog-centered">
@@ -125,7 +126,6 @@ function CourseGradesPage() {
                     onClick={() => setSelectedGrade(null)}
                   ></button>
                 </div>
-
                 <div className="modal-body">
                   <p>
                     <strong>Estudiante:</strong> {selectedGrade.student_name}
@@ -139,9 +139,8 @@ function CourseGradesPage() {
                     onChange={(e) => setScore(Number(e.target.value))}
                   />
                 </div>
-
                 <div className="modal-footer">
-                  <button className="btn btn-danger" onClick={saveGrade}>
+                  <button className="btn-orange" onClick={saveGrade}>
                     Guardar
                   </button>
                 </div>
@@ -158,118 +157,59 @@ function CourseGradesPage() {
     <div className="container py-4">
       <h3 className="mb-4 text-center">Mis Tareas y Calificaciones</h3>
 
-      {assignments.map((task) => (
-        <div key={task.id} className="bg-light p-3 mb-3 rounded shadow-sm">
-          <div className="d-flex justify-content-between align-items-start">
-            <div>
-              <h5>{task.title}</h5>
-              <p className="text-muted">{task.description}</p>
-            </div>
-            <button
-              className="btn btn-outline-primary btn-sm"
-              onClick={() => {
-                setExpandedTaskId(expandedTaskId === task.id ? null : task.id);
-                fetchGrades(task.id); // Asegúrate de que cargue calificaciones
-              }}
-            >
-              {expandedTaskId === task.id ? "Ocultar" : "Ver tarea"}
-            </button>
-          </div>
-
-          {expandedTaskId === task.id && (
-            <div className="mt-3">
-              <p>
-                <strong>Fecha de entrega:</strong>{" "}
-                {formatToLocal(task.due_date)}
-                <br />
-                <span className="text-muted">
-                  {getTimeRemaining(task.due_date) || "⏱️ Plazo vencido"}
-                </span>
-              </p>
-
-              {grades[task.id]?.length > 0 ? (
-                grades[task.id]
-                  .filter((g) => g.student === user.id)
-                  .map((g) => (
-                    <p key={g.id}>
-                      <strong>Tu nota:</strong> {g.score}/100
-                      <br />
-                      <strong>Feedback:</strong>{" "}
-                      {g.feedback || "Sin comentarios"}
-                    </p>
-                  ))
-              ) : DateTime.now().toUTC() > DateTime.fromISO(task.due_date) ? (
-                <p className="text-danger">
-                  No entregaste esta tarea antes del plazo.
-                </p>
-              ) : (
-                <p className="text-muted">
-                  Aún no has recibido una calificación para esta tarea.
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
-
-      {/* Modal entrega estudiante */}
-      {showModal && (
-        <div className="modal fade show d-block" tabIndex="-1">
-          <div className="modal-dialog modal-md modal-dialog-centered">
-            <div className="modal-content p-4">
-              <div className="modal-header border-0">
-                <h5 className="modal-title">Agregar Entrega</h5>
-                <button
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
+      {assignments.map((task) => {
+        const isOpen = expandedTaskId === task.id;
+        const isDue = DateTime.now().toUTC() < DateTime.fromISO(task.due_date);
+        return (
+          <div key={task.id} className="bg-light p-3 mb-3 rounded shadow-sm">
+            <div className="d-flex justify-content-between align-items-start">
+              <div>
+                <h5>{task.title}</h5>
+                <p className="text-muted">{task.description}</p>
               </div>
+              <button
+                className="btn-orange btn-sm"
+                onClick={() => {
+                  setExpandedTaskId(isOpen ? null : task.id);
+                  fetchGrades(task.id);
+                }}
+              >
+                {isOpen ? "Ocultar" : "Ver tarea"}
+              </button>
+            </div>
 
-              <div className="modal-body text-center">
-                <div className="btn-group mb-3 rounded-pill">
-                  <button
-                    className={`btn ${
-                      uploadType === "file" ? "btn-danger" : "btn-light"
-                    }`}
-                    onClick={() => setUploadType("file")}
-                  >
-                    Archivo
-                  </button>
-                  <button
-                    className={`btn ${
-                      uploadType === "link" ? "btn-danger" : "btn-light"
-                    }`}
-                    onClick={() => setUploadType("link")}
-                  >
-                    Enlace
-                  </button>
-                </div>
+            {isOpen && (
+              <div className="mt-3">
+                <p>
+                  <strong>Fecha de entrega:</strong> {formatToLocal(task.due_date)}
+                  <br />
+                  <span className="text-muted">
+                    {getTimeRemaining(task.due_date) || "⏱️ Plazo vencido"}
+                  </span>
+                </p>
 
-                {uploadType === "file" ? (
-                  <label className="btn btn-outline-dark rounded-pill">
-                    Seleccionar archivo
-                    <input type="file" hidden />
-                  </label>
+                {grades[task.id]?.length > 0 ? (
+                  grades[task.id]
+                    .filter((g) => g.student === user.id)
+                    .map((g) => (
+                      <p key={g.id}>
+                        <strong>Tu nota:</strong> {g.score}/100
+                        <br />
+                        <strong>Feedback:</strong> {g.feedback || "Sin comentarios"}
+                      </p>
+                    ))
+                ) : !isDue ? (
+                  <button className="btn-orange">Subir entrega</button>
                 ) : (
-                  <input
-                    className="form-control rounded-pill mb-3"
-                    placeholder="Pegar enlace"
-                  />
+                  <p className="text-danger">
+                    Plazo vencido. Ya no puedes entregar.
+                  </p>
                 )}
-
-                <div className="mt-4">
-                  <button
-                    className="btn btn-danger rounded-pill px-4"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Guardar entrega
-                  </button>
-                </div>
               </div>
-            </div>
+            )}
           </div>
-        </div>
-      )}
+        );
+      })}
     </div>
   );
 }
