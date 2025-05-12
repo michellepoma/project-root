@@ -1,4 +1,3 @@
-// frontend/src/pages/CourseParticipantsPage.jsx
 import { useEffect, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import api from "../api/axiosConfig";
@@ -18,6 +17,7 @@ function CourseParticipantsPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
+  // Carga inicial de participantes
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
@@ -35,57 +35,62 @@ function CourseParticipantsPage() {
     fetchParticipants();
   }, [id]);
 
+  // Limpia mensaje de éxito tras 4s
   useEffect(() => {
-    if (successMsg) {
-      const timer = setTimeout(() => setSuccessMsg(""), 4000);
-      return () => clearTimeout(timer);
-    }
+    if (!successMsg) return;
+    const timer = setTimeout(() => setSuccessMsg(""), 4000);
+    return () => clearTimeout(timer);
   }, [successMsg]);
 
-  if (authLoading || loading || !user) {
+  if (authLoading || loading) {
     return <div className="text-center mt-5">Cargando participantes...</div>;
   }
+  if (!user) return <Navigate to="/unauthorized" />;
 
-  if (!user) {
-    return <Navigate to="/unauthorized" />;
-  }
-
-  const isTeacher =
-    participants.some((p) => p.user === user.id && p.role === "teacher");
-
+  const isTeacher = participants.some(
+    (p) => p.user === user.id && p.role === "teacher"
+  );
   const teachers = participants.filter((p) => p.role === "teacher");
   const students = participants.filter((p) => p.role === "student");
 
-  const renderParticipant = (p) => (
-    <li key={p.id} className="list-group-item participant-item">
-      <div className="participant-info">
-        <div className="participant-avatar">
-          {p.user_name.charAt(0)?.toUpperCase() || "U"}
-        </div>
-        <span className="participant-name">
-          {p.first_name && p.last_name
-            ? capitalizeFullName(`${p.first_name} ${p.last_name}`)
-            : "Usuario"}
+  const renderParticipant = (participant) => (
+    <li
+      key={participant.id}
+      className="list-group-item d-flex align-items-center gap-3"
+    >
+      <div
+        className="rounded-circle bg-light d-flex justify-content-center align-items-center"
+        style={{ width: 40, height: 40 }}
+      >
+        <span className="text-uppercase fw-bold">
+          {participant.user_name.charAt(0) || "U"}
         </span>
       </div>
-      <i className="bi bi-check2-square check-icon"></i>
+      <span>
+        {participant.first_name && participant.last_name
+          ? capitalizeFullName(
+              `${participant.first_name} ${participant.last_name}`
+            )
+          : "Usuario"}
+      </span>
     </li>
   );
 
   const handleAddStudent = async () => {
     try {
       setErrorMsg("");
-      setSuccessMsg("");
-      await api.post("/courses/participants/add-by-email/", {
+      const res = await api.post("/courses/participants/add-by-email/", {
         email: studentEmail,
         course_id: parseInt(id),
       });
+      // recarga
       const updated = await api.get(`/courses/participants/?course=${id}`);
       const updatedList = Array.isArray(updated.data)
         ? updated.data
         : updated.data.results || [];
       setParticipants(updatedList);
-      setSuccessMsg("Estudiante agregado exitosamente.");
+
+      setSuccessMsg("✅ Estudiante agregado exitosamente.");
       setShowModal(false);
       setStudentEmail("");
     } catch (error) {
@@ -101,47 +106,53 @@ function CourseParticipantsPage() {
   };
 
   return (
-    <div className="course-participants-container">
+    <div className="position-relative">
       {successMsg && (
-        <div className="alert alert-success alert-dismissible fade show">
+        <div
+          className="alert alert-success alert-dismissible fade show mt-3"
+          role="alert"
+        >
           {successMsg}
           <button
             type="button"
             className="btn-close"
             onClick={() => setSuccessMsg("")}
             aria-label="Close"
-          />
+          ></button>
         </div>
       )}
 
       {isTeacher && (
-        <div className="add-student-wrapper">
+        <div className="d-flex justify-content-end mb-4">
           <button
-            className="btn add-student-btn"
+            className="add-student-btn"
             onClick={() => setShowModal(true)}
           >
-            <i className="bi bi-person-plus me-2"></i>
+            <i className="bi bi-person-plus"></i>
             Agregar estudiante
           </button>
         </div>
       )}
 
+      {/* Docentes */}
       {teachers.length > 0 && (
-        <section className="mb-4">
-          <h6 className="section-title">Docente del Curso</h6>
+        <div className="mb-4">
+          <h6 className="text-muted">👨‍🏫 Docente del Curso</h6>
           <ul className="list-group">{teachers.map(renderParticipant)}</ul>
-        </section>
+        </div>
       )}
 
-      <section>
-        <h6 className="section-title">Estudiantes</h6>
+      {/* Estudiantes */}
+      <div>
+        <h6 className="text-muted">👨‍🎓 Estudiantes</h6>
         {students.length > 0 ? (
           <ul className="list-group">{students.map(renderParticipant)}</ul>
         ) : (
           <p className="text-muted">No hay estudiantes registrados aún.</p>
         )}
-      </section>
+      </div>
 
+      {/* Modal Añadir Estudiante */}
       {showModal && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog modal-md modal-dialog-centered">
@@ -151,12 +162,11 @@ function CourseParticipantsPage() {
                 <button
                   className="btn-close"
                   onClick={() => setShowModal(false)}
-                />
+                ></button>
               </div>
               <div className="modal-body">
                 <input
-                  type="email"
-                  className="form-control mb-3"
+                  className="form-control rounded-pill mb-3"
                   placeholder="Correo electrónico del estudiante"
                   value={studentEmail}
                   onChange={(e) => setStudentEmail(e.target.value)}
@@ -164,7 +174,7 @@ function CourseParticipantsPage() {
                 {errorMsg && <p className="text-danger small">{errorMsg}</p>}
                 <div className="text-center">
                   <button
-                    className="btn btn-danger rounded-pill px-5 py-2"
+                    className="add-student-btn"
                     onClick={handleAddStudent}
                   >
                     Guardar

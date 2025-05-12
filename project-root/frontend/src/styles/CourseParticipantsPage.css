@@ -1,92 +1,51 @@
-.course-participants-container {
-  padding-top: 1rem;
+:root {
+  --orange-gradient: linear-gradient(90deg, #ff4500, #ff9900);
+  --white: #ffffff;
+  --bg-light: #fdfdfd;
 }
 
-/* Separación adicional para el botón */
-.add-student-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 2rem; /* aumenta la separación */
-  margin-bottom: 1rem;
+/* ================= Añadir Estudiante ================= */
+.d-flex.justify-content-end.mb-4 {
+  /* más separación desde el navbar */
+  margin-top: 2rem !important;
 }
 
-/* Botón Agregar Estudiante */
 .add-student-btn {
-  background: linear-gradient(to right, #ff4500, #ff9900);
-  color: #fff;
+  background: var(--orange-gradient);
+  color: var(--white) !important;
+  font-weight: 900;
   border: none;
-  border-radius: 2rem;
+  border-radius: 1rem;
   padding: 0.75rem 1.5rem;
-  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.add-student-btn i {
+  color: var(--white);
 }
 .add-student-btn:hover {
   transform: translateY(-2px) scale(1.05);
 }
 
-/* Títulos de sección */
-.section-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 0.5rem;
-}
-
-/* Ítem de participante */
-.participant-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
+/* ================= Listado de Participantes ================= */
+.list-group-item {
+  background: var(--bg-light);
+  border: none;
+  border-radius: 1rem;    /* esquinas más redondeadas */
+  margin-bottom: 0.75rem; /* un poco más de separación */
+  padding: 1rem 1.25rem;
   transition: background 0.3s ease;
 }
-.participant-item:hover {
-  background: rgba(255, 140, 0, 0.1);
+.list-group-item:hover {
+  background: #faf9f6;
 }
 
-/* Info interna */
-.participant-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.participant-avatar {
-  width: 40px;
-  height: 40px;
-  background: #f0f0f0;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  color: #444;
-}
-.participant-name {
-  font-weight: 500;
-  color: #333;
-}
-
-/* Icono de chequeo */
-.check-icon {
-  font-size: 1.2rem;
-  color: #28a745;
-}
-
-/* Modal override */
-.modal-content {
-  background: rgba(255, 255, 255, 0.95);
-}
-
-/* Input de email */
-.modal-body .form-control {
-  border-radius: 2rem;
-}
-
-/* Animaciones */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.modal.fade .modal-dialog {
-  animation: fadeIn 0.4s ease;
+/* ================= Encabezados ================= */
+.text-muted {
+  font-size: 0.9rem;
+  color: #666 !important;
+  margin-bottom: 0.5rem;
 }
