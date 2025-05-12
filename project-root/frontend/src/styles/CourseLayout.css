@@ -163,17 +163,76 @@ html, body {
     font-weight: bold;
 }
 
-/* Content Section */
-.course-content {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 1rem 2rem;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-    border-radius: 1rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    animation: fadeInUp 0.5s ease;
+/* Modal Adaptativo */
+.modal-dialog {
+    width: 90%;
+    max-width: 600px;
+    margin: auto;
 }
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    max-height: 90vh; /* 👈 Previene que se salga de pantalla */
+    overflow-y: auto; /* 👈 Agrega scroll interno si es necesario */
+}
+
+/* Inputs y Textareas */
+.modal-content input,
+.modal-content textarea {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.8rem;
+    border: 1px solid rgba(255, 145, 0, 0.4);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    resize: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(255, 145, 0, 0.6);
+}
+
+/* Botones */
+.modal-footer button {
+    padding: 0.8rem 2rem;
+    border-radius: 0.8rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.cancel-btn {
+    background: #ccc;
+    color: #333;
+}
+
+.save-btn {
+    background: linear-gradient(to right, #ff4500, #ff9900);
+    color: #fff;
+}
+
+.save-btn:hover,
+.cancel-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive Behavior */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 1rem;
+        max-width: 95%;
+    }
+}
+
+
 
 /* Animations */
 @keyframes fadeInDown {

@@ -1,4 +1,4 @@
-// 
+//  ✅tareas de cursos 
 // frontend/src/pages/CourseAssignmentsPage.jsx
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosConfig";
 import { formatToLocal, getTimeRemaining } from "../utils/time";
 import { DateTime } from "luxon";
+import "@/styles/CourseAssignmentsPage.css";
 
 function CourseAssignmentsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -226,33 +227,39 @@ function CourseAssignmentsPage() {
                 Entrega: {formatToLocal(task.due_date)}
               </small>
             </div>
+
             <div className="d-flex gap-2">
-              <button
-                className="btn btn-outline-secondary btn-sm"
-                onClick={() => {
-                  setEditingTask(task);
-                  setNewAssignment({
-                    title: task.title || "",
-                    description: task.description || "",
-                    due_date: (task.due_date || "").slice(0, 16),
-                    attachment: null,
-                    link: task.link || "",
-                  });
-                  setShowModal(true);
-                }}
-              >
-                Editar
-              </button>
-              <button
-                className="btn btn-outline-danger btn-sm"
-                onClick={() => {
-                  setTaskToDelete(task);
-                  setShowDeleteConfirm(true);
-                }}
-              >
-                Eliminar
-              </button>
-            </div>
+  <button
+    className="icon-btn edit"
+    onClick={() => {
+      setEditingTask(task);
+      setNewAssignment({
+        title: task.title || "",
+        description: task.description || "",
+        due_date: (task.due_date || "").slice(0, 16),
+        attachment: null,
+        link: task.link || "",
+      });
+      setShowModal(true);
+    }}
+  >
+    <i className="bi bi-pencil"></i>
+  </button>
+
+  <button
+    className="icon-btn delete"
+    onClick={() => {
+      setTaskToDelete(task);
+      setShowDeleteConfirm(true);
+    }}
+  >
+    <i className="bi bi-trash"></i>
+  </button>
+</div>
+
+
+        
+
           </div>
         ))}
 

@@ -1,3 +1,4 @@
+// ✅layout 
 // src/layouts/CourseLayout.jsx
 import { Outlet, useParams, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
