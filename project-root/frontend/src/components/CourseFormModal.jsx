@@ -12,7 +12,13 @@ const daysOfWeek = [
   { label: "Domingo", value: "sun" },
 ];
 
-function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) {
+function CourseFormModal({
+  show,
+  onClose,
+  onRefresh,
+  editingCourse,
+  teachers,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -20,6 +26,9 @@ function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) 
     teacher: "",
     schedules: [],
   });
+
+  const [tempSchedules, setTempSchedules] = useState([]);
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     if (editingCourse) {
@@ -30,6 +39,7 @@ function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) 
         teacher: editingCourse.teacher || "",
         schedules: editingCourse.schedules || [],
       });
+      setTempSchedules(editingCourse.schedules || []);
     } else {
       setFormData({
         name: "",
@@ -38,8 +48,10 @@ function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) 
         teacher: "",
         schedules: [],
       });
+      setTempSchedules([]);
     }
-  }, [editingCourse]);
+    setFormError("");
+  }, [editingCourse, show]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,67 +59,54 @@ function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) 
   };
 
   const handleScheduleChange = (index, field, value) => {
-    const updated = [...formData.schedules];
+    const updated = [...tempSchedules];
     updated[index][field] = value;
-    setFormData((prev) => ({ ...prev, schedules: updated }));
+    setTempSchedules(updated);
   };
 
   const addSchedule = () => {
-    const newSchedule = { day: "mon", start_time: "14:00", end_time: "16:00" };
-
-    const duplicate = formData.schedules.some(
-      (s) =>
-        s.day === newSchedule.day &&
-        s.start_time === newSchedule.start_time &&
-        s.end_time === newSchedule.end_time
-    );
-
-    if (duplicate) {
-      alert("Este horario ya ha sido agregado.");
-      return;
-    }
-
-    if (newSchedule.end_time <= newSchedule.start_time) {
-      alert("La hora de fin debe ser posterior a la hora de inicio.");
-      return;
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      schedules: [...prev.schedules, newSchedule],
-    }));
+    const newSchedule = { day: "", start_time: "", end_time: "" };
+    setTempSchedules((prev) => [...prev, newSchedule]);
   };
 
   const removeSchedule = (index) => {
-    const updated = formData.schedules.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, schedules: updated }));
+    setTempSchedules((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async () => {
-    for (let s of formData.schedules) {
+  const validateForm = () => {
+    if (!formData.name || !formData.description || !formData.subject_code) {
+      setFormError("Por favor, completa todos los campos del formulario.");
+      return false;
+    }
+    if (!formData.teacher) {
+      setFormError("Debes seleccionar un docente.");
+      return false;
+    }
+    for (let s of tempSchedules) {
       if (!s.day || !s.start_time || !s.end_time) {
-        alert("Todos los horarios deben estar completos.");
-        return;
+        setFormError("Todos los horarios deben estar completos.");
+        return false;
       }
-
       if (s.end_time <= s.start_time) {
-        alert(
-          `El horario del día "${s.day.toUpperCase()}" tiene una hora de fin menor o igual a la de inicio.`
-        );
-        return;
+        setFormError(`Horario no válido. La hora de fin debe ser mayor a la de inicio.`);
+        return false;
+      }
+      if (s.end_time === s.start_time) {
+        setFormError(`La hora de inicio y fin no pueden ser iguales.`);
+        return false;
       }
     }
+    setFormError("");
+    return true;
+  };
+  const onSubmit = async () => {
+    if (!validateForm()) return;
 
     const payload = {
-      name: formData.name,
-      description: formData.description,
-      subject_code: formData.subject_code,
-      schedules: formData.schedules,
+      ...formData,
+      teacher: formData.teacher,
+      schedules: tempSchedules,
     };
-
-    if (formData.teacher) {
-      payload.teacher = formData.teacher;
-    }
 
     try {
       if (editingCourse) {
@@ -115,11 +114,11 @@ function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) 
       } else {
         await api.post("/courses/courses/", payload);
       }
-
       onRefresh();
       onClose();
     } catch (err) {
       console.error("Error al guardar curso:", err);
+      setFormError("Hubo un error al guardar el curso.");
     }
   };
 
@@ -133,8 +132,12 @@ function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) 
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">{editingCourse ? "Editar Curso" : "Nuevo Curso"}</h5>
-              <button className="btn-close" onClick={onClose}></button>
+              <button className="btn-close" onClick={onClose} aria-label="Cerrar"></button>
             </div>
+
+            {formError && (
+              <div className="alert alert-danger py-2 px-3">{formError}</div>
+            )}
 
             <div className="modal-body">
               <input
@@ -174,13 +177,14 @@ function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) 
               </select>
 
               <div className="mb-2">
-                {formData.schedules.map((sched, idx) => (
+                {tempSchedules.map((sched, idx) => (
                   <div key={idx} className="d-flex align-items-center mb-1">
                     <select
                       className="form-select me-2 select-dia"
                       value={sched.day}
                       onChange={(e) => handleScheduleChange(idx, "day", e.target.value)}
                     >
+                      <option value="">Día</option>
                       {daysOfWeek.map((day) => (
                         <option key={day.value} value={day.value}>
                           {day.label}
@@ -218,7 +222,7 @@ function CourseFormModal({ show, onClose, onRefresh, editingCourse, teachers }) 
               <button className="btn btn-secondary" onClick={onClose}>
                 Cancelar
               </button>
-              <button className="btn btn-danger" onClick={handleSubmit}>
+              <button className="btn btn-danger" onClick={onSubmit}>
                 Guardar
               </button>
             </div>
