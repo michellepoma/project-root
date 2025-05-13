@@ -8,6 +8,7 @@ import AdminUserModal from "../components/AdminUserModal";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import SearchBar from "../components/SearchBar";
 import "@/styles/ManageTeachersPage.css";
+import "@/styles/ManageAdminsPage.css";
 
 function ManageTeachersPage() {
   const [teachers, setTeachers] = useState([]);
@@ -135,12 +136,10 @@ function ManageTeachersPage() {
     <div className="py-3">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="mb-0">Gestión de Docentes</h3>
-       <button
-        className="btn-add-teacher"
-        onClick={() => openModal()}
-      >
-        <i className="bi bi-person-plus"></i> AÑADIR DOCENTE
-      </button>
+       <button className="custom-btn danger" onClick={() => openModal()}>
+          <i className="bi bi-person-plus me-2"></i>
+          <span className="btn-text">Añadir Docente</span>
+        </button>
 
       </div>
       <SearchBar placeholder="Buscar docente..." onSearch={handleSearch} />

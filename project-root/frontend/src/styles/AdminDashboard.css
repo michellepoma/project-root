@@ -94,7 +94,7 @@ html, body {
 .admin-btn:hover {
   background: linear-gradient(to right, #ff4500, #ff9900);
   color: white;
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 .admin-btn.active {
   background: linear-gradient(to right, #ff4500, #ff9900);

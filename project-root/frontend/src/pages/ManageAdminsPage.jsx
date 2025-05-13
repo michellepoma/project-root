@@ -134,12 +134,11 @@ function ManageAdminsPage() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="mb-0">Gestión de Administradores</h3>
 
-        <button
-          className="custom-btn danger"
-          onClick={() => openModal()}
-        >
-          <i className="bi bi-person-plus"></i> Añadir Administrador
+        <button className="custom-btn danger" onClick={() => openModal()}>
+          <i className="bi bi-person-plus me-2"></i>
+          <span className="btn-text">Añadir Administrador</span>
         </button>
+
 
       </div>
 

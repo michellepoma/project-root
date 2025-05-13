@@ -1,26 +1,20 @@
-/*✅gestion de administradores */
-
+/* ✅ Botón Estándar */
 .custom-btn {
-  all: unset; /* Quitar estilos por defecto de Bootstrap */
+  all: unset;
   display: inline-block;
-  padding: 0.75rem 1.5rem;
+  padding: clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 5vw, 1.5rem);
   border-radius: 0.8rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  font-size: 1rem;
+  font-size: clamp(0.8rem, 2.5vw, 1rem);
   backdrop-filter: var(--blur-effect);
   border: 2px solid var(--primary-color);
   color: var(--primary-color);
   background: var(--glass-bg);
   box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);
-}
-
-.custom-btn:hover {
-  background: rgba(255, 140, 0, 0.15);
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 12px 25px rgba(255, 140, 0, 0.5);
+  text-align: center;
 }
 
 .custom-btn.danger {
@@ -29,7 +23,36 @@
   box-shadow: 0 12px 25px rgba(255, 140, 0, 0.6);
 }
 
+.custom-btn:hover {
+  background: rgba(255, 140, 0, 0.15);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 25px rgba(255, 140, 0, 0.5);
+}
+
 .custom-btn.danger:hover {
   background: linear-gradient(to right, #cc3700, #ff6600);
   transform: translateY(-2px) scale(1.05);
 }
+
+/* 📱 Modo Móvil: Solo Ícono */
+@media (max-width: 480px) {
+  .btn-text {
+    display: none;
+  }
+  
+  .custom-btn {
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .custom-btn i {
+    font-size: 1.5rem;
+    margin-right: 0;
+  }
+}
+

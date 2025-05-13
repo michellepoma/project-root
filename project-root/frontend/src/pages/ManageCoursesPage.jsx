@@ -78,7 +78,8 @@ function ManageCoursesPage() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="mb-0">Gestión de Cursos</h3>
         <button className="custom-btn danger" onClick={() => openModal()}>
-          <i className="bi bi-journal-plus"></i> Añadir Curso
+          <i className="bi bi-journal-plus me-2"></i>
+          <span className="btn-text">Añadir Curso</span>
         </button>
       </div>
 
