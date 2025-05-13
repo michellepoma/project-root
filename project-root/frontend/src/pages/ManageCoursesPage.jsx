@@ -109,7 +109,7 @@ function ManageCoursesPage() {
                 <td>{course.code}</td>
                 <td>{course.name}</td>
                 <td>{course.subject_code}</td>
-                <td>{course.teacher_name}</td>
+                <td>{course.teacher_name || "Sin asignar"}</td>
                 <td>
                   {course.schedules.map((s, idx) => (
                     <div key={idx}>

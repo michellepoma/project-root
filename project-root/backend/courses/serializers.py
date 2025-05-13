@@ -77,8 +77,9 @@ class CourseSerializer(serializers.ModelSerializer):
         for sched in schedules_data:
             CourseSchedule.objects.create(course=course, **sched)
 
-        if request.user != teacher:
-            CourseParticipant.objects.create(user=request.user, course=course, role='teacher')
+        # Registrar al docente asignado como participante (si no es superuser por seguridad)
+        if teacher and not teacher.is_superuser:
+            CourseParticipant.objects.get_or_create(user=teacher, course=course, defaults={"role": "teacher"})
 
         return course
 
