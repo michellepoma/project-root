@@ -79,7 +79,7 @@ function CourseParticipantsPage() {
   const handleAddStudent = async () => {
     try {
       setErrorMsg("");
-      const res = await api.post("/courses/participants/add-by-email/", {
+      await api.post("/courses/participants/add-by-email/", {
         email: studentEmail,
         course_id: parseInt(id),
       });
@@ -123,7 +123,7 @@ function CourseParticipantsPage() {
       )}
 
       {isTeacher && (
-        <div className="d-flex justify-content-end mb-4">
+        <div className="d-flex justify-content-end mt-4">
           <button
             className="add-student-btn"
             onClick={() => setShowModal(true)}
@@ -136,7 +136,7 @@ function CourseParticipantsPage() {
 
       {/* Docentes */}
       {teachers.length > 0 && (
-        <div className="mb-4">
+        <div className="mb-4 mt-4">
           <h6 className="text-muted">👨‍🏫 Docente del Curso</h6>
           <ul className="list-group">{teachers.map(renderParticipant)}</ul>
         </div>

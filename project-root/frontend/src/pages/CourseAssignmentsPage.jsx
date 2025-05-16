@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosConfig";
 import { formatToLocal, getTimeRemaining } from "../utils/time";
+import SubmissionModal from "../components/SubmissionModal";
 import { DateTime } from "luxon";
 import "@/styles/CourseAssignmentsPage.css";
 
@@ -15,9 +16,17 @@ function CourseAssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
   const [openTaskId, setOpenTaskId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
   const [editingTask, setEditingTask] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
+
+  const [submissions, setSubmissions] = useState({});
+
+  const [showSubmissionModal, setShowSubmissionModal] = useState(false);
+  const [currentAssignmentId, setCurrentAssignmentId] = useState(null);
+  const [isEditingSubmission, setIsEditingSubmission] = useState(false);
+
 
   const [newAssignment, setNewAssignment] = useState({
     title: "",
@@ -135,7 +144,19 @@ function CourseAssignmentsPage() {
       console.error("Error eliminando tarea:", err);
     }
   };
+  //Funciones de Estudiante
+  
+  const fetchSubmissions = async (assignmentId) => {
+    try {
+      const res = await api.get(`/assignments/submissions/?assignment=${assignmentId}`);
+      const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+      setSubmissions((prev) => ({ ...prev, [assignmentId]: data }));
+    } catch (err) {
+      console.error("Error al cargar entregas:", err);
+    }
+  };
 
+  
   if (authLoading)
     return <div className="text-center mt-5">Cargando usuario...</div>;
 
@@ -155,54 +176,87 @@ function CourseAssignmentsPage() {
   if (user?.role === "student") {
     return (
       <div className="container py-4">
-        <h4>Tareas del curso</h4>
-        {assignments.map((task) => {
-          const isOpen = openTaskId === task.id;
-          const stillOpen = isDue(task.due_date);
+      <h4>Tareas del curso</h4>
+      {assignments.map((task) => {
+        const isOpen = openTaskId === task.id;
+        const stillOpen = isDue(task.due_date);
+        const submissionList = submissions[task.id] || [];
+        const hasSubmitted = Array.isArray(submissionList) && submissionList.some((s) => s.student === user.id);
 
-          return (
-            <div key={task.id} className="assignment-card">
-              <div className="d-flex justify-content-between align-items-start">
-                <div>
-                  <strong>{task.title}</strong>
-                  <p>{task.description}</p>
-                  <ResourceBlock task={task} />
-                </div>
-                <button
-                  className="btn-orange btn-toggle"
-                  onClick={() => setOpenTaskId(isOpen ? null : task.id)}
-                >
-                  {isOpen ? "Ocultar" : "Ver tarea"}
-                </button>
+        return (
+          <div key={task.id} className="assignment-card">
+            <div className="d-flex justify-content-between align-items-start">
+              <div>
+                <strong>{task.title}</strong>
+                <p>{task.description}</p>
               </div>
-              {isOpen && (
-                <div className="mt-3">
-                  <p>
-                    <i className="bi bi-calendar-event me-2"></i>
-                    Fecha límite:{" "}
-                    <strong>{formatToLocal(task.due_date)}</strong>
-                    <br />
-                    <span className="text-muted">
-                      {getTimeRemaining(task.due_date)}
-                    </span>
-                  </p>
-                  {stillOpen ? (
-                    <button className="btn-orange btn-upload">
-                      Subir entrega
+              <button
+                className="btn-orange btn-toggle"
+                onClick={() => {
+                  setOpenTaskId(isOpen ? null : task.id);
+                  fetchSubmissions(task.id);
+                }}
+              >
+                {isOpen ? "Ocultar" : "Ver tarea"}
+              </button>
+            </div>
+
+            {isOpen && (
+              <div className="mt-3">
+                <p>
+                  <i className="bi bi-calendar-event me-2"></i>
+                  Fecha límite: <strong>{formatToLocal(task.due_date)}</strong>
+                  <br />
+                  <span className="text-muted">{getTimeRemaining(task.due_date)}</span>
+                </p>
+                {stillOpen ? (
+                  hasSubmitted ? (
+                    <button
+                      className="btn-orange btn-upload"
+                      onClick={() => {
+                        setIsEditingSubmission(true);
+                        setCurrentAssignmentId(task.id);
+                        setShowSubmissionModal(true);
+                      }}
+                    >
+                      Modificar entrega
                     </button>
                   ) : (
-                    <p className="text-danger">
-                      Plazo vencido. Ya no puedes entregar.
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+                    <button
+                      className="btn-orange btn-upload"
+                      onClick={() => {
+                        setIsEditingSubmission(false);
+                        setCurrentAssignmentId(task.id);
+                        setShowSubmissionModal(true);
+                      }}
+                    >
+                      Subir entrega
+                    </button>
+                  )
+                ) : (
+                  <p className="text-danger">Plazo vencido. Ya no puedes entregar.</p>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      <SubmissionModal
+        show={showSubmissionModal}
+        onClose={() => setShowSubmissionModal(false)}
+        isEditing={isEditingSubmission}
+        currentAssignmentId={currentAssignmentId}
+        submissions={submissions}
+        user={user}
+        fetchSubmissions={fetchSubmissions}
+      />
+    </div>
     );
+
+  
   }
+    
 
   // ===== Profesor =====
   if (user?.role === "teacher") {
@@ -392,6 +446,8 @@ function CourseAssignmentsPage() {
       </div>
     );
   }
+
+
 
   return null;
 }
