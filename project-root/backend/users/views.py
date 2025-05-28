@@ -9,13 +9,8 @@ from .serializers import UserSerializer, UserRegistrationSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from .pagination import StandardResultsSetPagination
 from rest_framework import filters
-# users/views.py
 from rest_framework import generics, permissions
 from django.contrib.auth import get_user_model
-
-User = get_user_model()
-# backend/users/views.py
-
 
 User = get_user_model()
 

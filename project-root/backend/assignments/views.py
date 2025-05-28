@@ -44,6 +44,8 @@ class GradeViewSet(viewsets.ModelViewSet):
             return Grade.objects.filter(student=user)
         if user.role == 'teacher':
             return Grade.objects.filter(assignment__course__teacher=user)
+        if user.is_superuser:
+            return Grade.objects.all()
         return Grade.objects.none()
 
     def perform_create(self, serializer):
@@ -53,7 +55,7 @@ class GradeViewSet(viewsets.ModelViewSet):
         score = serializer.validated_data.get('score')
         feedback = serializer.validated_data.get('feedback', '')
 
-        if assignment.course.teacher != user:
+        if not user.is_superuser and assignment.course.teacher != user:
             raise PermissionDenied("Solo el profesor puede calificar esta tarea.")
 
         if not CourseParticipant.objects.filter(user=student, course=assignment.course).exists():

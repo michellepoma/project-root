@@ -1,12 +1,18 @@
+import secrets
+
+import pandas as pd
 from rest_framework import viewsets, status
+from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.contrib.auth import get_user_model
 from rest_framework import filters
-
+from rest_framework.views import APIView
 from users.permissions import IsAdminOrTeacher
+
 from .models import (
     Course,
     CourseParticipant,
@@ -310,3 +316,81 @@ class ScheduledClassViewSet(viewsets.ModelViewSet):
         if course.teacher != self.request.user:
             raise PermissionDenied("Solo el profesor puede editar esta clase.")
         serializer.save()
+
+class StudentImportExcelView(APIView):
+    parser_classes = [MultiPartParser]
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        excel     = request.FILES.get('file')
+        course_id = request.data.get('course_id')
+        if not excel or not course_id:
+            return Response(
+                {"detail": "Se requieren 'file' (Excel) y 'course_id'."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            course = Course.objects.get(pk=course_id)
+        except Course.DoesNotExist:
+            return Response({"detail": "Curso no encontrado."}, status=404)
+
+        df = pd.read_excel(excel)
+        imported = []
+
+        for _, row in df.iterrows():
+            email      = row.get('email')
+            first_name = (row.get('first_name') or '').strip()
+            last_name  = (row.get('last_name')  or '').strip()
+            ci         = (str(row.get('ci'))    or '').strip()
+
+            if not email or not ci or not first_name:
+                # saltamos filas con datos incompletos
+                continue
+
+            # Buscamos usuario existente por email o CI
+            user = User.objects.filter(email=email).first()
+            if not user:
+                user = User.objects.filter(ci=ci).first()
+
+            if user:
+                # Si ya existía, podemos actualizar nombres/CI si quieres...
+                updated = False
+                if user.first_name != first_name:
+                    user.first_name = first_name; updated = True
+                if user.last_name  != last_name:
+                    user.last_name  = last_name;  updated = True
+                if user.ci         != ci:
+                    user.ci         = ci;         updated = True
+                if updated:
+                    user.save()
+            else:
+                # Generamos contraseña = ci + first_name
+                raw_password = f"{ci}{first_name}"
+
+                user = User.objects.create_user(
+                    email=email,
+                    name=f"{first_name} {last_name}".strip(),
+                    password=raw_password,
+                    first_name=first_name,
+                    last_name=last_name,
+                    role='student',
+                    ci=ci
+                )
+
+            # Inscribimos al curso (no duplica gracias a get_or_create)
+            CourseParticipant.objects.get_or_create(
+                user=user,
+                course=course,
+                defaults={'role': 'student'}
+            )
+
+            imported.append({
+                "email": email,
+                "password": f"{ci}{first_name}"
+            })
+
+        return Response(
+            {"imported": imported, "count": len(imported)},
+            status=status.HTTP_201_CREATED
+        )
